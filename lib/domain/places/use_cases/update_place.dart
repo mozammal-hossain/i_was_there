@@ -1,6 +1,9 @@
+import 'package:injectable/injectable.dart';
+
 import '../entities/place.dart';
 import '../repositories/place_repository.dart';
 
+@injectable
 class UpdatePlace {
   UpdatePlace(this._repository);
 

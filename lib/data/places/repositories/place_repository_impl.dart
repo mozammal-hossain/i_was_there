@@ -1,10 +1,12 @@
 import 'package:drift/drift.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../../domain/places/entities/place.dart' as domain;
 import '../../../../domain/places/repositories/place_repository.dart';
 import '../../database/app_database.dart';
 import '../mappers/place_mapper.dart';
 
+@LazySingleton(as: PlaceRepository)
 class PlaceRepositoryImpl implements PlaceRepository {
   PlaceRepositoryImpl(this._db);
 

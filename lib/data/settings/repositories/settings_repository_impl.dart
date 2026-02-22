@@ -1,10 +1,12 @@
 import 'package:drift/drift.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../../domain/settings/repositories/settings_repository.dart';
 import '../../database/app_database.dart';
 
 const _keyCalendarSyncEnabled = 'calendar_sync_enabled';
 
+@LazySingleton(as: SettingsRepository)
 class SettingsRepositoryImpl implements SettingsRepository {
   SettingsRepositoryImpl(this._db);
 

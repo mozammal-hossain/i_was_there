@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../data/database/app_database.dart';
 import '../../presentation/main_shell.dart';
 import '../../presentation/onboarding/onboarding_feature.dart';
 
@@ -21,7 +20,6 @@ Future<void> setOnboardingCompleted(SharedPreferences prefs) async {
 /// App router: /onboarding (flow) and / (main shell with Places | Calendar | Settings).
 GoRouter createAppRouter({
   required SharedPreferences prefs,
-  required AppDatabase database,
   required ValueNotifier<bool> onboardingCompleteNotifier,
 }) {
   return GoRouter(
@@ -53,7 +51,7 @@ GoRouter createAppRouter({
       ),
       GoRoute(
         path: '/',
-        builder: (context, state) => MainShell(database: database),
+        builder: (context, state) => const MainShell(),
       ),
     ],
   );

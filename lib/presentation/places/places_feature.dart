@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../data/database/app_database.dart' show AppDatabase;
-import '../../data/places/repositories/place_repository_impl.dart';
+
+import '../../core/di/injection.dart';
 import '../../domain/places/entities/place.dart';
-import '../../data/presence/repositories/presence_repository_impl.dart';
 import '../../domain/places/use_cases/add_place.dart';
 import '../../domain/places/use_cases/get_places.dart';
 import '../../domain/places/use_cases/remove_place.dart';
@@ -21,23 +20,19 @@ import 'widgets/no_place_screen.dart';
 
 /// Places feature: list of places, map, add/edit. Only place-related screens.
 class PlacesFeature extends StatelessWidget {
-  PlacesFeature({super.key, AppDatabase? database})
-      : _database = database ?? AppDatabase();
-
-  final AppDatabase _database;
+  const PlacesFeature({super.key});
 
   PlacesBloc _createPlacesBloc() {
-    final repository = PlaceRepositoryImpl(_database);
     return PlacesBloc(
-      getPlaces: GetPlaces(repository),
-      addPlace: AddPlace(repository),
-      updatePlace: UpdatePlace(repository),
-      removePlace: RemovePlace(repository),
+      getPlaces: getIt<GetPlaces>(),
+      addPlace: getIt<AddPlace>(),
+      updatePlace: getIt<UpdatePlace>(),
+      removePlace: getIt<RemovePlace>(),
     );
   }
 
   Future<void> _applyManualPresence(DateTime date, Map<String, bool> presence) async {
-    final setPresence = SetPresence(PresenceRepositoryImpl(_database));
+    final setPresence = getIt<SetPresence>();
     for (final entry in presence.entries) {
       await setPresence.call(
         placeId: entry.key,

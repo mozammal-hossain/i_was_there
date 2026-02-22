@@ -1,5 +1,8 @@
+import 'package:injectable/injectable.dart';
+
 import '../repositories/presence_repository.dart';
 
+@injectable
 class GetAggregatedPresence {
   GetAggregatedPresence(this._repository);
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../domain/places/entities/place.dart';
-import 'add_edit_place_screen.dart';
 
 /// Places dashboard: list of tracked places with weekly attendance dots (PRD R9, R10).
 class DashboardScreen extends StatelessWidget {
@@ -60,7 +59,9 @@ class DashboardScreen extends StatelessWidget {
                             'Places',
                             style: theme.textTheme.headlineSmall?.copyWith(
                               fontWeight: FontWeight.w600,
-                              color: isDark ? Colors.white : const Color(0xFF0F172A),
+                              color: isDark
+                                  ? Colors.white
+                                  : const Color(0xFF0F172A),
                             ),
                           ),
                           const SizedBox(height: 2),
@@ -69,7 +70,9 @@ class DashboardScreen extends StatelessWidget {
                               Text(
                                 'Weekly Attendance',
                                 style: theme.textTheme.bodySmall?.copyWith(
-                                  color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                                  color: isDark
+                                      ? const Color(0xFF94A3B8)
+                                      : const Color(0xFF64748B),
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -78,9 +81,12 @@ class DashboardScreen extends StatelessWidget {
                                 TextButton(
                                   onPressed: onManualOverride,
                                   style: TextButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                    ),
                                     minimumSize: Size.zero,
-                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
                                   ),
                                   child: Text(
                                     'Override',
@@ -99,10 +105,14 @@ class DashboardScreen extends StatelessWidget {
                     ),
                     CircleAvatar(
                       radius: 20,
-                      backgroundColor: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                      backgroundColor: isDark
+                          ? const Color(0xFF334155)
+                          : const Color(0xFFE2E8F0),
                       child: Icon(
                         Icons.person_outline,
-                        color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                        color: isDark
+                            ? const Color(0xFF94A3B8)
+                            : const Color(0xFF64748B),
                       ),
                     ),
                   ],
@@ -126,17 +136,14 @@ class DashboardScreen extends StatelessWidget {
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final place = places[index];
-                    return _PlaceCard(
-                      place: place,
-                      isDark: isDark,
-                      onTap: () => onPlaceTap(place),
-                    );
-                  },
-                  childCount: places.length,
-                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final place = places[index];
+                  return _PlaceCard(
+                    place: place,
+                    isDark: isDark,
+                    onTap: () => onPlaceTap(place),
+                  );
+                }, childCount: places.length),
               ),
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 120)),
@@ -174,7 +181,8 @@ class _PlaceCard extends StatelessWidget {
   static IconData _iconForPlace(Place place) {
     final n = place.name.toLowerCase();
     if (n.contains('gym') || n.contains('fitness')) return Icons.fitness_center;
-    if (n.contains('yoga') || n.contains('studio')) return Icons.self_improvement;
+    if (n.contains('yoga') || n.contains('studio'))
+      return Icons.self_improvement;
     return Icons.apartment;
   }
 
@@ -216,14 +224,18 @@ class _PlaceCard extends StatelessWidget {
                           place.name,
                           style: theme.textTheme.titleLarge?.copyWith(
                             fontWeight: FontWeight.w600,
-                            color: isDark ? Colors.white : const Color(0xFF0F172A),
+                            color: isDark
+                                ? Colors.white
+                                : const Color(0xFF0F172A),
                           ),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           place.syncStatus.label,
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                            color: isDark
+                                ? const Color(0xFF94A3B8)
+                                : const Color(0xFF64748B),
                             fontSize: 12,
                           ),
                         ),
@@ -232,7 +244,9 @@ class _PlaceCard extends StatelessWidget {
                   ),
                   Icon(
                     Icons.chevron_right,
-                    color: isDark ? const Color(0xFF475569) : const Color(0xFFCBD5E1),
+                    color: isDark
+                        ? const Color(0xFF475569)
+                        : const Color(0xFFCBD5E1),
                   ),
                 ],
               ),
@@ -240,7 +254,9 @@ class _PlaceCard extends StatelessWidget {
               Row(
                 children: [
                   const SizedBox(width: 4),
-                  ...['M', 'T', 'W', 'T', 'F', 'S', 'S'].asMap().entries.map((e) {
+                  ...['M', 'T', 'W', 'T', 'F', 'S', 'S'].asMap().entries.map((
+                    e,
+                  ) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 2),
                       child: Text(
@@ -269,7 +285,9 @@ class _PlaceCard extends StatelessWidget {
                         shape: BoxShape.circle,
                         color: present
                             ? AppColors.primary
-                            : (isDark ? AppColors.neutralDotDark : AppColors.neutralDot),
+                            : (isDark
+                                  ? AppColors.neutralDotDark
+                                  : AppColors.neutralDot),
                         boxShadow: present
                             ? [
                                 BoxShadow(
@@ -334,7 +352,10 @@ class _BottomNav extends StatelessWidget {
                 onTap: () => onTap(i),
                 borderRadius: BorderRadius.circular(24),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -343,7 +364,9 @@ class _BottomNav extends StatelessWidget {
                         size: 28,
                         color: selected
                             ? AppColors.primary
-                            : (isDark ? const Color(0xFF475569) : const Color(0xFF94A3B8)),
+                            : (isDark
+                                  ? const Color(0xFF475569)
+                                  : const Color(0xFF94A3B8)),
                         fill: selected ? 1.0 : 0.0,
                       ),
                       const SizedBox(height: 4),
@@ -353,7 +376,9 @@ class _BottomNav extends StatelessWidget {
                           fontSize: 11,
                           color: selected
                               ? AppColors.primary
-                              : (isDark ? const Color(0xFF475569) : const Color(0xFF94A3B8)),
+                              : (isDark
+                                    ? const Color(0xFF475569)
+                                    : const Color(0xFF94A3B8)),
                         ),
                       ),
                     ],

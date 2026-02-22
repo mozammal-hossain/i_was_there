@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 
 import '../core/theme/app_theme.dart';
-import '../data/database/app_database.dart';
 import 'calendar/calendar_feature.dart';
 import 'places/places_feature.dart';
 import 'settings/settings_feature.dart';
 
 /// Main shell after onboarding: bottom nav with Places | Calendar | Settings.
 class MainShell extends StatefulWidget {
-  const MainShell({super.key, required this.database});
+  const MainShell({super.key});
 
-  final AppDatabase database;
 
   @override
   State<MainShell> createState() => _MainShellState();
@@ -26,9 +24,9 @@ class _MainShellState extends State<MainShell> {
       body: IndexedStack(
         index: _tabIndex,
         children: [
-          PlacesFeature(database: widget.database),
-          CalendarFeature(database: widget.database),
-          SettingsFeature(database: widget.database),
+          const PlacesFeature(),
+          const CalendarFeature(),
+          const SettingsFeature(),
         ],
       ),
       bottomNavigationBar: Container(

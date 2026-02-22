@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../data/database/app_database.dart' show AppDatabase;
-import '../../data/places/repositories/place_repository_impl.dart';
-import '../../data/presence/repositories/presence_repository_impl.dart';
+import '../../core/di/injection.dart';
 import '../../domain/places/entities/place.dart';
 import '../../domain/presence/entities/presence.dart';
 import '../../domain/places/use_cases/get_places.dart';
@@ -14,10 +12,7 @@ import 'widgets/manual_attendance_screen.dart';
 
 /// Calendar feature: presence history and manual attendance override.
 class CalendarFeature extends StatefulWidget {
-  CalendarFeature({super.key, AppDatabase? database})
-      : _database = database ?? AppDatabase();
-
-  final AppDatabase _database;
+  const CalendarFeature({super.key});
 
   @override
   State<CalendarFeature> createState() => _CalendarFeatureState();
@@ -34,13 +29,10 @@ class _CalendarFeatureState extends State<CalendarFeature> {
   @override
   void initState() {
     super.initState();
-    final db = widget._database;
-    final placeRepo = PlaceRepositoryImpl(db);
-    final presenceRepo = PresenceRepositoryImpl(db);
-    _getPlaces = GetPlaces(placeRepo);
-    _getAggregatedPresence = GetAggregatedPresence(presenceRepo);
-    _getPresencesForDay = GetPresencesForDay(presenceRepo);
-    _setPresence = SetPresence(presenceRepo);
+    _getPlaces = getIt<GetPlaces>();
+    _getAggregatedPresence = getIt<GetAggregatedPresence>();
+    _getPresencesForDay = getIt<GetPresencesForDay>();
+    _setPresence = getIt<SetPresence>();
     _loadPlaces();
   }
 

@@ -1,9 +1,11 @@
 import 'package:drift/drift.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../../domain/presence/entities/presence.dart' as domain;
 import '../../../../domain/presence/repositories/presence_repository.dart';
 import '../../database/app_database.dart';
 
+@LazySingleton(as: PresenceRepository)
 class PresenceRepositoryImpl implements PresenceRepository {
   PresenceRepositoryImpl(this._db);
 

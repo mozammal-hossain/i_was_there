@@ -1,6 +1,9 @@
+import 'package:injectable/injectable.dart';
+
 import '../entities/presence.dart';
 import '../repositories/presence_repository.dart';
 
+@injectable
 class GetPresencesForDay {
   GetPresencesForDay(this._repository);
 
