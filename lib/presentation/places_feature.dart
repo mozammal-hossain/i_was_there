@@ -16,10 +16,9 @@ import 'dashboard/bloc/dashboard_bloc.dart';
 import 'dashboard/bloc/dashboard_event.dart';
 import 'dashboard/bloc/dashboard_state.dart';
 import 'dashboard/dashboard_page.dart';
-import 'map/map_page.dart';
 import 'no_place/no_place_page.dart';
 
-/// Places feature: list of places, map, add/edit. Only place-related pages.
+/// Places feature: list of places, add/edit. Only place-related pages.
 class PlacesFeature extends StatelessWidget {
   const PlacesFeature({super.key});
 
@@ -67,8 +66,6 @@ class _PlacesShell extends StatefulWidget {
 }
 
 class _PlacesShellState extends State<_PlacesShell> {
-  int _navIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<DashboardBloc, DashboardState>(
@@ -88,24 +85,14 @@ class _PlacesShellState extends State<_PlacesShell> {
         if (!state.hasPlaces) {
           return NoPlacePage(onAddPlace: () => _openAddPlace(context));
         }
-        switch (_navIndex) {
-          case 1:
-            return MapPage(
-              places: state.places,
-              onBack: () => setState(() => _navIndex = 0),
-            );
-          default:
-            return DashboardPage(
-              places: state.places,
-              onAddPlace: () => _openAddPlace(context),
-              onPlaceTap: (place) => _openEditPlace(context, place),
-              onManualOverride: () =>
-                  _openManualAttendance(context, state.places),
-              currentNavIndex: _navIndex,
-              onNavTap: (index) => setState(() => _navIndex = index),
-              placesOnlyNav: true,
-            );
-        }
+        return DashboardPage(
+          places: state.places,
+          onAddPlace: () => _openAddPlace(context),
+          onPlaceTap: (place) => _openEditPlace(context, place),
+          onManualOverride: () =>
+              _openManualAttendance(context, state.places),
+          placesOnlyNav: true,
+        );
       },
     );
   }

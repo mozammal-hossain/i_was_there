@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:i_was_there/domain/places/entities/place.dart';
 import 'package:i_was_there/domain/presence/entities/presence.dart';
 import 'package:i_was_there/presentation/history/utils/history_utils.dart';
-import 'package:i_was_there/presentation/history/widgets/history_bottom_nav.dart';
 import 'package:i_was_there/presentation/history/widgets/history_calendar_grid.dart';
 import 'package:i_was_there/presentation/history/widgets/history_day_details_section.dart';
 import 'package:i_was_there/presentation/history/widgets/history_filter_chips.dart';
@@ -159,7 +158,6 @@ class _HistoryPageState extends State<HistoryPage> {
                 ),
               ),
             ),
-            HistoryBottomNav(isDark: isDark),
           ],
         ),
       ),

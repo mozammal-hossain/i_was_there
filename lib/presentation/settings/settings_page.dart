@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:i_was_there/presentation/settings/widgets/settings_bottom_nav.dart';
 import 'package:i_was_there/presentation/settings/widgets/settings_connected_account_section.dart';
 import 'package:i_was_there/presentation/settings/widgets/settings_footer.dart';
 import 'package:i_was_there/presentation/settings/widgets/settings_header.dart';
@@ -67,7 +66,6 @@ class SettingsPage extends StatelessWidget {
                 ),
               ),
             ),
-            SettingsBottomNav(isDark: isDark),
           ],
         ),
       ),

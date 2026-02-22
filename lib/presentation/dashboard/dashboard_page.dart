@@ -24,7 +24,7 @@ class DashboardPage extends StatelessWidget {
   final int currentNavIndex;
   final void Function(int index)? onNavTap;
 
-  /// When true, bottom nav shows only "Places" and "Map" (for use inside Places feature tab).
+  /// When true, bottom nav is hidden (for use inside Places feature tab; main shell has its own nav).
   final bool placesOnlyNav;
 
   static const List<DashboardNavItem> _navItems = [
@@ -32,11 +32,6 @@ class DashboardPage extends StatelessWidget {
     DashboardNavItem(Icons.map_outlined, 'Map'),
     DashboardNavItem(Icons.history, 'History'),
     DashboardNavItem(Icons.settings_outlined, 'Settings'),
-  ];
-
-  static const List<DashboardNavItem> _placesNavItems = [
-    DashboardNavItem(Icons.list_alt, 'Places'),
-    DashboardNavItem(Icons.map_outlined, 'Map'),
   ];
 
   @override
@@ -159,12 +154,14 @@ class DashboardPage extends StatelessWidget {
           child: const Icon(Icons.add, size: 28),
         ),
       ),
-      bottomNavigationBar: DashboardBottomNav(
-        currentIndex: currentNavIndex,
-        items: placesOnlyNav ? _placesNavItems : _navItems,
-        onTap: onNavTap ?? (_) {},
-        isDark: isDark,
-      ),
+      bottomNavigationBar: placesOnlyNav
+          ? null
+          : DashboardBottomNav(
+              currentIndex: currentNavIndex,
+              items: _navItems,
+              onTap: onNavTap ?? (_) {},
+              isDark: isDark,
+            ),
     );
   }
 }
