@@ -24,6 +24,10 @@ import '../../domain/location/geocoding_service.dart' as _i139;
 import '../../domain/location/location_service.dart' as _i192;
 import '../../domain/location/use_cases/get_current_location_with_address_use_case.dart'
     as _i687;
+import '../../domain/location/use_cases/get_location_from_address_use_case.dart'
+    as _i1035;
+import '../../domain/location/use_cases/get_location_from_coordinates_use_case.dart'
+    as _i648;
 import '../../domain/places/repositories/place_repository.dart' as _i267;
 import '../../domain/places/use_cases/add_place_use_case.dart' as _i662;
 import '../../domain/places/use_cases/get_places_use_case.dart' as _i439;
@@ -57,6 +61,13 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i362.GeocodingServiceImpl(),
     );
     gh.lazySingleton<_i192.LocationService>(() => _i420.LocationServiceImpl());
+    gh.factory<_i1035.GetLocationFromAddressUseCase>(
+      () => _i1035.GetLocationFromAddressUseCase(gh<_i139.GeocodingService>()),
+    );
+    gh.factory<_i648.GetLocationFromCoordinatesUseCase>(
+      () =>
+          _i648.GetLocationFromCoordinatesUseCase(gh<_i139.GeocodingService>()),
+    );
     gh.lazySingleton<_i647.SettingsRepository>(
       () => _i527.SettingsRepositoryImpl(gh<_i160.AppDatabase>()),
     );

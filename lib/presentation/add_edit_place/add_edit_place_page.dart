@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:i_was_there/presentation/add_edit_place/widgets/add_edit_place_form_sheet.dart';
 import 'package:i_was_there/presentation/add_edit_place/widgets/add_edit_place_header.dart';
 import 'package:i_was_there/presentation/add_edit_place/widgets/add_edit_place_map_area.dart';
@@ -92,7 +93,7 @@ class _AddEditPlacePageState extends State<AddEditPlacePage> {
           _addressController.text =
               state.locationResult!.address ?? _addressController.text;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Current location set.')),
+            const SnackBar(content: Text('Location set.')),
           );
         }
         if (state.locationError != null && mounted) {
@@ -132,7 +133,33 @@ class _AddEditPlacePageState extends State<AddEditPlacePage> {
               Expanded(
                 child: Stack(
                   children: [
-                    AddEditPlaceMapArea(isDark: isDark),
+                    BlocBuilder<AddEditPlaceBloc, AddEditPlaceState>(
+                      buildWhen: (prev, curr) =>
+                          prev.locationResult != curr.locationResult,
+                      builder: (context, state) {
+                        final loc = state.locationResult;
+                        final p = widget.place;
+                        final hasLoc = loc != null;
+                        final hasPlace = p != null &&
+                            (p.latitude != 0 || p.longitude != 0);
+                        final LatLng? center = hasLoc
+                            ? LatLng(loc.latitude, loc.longitude)
+                            : (hasPlace
+                                ? LatLng(p.latitude, p.longitude)
+                                : null);
+                        return AddEditPlaceMapArea(
+                          isDark: isDark,
+                          center: center,
+                          onMapTap: (point) =>
+                              context.read<AddEditPlaceBloc>().add(
+                                    AddEditPlaceMapLocationSelected(
+                                      point.latitude,
+                                      point.longitude,
+                                    ),
+                                  ),
+                        );
+                      },
+                    ),
                     BlocBuilder<AddEditPlaceBloc, AddEditPlaceState>(
                       buildWhen: (prev, curr) =>
                           prev.locationLoading != curr.locationLoading,
@@ -160,6 +187,11 @@ class _AddEditPlacePageState extends State<AddEditPlacePage> {
                     onUseCurrentLocation: () => context
                         .read<AddEditPlaceBloc>()
                         .add(const AddEditPlaceUseCurrentLocationRequested()),
+                    onSearchAddress: () => context.read<AddEditPlaceBloc>().add(
+                          AddEditPlaceAddressSearchRequested(
+                            _addressController.text,
+                          ),
+                        ),
                     onSave: () => _save(context),
                   );
                 },

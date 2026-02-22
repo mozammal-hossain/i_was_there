@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../di/injection.dart';
 import '../../domain/location/use_cases/get_current_location_with_address_use_case.dart';
+import '../../domain/location/use_cases/get_location_from_address_use_case.dart';
+import '../../domain/location/use_cases/get_location_from_coordinates_use_case.dart';
 import '../../presentation/main_shell.dart';
 import '../../presentation/onboarding_feature.dart';
 import '../../presentation/dashboard/bloc/dashboard_bloc.dart';
@@ -75,6 +77,8 @@ GoRouter createAppRouter({
             child: BlocProvider(
               create: (_) => AddEditPlaceBloc(
                 getIt<GetCurrentLocationWithAddressUseCase>(),
+                getIt<GetLocationFromAddressUseCase>(),
+                getIt<GetLocationFromCoordinatesUseCase>(),
               ),
               child: AddEditPlacePage(
                 onSave: (place) =>
@@ -94,6 +98,8 @@ GoRouter createAppRouter({
             child: BlocProvider(
               create: (_) => AddEditPlaceBloc(
                 getIt<GetCurrentLocationWithAddressUseCase>(),
+                getIt<GetLocationFromAddressUseCase>(),
+                getIt<GetLocationFromCoordinatesUseCase>(),
               ),
               child: AddEditPlacePage(
                 place: extra.place,

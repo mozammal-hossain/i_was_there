@@ -9,6 +9,7 @@ class AddEditPlaceFormFields extends StatelessWidget {
     required this.addressController,
     required this.locationLoading,
     required this.onUseCurrentLocation,
+    required this.onSearchAddress,
   });
 
   final bool isDark;
@@ -16,6 +17,7 @@ class AddEditPlaceFormFields extends StatelessWidget {
   final TextEditingController addressController;
   final bool locationLoading;
   final VoidCallback onUseCurrentLocation;
+  final VoidCallback onSearchAddress;
 
   @override
   Widget build(BuildContext context) {
@@ -50,14 +52,33 @@ class AddEditPlaceFormFields extends StatelessWidget {
         const SizedBox(height: 8),
         TextField(
           controller: addressController,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             hintText: 'Search address...',
-            prefixIcon: Icon(Icons.search, color: AppColors.primary, size: 20),
+            prefixIcon: const Icon(Icons.search, color: AppColors.primary, size: 20),
+            suffixIcon: locationLoading
+                ? const Padding(
+                    padding: EdgeInsets.all(12),
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  )
+                : IconButton(
+                    icon: const Icon(Icons.search, color: AppColors.primary, size: 22),
+                    onPressed: onSearchAddress,
+                    tooltip: 'Search address',
+                  ),
           ),
           style: TextStyle(
             fontSize: 17,
             color: isDark ? Colors.white : const Color(0xFF0F172A),
           ),
+          textInputAction: TextInputAction.search,
+          onSubmitted: (_) => onSearchAddress(),
         ),
         const SizedBox(height: 16),
         TextButton.icon(

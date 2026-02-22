@@ -13,6 +13,7 @@ class AddEditPlaceFormSheet extends StatelessWidget {
     required this.addressController,
     required this.locationLoading,
     required this.onUseCurrentLocation,
+    required this.onSearchAddress,
     required this.onSave,
   });
 
@@ -21,6 +22,7 @@ class AddEditPlaceFormSheet extends StatelessWidget {
   final TextEditingController addressController;
   final bool locationLoading;
   final VoidCallback onUseCurrentLocation;
+  final VoidCallback onSearchAddress;
   final VoidCallback onSave;
 
   @override
@@ -57,6 +59,7 @@ class AddEditPlaceFormSheet extends StatelessWidget {
                 addressController: addressController,
                 locationLoading: locationLoading,
                 onUseCurrentLocation: onUseCurrentLocation,
+                onSearchAddress: onSearchAddress,
               ),
               const SizedBox(height: 16),
               AddEditPlaceGeofenceInfo(isDark: isDark),
