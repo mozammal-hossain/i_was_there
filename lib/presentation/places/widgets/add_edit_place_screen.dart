@@ -1,10 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../domain/places/entities/place.dart';
+import '../bloc/places_bloc.dart';
+import '../bloc/places_state.dart';
 
 /// Add or edit a tracked place (PRD R2: pin on map, current location, address search; R3: 20m geofence).
 class AddEditPlaceScreen extends StatefulWidget {
@@ -26,6 +29,9 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
   double? _latitude;
   double? _longitude;
   bool _locationLoading = false;
+
+  /// Place id we're waiting for after save. When bloc state includes it, we pop.
+  String? _pendingSavedPlaceId;
 
   @override
   void initState() {
@@ -172,8 +178,9 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
           longitude: lng,
           syncStatus: PlaceSyncStatus.geofenceActive,
         );
+    setState(() => _pendingSavedPlaceId = place.id);
     widget.onSave(place);
-    if (mounted) Navigator.of(context).pop();
+    // Pop happens in BlocListener when bloc state includes our place
   }
 
   @override
@@ -181,20 +188,43 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return Scaffold(
-      body: Column(
-        children: [
-          _buildHeader(context, isDark),
-          Expanded(
-            child: Stack(
-              children: [
-                _buildMapArea(isDark),
-                _buildMyLocationButton(context),
-              ],
+    return BlocListener<PlacesBloc, PlacesState>(
+      listenWhen: (prev, curr) =>
+          _pendingSavedPlaceId != null &&
+          (curr.places.any((p) => p.id == _pendingSavedPlaceId) ||
+              curr.errorMessage != null),
+      listener: (context, state) {
+        if (_pendingSavedPlaceId == null) return;
+        if (state.errorMessage != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Could not save: ${state.errorMessage}'),
+              backgroundColor: Colors.red,
             ),
-          ),
-          _buildFormSheet(context, theme, isDark),
+          );
+          setState(() => _pendingSavedPlaceId = null);
+          return;
+        }
+        if (state.places.any((p) => p.id == _pendingSavedPlaceId)) {
+          setState(() => _pendingSavedPlaceId = null);
+          if (mounted) Navigator.of(context).pop();
+        }
+      },
+      child: Scaffold(
+        body: Column(
+          children: [
+            _buildHeader(context, isDark),
+            Expanded(
+              child: Stack(
+                children: [
+                  _buildMapArea(isDark),
+                  _buildMyLocationButton(context),
+                ],
+              ),
+            ),
+            _buildFormSheet(context, theme, isDark),
         ],
+        ),
       ),
     );
   }

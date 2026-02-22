@@ -37,7 +37,8 @@ dependencies:
 
   # Data & persistence
   drift: ^2.22.0
-  sqlite3_flutter_libs: ^0.6.0
+  # Pin to 0.5.x; 0.6.0+eol is a no-op stub and does not bundle libsqlite3.so on Android.
+  sqlite3_flutter_libs: ^0.5.41
   path_provider: ^2.1.5
   path: ^1.9.0
 

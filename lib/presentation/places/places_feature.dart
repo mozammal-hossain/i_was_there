@@ -70,7 +70,18 @@ class _PlacesShellState extends State<_PlacesShell> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PlacesBloc, PlacesState>(
+    return BlocConsumer<PlacesBloc, PlacesState>(
+      listenWhen: (prev, curr) => curr.errorMessage != null,
+      listener: (context, state) {
+        if (state.errorMessage != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage!),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
       buildWhen: (prev, curr) => prev.places != curr.places,
       builder: (context, state) {
         if (!state.hasPlaces) {
@@ -122,8 +133,11 @@ class _PlacesShellState extends State<_PlacesShell> {
     final bloc = context.read<PlacesBloc>();
     Navigator.of(context).push<void>(
       MaterialPageRoute(
-        builder: (context) => AddEditPlaceScreen(
-          onSave: (place) => bloc.add(PlacesAddRequested(place)),
+        builder: (context) => BlocProvider.value(
+          value: bloc,
+          child: AddEditPlaceScreen(
+            onSave: (place) => bloc.add(PlacesAddRequested(place)),
+          ),
         ),
       ),
     );
@@ -133,9 +147,12 @@ class _PlacesShellState extends State<_PlacesShell> {
     final bloc = context.read<PlacesBloc>();
     Navigator.of(context).push<void>(
       MaterialPageRoute(
-        builder: (context) => AddEditPlaceScreen(
-          place: place,
-          onSave: (place) => bloc.add(PlacesUpdateRequested(place)),
+        builder: (context) => BlocProvider.value(
+          value: bloc,
+          child: AddEditPlaceScreen(
+            place: place,
+            onSave: (place) => bloc.add(PlacesUpdateRequested(place)),
+          ),
         ),
       ),
     );
