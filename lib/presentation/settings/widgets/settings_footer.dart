@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:i_was_there/core/theme/app_theme.dart';
 
 class SettingsFooter extends StatelessWidget {
-  const SettingsFooter({
-    super.key,
-    required this.theme,
-    required this.isDark,
-  });
+  const SettingsFooter({super.key, required this.theme, required this.isDark});
 
   final ThemeData theme;
   final bool isDark;

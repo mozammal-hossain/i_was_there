@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:i_was_there/core/theme/app_theme.dart';
 
 class SettingsSyncDetailsSection extends StatelessWidget {
   const SettingsSyncDetailsSection({

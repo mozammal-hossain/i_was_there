@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:i_was_there/core/theme/app_theme.dart';
 import 'package:i_was_there/presentation/onboarding_completion/widgets/onboarding_completion_footer.dart';
 import 'package:i_was_there/presentation/onboarding_completion/widgets/onboarding_completion_header.dart';
 import 'package:i_was_there/presentation/onboarding_completion/widgets/onboarding_completion_status_card.dart';

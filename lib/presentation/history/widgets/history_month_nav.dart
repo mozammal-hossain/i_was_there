@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:i_was_there/core/theme/app_theme.dart';
 import 'package:i_was_there/presentation/history/utils/history_utils.dart';
 
 class HistoryMonthNav extends StatelessWidget {
@@ -20,8 +19,7 @@ class HistoryMonthNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final monthLabel =
-        '${historyMonthName(viewMonth.month)} ${viewMonth.year}';
+    final monthLabel = '${historyMonthName(viewMonth.month)} ${viewMonth.year}';
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

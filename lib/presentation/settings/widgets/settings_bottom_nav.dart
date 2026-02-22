@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:i_was_there/core/theme/app_theme.dart';
 import 'package:i_was_there/presentation/settings/widgets/settings_nav_icon.dart';
 
 class SettingsBottomNav extends StatelessWidget {
