@@ -1,0 +1,49 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../domain/settings/use_cases/get_calendar_sync_enabled.dart';
+import '../../../../domain/settings/use_cases/set_calendar_sync_enabled.dart';
+import 'settings_event.dart';
+import 'settings_state.dart';
+
+class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
+  SettingsBloc({
+    required GetCalendarSyncEnabled getCalendarSyncEnabled,
+    required SetCalendarSyncEnabled setCalendarSyncEnabled,
+  })  : _getCalendarSyncEnabled = getCalendarSyncEnabled,
+        _setCalendarSyncEnabled = setCalendarSyncEnabled,
+        super(const SettingsState()) {
+    on<SettingsLoadRequested>(_onLoad);
+    on<SettingsSyncEnabledChanged>(_onSyncEnabledChanged);
+  }
+
+  final GetCalendarSyncEnabled _getCalendarSyncEnabled;
+  final SetCalendarSyncEnabled _setCalendarSyncEnabled;
+
+  Future<void> _onLoad(
+      SettingsLoadRequested event, Emitter<SettingsState> emit) async {
+    emit(state.copyWith(loading: true, errorMessage: null));
+    try {
+      final enabled = await _getCalendarSyncEnabled.call();
+      emit(state.copyWith(syncEnabled: enabled, loading: false));
+    } catch (e, _) {
+      emit(state.copyWith(
+        loading: false,
+        errorMessage: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> _onSyncEnabledChanged(
+      SettingsSyncEnabledChanged event, Emitter<SettingsState> emit) async {
+    emit(state.copyWith(syncEnabled: event.enabled));
+    try {
+      await _setCalendarSyncEnabled.call(event.enabled);
+      emit(state.copyWith(errorMessage: null));
+    } catch (e, _) {
+      emit(state.copyWith(
+        syncEnabled: !event.enabled,
+        errorMessage: e.toString(),
+      ));
+    }
+  }
+}

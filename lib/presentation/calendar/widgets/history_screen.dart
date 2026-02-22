@@ -2,38 +2,51 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../domain/places/entities/place.dart';
 import '../../../domain/presence/entities/presence.dart';
-import '../../../domain/presence/use_cases/get_aggregated_presence.dart';
-import '../../../domain/presence/use_cases/get_presences_for_day.dart';
 
-/// Presence history calendar (HTML: history_screen.html). Month view, filter chips, day details.
+String _historyMonthName(int month) {
+  const names = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
+  ];
+  return names[month - 1];
+}
+
+/// Presence history calendar. Month view, filter chips, day details.
+/// All data and loading state come from [CalendarBloc]; this screen only renders and dispatches events.
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({
     super.key,
     this.places = const [],
+    required this.viewMonth,
+    this.presenceByDay = const {},
+    this.loadingPresence = false,
+    this.selectedDay,
+    this.dayPresences = const [],
+    this.loadingDayDetails = false,
     this.onBack,
+    this.onMonthChanged,
+    this.onDaySelected,
     this.onAddManual,
-    this.getAggregatedPresence,
-    this.getPresencesForDay,
   });
 
   final List<Place> places;
+  final DateTime viewMonth;
+  final Map<DateTime, bool> presenceByDay;
+  final bool loadingPresence;
+  final int? selectedDay;
+  final List<Presence> dayPresences;
+  final bool loadingDayDetails;
   final VoidCallback? onBack;
+  final void Function(DateTime month)? onMonthChanged;
+  final void Function(int? day)? onDaySelected;
   final VoidCallback? onAddManual;
-  final GetAggregatedPresence? getAggregatedPresence;
-  final GetPresencesForDay? getPresencesForDay;
 
   @override
   State<HistoryScreen> createState() => _HistoryScreenState();
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
-  late DateTime _viewMonth;
   int _selectedFilterIndex = 0;
-  int? _selectedDay;
-  Map<DateTime, bool> _presenceByDay = {};
-  bool _loadingPresence = true;
-  List<Presence> _dayPresences = [];
-  bool _loadingDayDetails = false;
 
   static const List<String> _filterLabels = [
     'All Sessions',
@@ -42,63 +55,24 @@ class _HistoryScreenState extends State<HistoryScreen> {
     'Personal Training',
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    _viewMonth = DateTime(DateTime.now().year, DateTime.now().month);
-    _loadPresence();
-  }
-
-  Future<void> _loadPresence() async {
-    final getPresence = widget.getAggregatedPresence;
-    if (getPresence == null) {
-      if (mounted) setState(() => _loadingPresence = false);
-      return;
-    }
-    setState(() => _loadingPresence = true);
-    final start = DateTime(_viewMonth.year, _viewMonth.month, 1);
-    final end = DateTime(_viewMonth.year, _viewMonth.month + 1, 0);
-    final map = await getPresence.call(start, end);
-    if (mounted) {
-      setState(() {
-        _presenceByDay = map;
-        _loadingPresence = false;
-      });
-    }
-  }
-
   int _daysInMonth() {
-    return DateTime(_viewMonth.year, _viewMonth.month + 1, 0).day;
+    return DateTime(widget.viewMonth.year, widget.viewMonth.month + 1, 0).day;
   }
 
   int _firstWeekdayOfMonth() {
-    return DateTime(_viewMonth.year, _viewMonth.month, 1).weekday % 7; // Sun=0
+    return DateTime(widget.viewMonth.year, widget.viewMonth.month, 1).weekday % 7;
   }
 
   bool _hasPresence(int day) {
-    final d = DateTime(_viewMonth.year, _viewMonth.month, day);
-    return _presenceByDay[d] ?? false;
+    final d = DateTime(widget.viewMonth.year, widget.viewMonth.month, day);
+    return widget.presenceByDay[d] ?? false;
   }
 
   bool _isToday(int day) {
     final now = DateTime.now();
-    return now.year == _viewMonth.year &&
-        now.month == _viewMonth.month &&
+    return now.year == widget.viewMonth.year &&
+        now.month == widget.viewMonth.month &&
         now.day == day;
-  }
-
-  Future<void> _loadDayDetails(int day) async {
-    final getPresences = widget.getPresencesForDay;
-    if (getPresences == null) return;
-    setState(() => _loadingDayDetails = true);
-    final date = DateTime(_viewMonth.year, _viewMonth.month, day);
-    final list = await getPresences.call(date);
-    if (mounted) {
-      setState(() {
-        _dayPresences = list;
-        _loadingDayDetails = false;
-      });
-    }
   }
 
   @override
@@ -110,8 +84,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            _buildHeader(context, isDark),
-            _buildFilterChips(isDark),
+            _HistoryHeader(
+              onBack: widget.onBack,
+              isDark: isDark,
+            ),
+            _HistoryFilterChips(
+              labels: _filterLabels,
+              selectedIndex: _selectedFilterIndex,
+              isDark: isDark,
+              onSelected: (i) => setState(() => _selectedFilterIndex = i),
+            ),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
@@ -120,9 +102,27 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 ),
                 child: Column(
                   children: [
-                    _buildMonthNav(context, theme, isDark),
+                    _HistoryMonthNav(
+                      viewMonth: widget.viewMonth,
+                      theme: theme,
+                      isDark: isDark,
+                      onPrev: () {
+                        final prev = DateTime(
+                          widget.viewMonth.year,
+                          widget.viewMonth.month - 1,
+                        );
+                        widget.onMonthChanged?.call(prev);
+                      },
+                      onNext: () {
+                        final next = DateTime(
+                          widget.viewMonth.year,
+                          widget.viewMonth.month + 1,
+                        );
+                        widget.onMonthChanged?.call(next);
+                      },
+                    ),
                     const SizedBox(height: 16),
-                    if (_loadingPresence)
+                    if (widget.loadingPresence)
                       const Center(
                         child: Padding(
                           padding: EdgeInsets.all(24),
@@ -134,14 +134,34 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         ),
                       )
                     else
-                      _buildCalendarGrid(theme, isDark),
+                      _HistoryCalendarGrid(
+                        viewMonth: widget.viewMonth,
+                        daysInMonth: _daysInMonth(),
+                        firstWeekday: _firstWeekdayOfMonth(),
+                        hasPresence: _hasPresence,
+                        isToday: _isToday,
+                        selectedDay: widget.selectedDay,
+                        theme: theme,
+                        isDark: isDark,
+                        onDayTap: (day) =>
+                            widget.onDaySelected?.call(day),
+                      ),
                     const SizedBox(height: 40),
-                    _buildDayDetailsSection(theme, isDark),
+                    _HistoryDayDetailsSection(
+                      viewMonth: widget.viewMonth,
+                      selectedDay: widget.selectedDay,
+                      dayPresences: widget.dayPresences,
+                      loadingDayDetails: widget.loadingDayDetails,
+                      places: widget.places,
+                      theme: theme,
+                      isDark: isDark,
+                      monthName: _historyMonthName(widget.viewMonth.month),
+                    ),
                   ],
                 ),
               ),
             ),
-            _buildBottomNav(context, isDark),
+            _HistoryBottomNav(isDark: isDark),
           ],
         ),
       ),
@@ -156,8 +176,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
           : null,
     );
   }
+}
 
-  Widget _buildHeader(BuildContext context, bool isDark) {
+class _HistoryHeader extends StatelessWidget {
+  const _HistoryHeader({this.onBack, required this.isDark});
+
+  final VoidCallback? onBack;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       decoration: BoxDecoration(
@@ -171,9 +199,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
       ),
       child: Row(
         children: [
-          if (widget.onBack != null)
+          if (onBack != null)
             IconButton(
-              onPressed: widget.onBack,
+              onPressed: onBack,
               icon: const Icon(Icons.chevron_left),
               style: IconButton.styleFrom(
                 foregroundColor: isDark
@@ -206,26 +234,41 @@ class _HistoryScreenState extends State<HistoryScreen> {
       ),
     );
   }
+}
 
-  Widget _buildFilterChips(bool isDark) {
+class _HistoryFilterChips extends StatelessWidget {
+  const _HistoryFilterChips({
+    required this.labels,
+    required this.selectedIndex,
+    required this.isDark,
+    required this.onSelected,
+  });
+
+  final List<String> labels;
+  final int selectedIndex;
+  final bool isDark;
+  final void Function(int) onSelected;
+
+  @override
+  Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       child: Row(
-        children: List.generate(_filterLabels.length, (i) {
-          final selected = i == _selectedFilterIndex;
+        children: List.generate(labels.length, (i) {
+          final selected = i == selectedIndex;
           return Padding(
             padding: const EdgeInsets.only(right: 8),
             child: FilterChip(
               label: Text(
-                _filterLabels[i],
+                labels[i],
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
               ),
               selected: selected,
-              onSelected: (_) => setState(() => _selectedFilterIndex = i),
+              onSelected: (_) => onSelected(i),
               backgroundColor: isDark
                   ? const Color(0xFF334155)
                   : const Color(0xFFE2E8F0),
@@ -247,21 +290,31 @@ class _HistoryScreenState extends State<HistoryScreen> {
       ),
     );
   }
+}
 
-  Widget _buildMonthNav(BuildContext context, ThemeData theme, bool isDark) {
-    final monthLabel = '${_monthName(_viewMonth.month)} ${_viewMonth.year}';
+class _HistoryMonthNav extends StatelessWidget {
+  const _HistoryMonthNav({
+    required this.viewMonth,
+    required this.theme,
+    required this.isDark,
+    required this.onPrev,
+    required this.onNext,
+  });
+
+  final DateTime viewMonth;
+  final ThemeData theme;
+  final bool isDark;
+  final VoidCallback onPrev;
+  final VoidCallback onNext;
+
+  @override
+  Widget build(BuildContext context) {
+    final monthLabel = '${_historyMonthName(viewMonth.month)} ${viewMonth.year}';
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         IconButton(
-          onPressed: () {
-            setState(() {
-              _viewMonth = DateTime(_viewMonth.year, _viewMonth.month - 1);
-              _selectedDay = null;
-              _dayPresences = [];
-            });
-            _loadPresence();
-          },
+          onPressed: onPrev,
           style: IconButton.styleFrom(
             backgroundColor: isDark
                 ? const Color(0xFF334155).withValues(alpha: 0.5)
@@ -280,14 +333,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           ),
         ),
         IconButton(
-          onPressed: () {
-            setState(() {
-              _viewMonth = DateTime(_viewMonth.year, _viewMonth.month + 1);
-              _selectedDay = null;
-              _dayPresences = [];
-            });
-            _loadPresence();
-          },
+          onPressed: onNext,
           style: IconButton.styleFrom(
             backgroundColor: isDark
                 ? const Color(0xFF334155).withValues(alpha: 0.5)
@@ -301,30 +347,34 @@ class _HistoryScreenState extends State<HistoryScreen> {
       ],
     );
   }
+}
 
-  String _monthName(int month) {
-    const names = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    return names[month - 1];
-  }
+class _HistoryCalendarGrid extends StatelessWidget {
+  const _HistoryCalendarGrid({
+    required this.viewMonth,
+    required this.daysInMonth,
+    required this.firstWeekday,
+    required this.hasPresence,
+    required this.isToday,
+    required this.selectedDay,
+    required this.theme,
+    required this.isDark,
+    required this.onDayTap,
+  });
 
-  Widget _buildCalendarGrid(ThemeData theme, bool isDark) {
+  final DateTime viewMonth;
+  final int daysInMonth;
+  final int firstWeekday;
+  final bool Function(int day) hasPresence;
+  final bool Function(int day) isToday;
+  final int? selectedDay;
+  final ThemeData theme;
+  final bool isDark;
+  final void Function(int day) onDayTap;
+
+  @override
+  Widget build(BuildContext context) {
     const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    final firstWeekday = _firstWeekdayOfMonth();
-    final daysInMonth = _daysInMonth();
-
     return Column(
       children: [
         Row(
@@ -359,15 +409,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ...List.filled(firstWeekday, const SizedBox.shrink()),
             ...List.generate(daysInMonth, (i) {
               final day = i + 1;
-              final hasPresence = _hasPresence(day);
-              final isSelected = _selectedDay == day;
-              final today = _isToday(day);
+              final hasP = hasPresence(day);
+              final isSelected = selectedDay == day;
+              final today = isToday(day);
               final highlight = today || isSelected;
               return GestureDetector(
-                onTap: () {
-                  setState(() => _selectedDay = day);
-                  _loadDayDetails(day);
-                },
+                onTap: () => onDayTap(day),
                 child: Container(
                   decoration: BoxDecoration(
                     color: highlight
@@ -404,12 +451,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         height: 6,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: hasPresence
+                          color: hasP
                               ? AppColors.primary
                               : (isDark
                                     ? const Color(0xFF475569)
                                     : const Color(0xFFCBD5E1)),
-                          border: hasPresence
+                          border: hasP
                               ? null
                               : Border.all(
                                   color: isDark
@@ -428,10 +475,47 @@ class _HistoryScreenState extends State<HistoryScreen> {
       ],
     );
   }
+}
 
-  Widget _buildDayDetailsSection(ThemeData theme, bool isDark) {
-    final day = _selectedDay;
-    final monthLabel = _monthName(_viewMonth.month);
+class _HistoryDayDetailsSection extends StatelessWidget {
+  const _HistoryDayDetailsSection({
+    required this.viewMonth,
+    required this.selectedDay,
+    required this.dayPresences,
+    required this.loadingDayDetails,
+    required this.places,
+    required this.theme,
+    required this.isDark,
+    required this.monthName,
+  });
+
+  final DateTime viewMonth;
+  final int? selectedDay;
+  final List<Presence> dayPresences;
+  final bool loadingDayDetails;
+  final List<Place> places;
+  final ThemeData theme;
+  final bool isDark;
+  final String monthName;
+
+  static IconData _iconForPlaceName(String name) {
+    final n = name.toLowerCase();
+    if (n.contains('gym') || n.contains('fitness')) return Icons.fitness_center;
+    if (n.contains('yoga') || n.contains('studio')) return Icons.self_improvement;
+    if (n.contains('office')) return Icons.apartment;
+    return Icons.place;
+  }
+
+  static String _formatTime(DateTime dt) {
+    final hour = dt.hour > 12 ? dt.hour - 12 : (dt.hour == 0 ? 12 : dt.hour);
+    final period = dt.hour >= 12 ? 'PM' : 'AM';
+    final min = dt.minute.toString().padLeft(2, '0');
+    return '$hour:$min $period';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final day = selectedDay;
 
     if (day == null) {
       return Column(
@@ -469,7 +553,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       );
     }
 
-    final hasPresence = _dayPresences.isNotEmpty;
+    final hasPresence = dayPresences.isNotEmpty;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -477,7 +561,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'DAY DETAILS • $monthLabel $day',
+              'DAY DETAILS • $monthName $day',
               style: theme.textTheme.labelSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 letterSpacing: 0.15,
@@ -501,7 +585,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   ),
                 ),
               )
-            else if (!_loadingDayDetails)
+            else if (!loadingDayDetails)
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
@@ -523,14 +607,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
           ],
         ),
         const SizedBox(height: 16),
-        if (_loadingDayDetails)
+        if (loadingDayDetails)
           const Center(
             child: Padding(
               padding: EdgeInsets.all(24),
               child: CircularProgressIndicator(strokeWidth: 2),
             ),
           )
-        else if (_dayPresences.isEmpty)
+        else if (dayPresences.isEmpty)
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
@@ -551,9 +635,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ),
           )
         else
-          ..._dayPresences.map((p) {
+          ...dayPresences.map((p) {
             Place? place;
-            for (final pl in widget.places) {
+            for (final pl in places) {
               if (pl.id == p.placeId) {
                 place = pl;
                 break;
@@ -572,74 +656,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
             );
           }),
       ],
-    );
-  }
-
-  static IconData _iconForPlaceName(String name) {
-    final n = name.toLowerCase();
-    if (n.contains('gym') || n.contains('fitness')) {
-      return Icons.fitness_center;
-    }
-    if (n.contains('yoga') || n.contains('studio')) {
-      return Icons.self_improvement;
-    }
-    if (n.contains('office')) {
-      return Icons.apartment;
-    }
-    return Icons.place;
-  }
-
-  String _formatTime(DateTime dt) {
-    final hour = dt.hour > 12 ? dt.hour - 12 : (dt.hour == 0 ? 12 : dt.hour);
-    final period = dt.hour >= 12 ? 'PM' : 'AM';
-    final min = dt.minute.toString().padLeft(2, '0');
-    return '$hour:$min $period';
-  }
-
-  Widget _buildBottomNav(BuildContext context, bool isDark) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
-      decoration: BoxDecoration(
-        color: (isDark ? AppColors.bgDarkGray : AppColors.bgWarmLight)
-            .withValues(alpha: 0.95),
-        border: Border(
-          top: BorderSide(
-            color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
-          ),
-        ),
-      ),
-      child: SafeArea(
-        top: false,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _HistoryNavItem(
-              icon: Icons.calendar_month,
-              label: 'History',
-              selected: true,
-              isDark: isDark,
-            ),
-            _HistoryNavItem(
-              icon: Icons.analytics_outlined,
-              label: 'Stats',
-              selected: false,
-              isDark: isDark,
-            ),
-            _HistoryNavItem(
-              icon: Icons.explore_outlined,
-              label: 'Classes',
-              selected: false,
-              isDark: isDark,
-            ),
-            _HistoryNavItem(
-              icon: Icons.person_outline,
-              label: 'Profile',
-              selected: false,
-              isDark: isDark,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -662,7 +678,6 @@ class _SessionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return Material(
       color: isDark
           ? const Color(0xFF334155).withValues(alpha: 0.4)
@@ -716,6 +731,60 @@ class _SessionTile extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HistoryBottomNav extends StatelessWidget {
+  const _HistoryBottomNav({required this.isDark});
+
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+      decoration: BoxDecoration(
+        color: (isDark ? AppColors.bgDarkGray : AppColors.bgWarmLight)
+            .withValues(alpha: 0.95),
+        border: Border(
+          top: BorderSide(
+            color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+          ),
+        ),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _HistoryNavItem(
+              icon: Icons.calendar_month,
+              label: 'History',
+              selected: true,
+              isDark: isDark,
+            ),
+            _HistoryNavItem(
+              icon: Icons.analytics_outlined,
+              label: 'Stats',
+              selected: false,
+              isDark: isDark,
+            ),
+            _HistoryNavItem(
+              icon: Icons.explore_outlined,
+              label: 'Classes',
+              selected: false,
+              isDark: isDark,
+            ),
+            _HistoryNavItem(
+              icon: Icons.person_outline,
+              label: 'Profile',
+              selected: false,
+              isDark: isDark,
+            ),
+          ],
         ),
       ),
     );

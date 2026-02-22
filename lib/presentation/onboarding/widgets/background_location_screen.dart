@@ -23,8 +23,11 @@ class BackgroundLocationScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            _buildHeader(context, isDark),
-            _buildProgress(isDark),
+            _BackgroundLocationHeader(
+              onBack: onBack ?? () => Navigator.of(context).pop(),
+              isDark: isDark,
+            ),
+            _BackgroundLocationProgress(isDark: isDark),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
@@ -34,7 +37,7 @@ class BackgroundLocationScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildHeroIllustration(isDark),
+                    _BackgroundLocationHeroIllustration(isDark: isDark),
                     const SizedBox(height: 24),
                     Text(
                       "Enable 'Allow all the time'",
@@ -54,25 +57,44 @@ class BackgroundLocationScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 32),
-                    _buildStepsSection(theme, isDark),
+                    _BackgroundLocationStepsSection(
+                      theme: theme,
+                      isDark: isDark,
+                    ),
                   ],
                 ),
               ),
             ),
-            _buildFooter(context, theme, isDark),
+            _BackgroundLocationFooter(
+              onOpenSettings: onOpenSettings,
+              onLater: onLater,
+              theme: theme,
+              isDark: isDark,
+            ),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildHeader(BuildContext context, bool isDark) {
+class _BackgroundLocationHeader extends StatelessWidget {
+  const _BackgroundLocationHeader({
+    required this.onBack,
+    required this.isDark,
+  });
+
+  final VoidCallback onBack;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       child: Row(
         children: [
           IconButton(
-            onPressed: onBack ?? () => Navigator.of(context).pop(),
+            onPressed: onBack,
             icon: Icon(
               Icons.arrow_back,
               color: isDark ? Colors.white : const Color(0xFF0F172A),
@@ -99,8 +121,15 @@ class BackgroundLocationScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildProgress(bool isDark) {
+class _BackgroundLocationProgress extends StatelessWidget {
+  const _BackgroundLocationProgress({required this.isDark});
+
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
@@ -114,8 +143,15 @@ class BackgroundLocationScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildHeroIllustration(bool isDark) {
+class _BackgroundLocationHeroIllustration extends StatelessWidget {
+  const _BackgroundLocationHeroIllustration({required this.isDark});
+
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       constraints: const BoxConstraints(maxHeight: 220),
@@ -248,8 +284,19 @@ class BackgroundLocationScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildStepsSection(ThemeData theme, bool isDark) {
+class _BackgroundLocationStepsSection extends StatelessWidget {
+  const _BackgroundLocationStepsSection({
+    required this.theme,
+    required this.isDark,
+  });
+
+  final ThemeData theme;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -289,8 +336,23 @@ class BackgroundLocationScreen extends StatelessWidget {
       ],
     );
   }
+}
 
-  Widget _buildFooter(BuildContext context, ThemeData theme, bool isDark) {
+class _BackgroundLocationFooter extends StatelessWidget {
+  const _BackgroundLocationFooter({
+    this.onOpenSettings,
+    this.onLater,
+    required this.theme,
+    required this.isDark,
+  });
+
+  final VoidCallback? onOpenSettings;
+  final VoidCallback? onLater;
+  final ThemeData theme;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
       decoration: BoxDecoration(
@@ -309,8 +371,7 @@ class BackgroundLocationScreen extends StatelessWidget {
               width: double.infinity,
               height: 56,
               child: FilledButton.icon(
-                onPressed:
-                    onOpenSettings ??
+                onPressed: onOpenSettings ??
                     () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

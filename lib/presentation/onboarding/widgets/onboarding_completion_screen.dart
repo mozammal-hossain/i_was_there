@@ -23,14 +23,17 @@ class OnboardingCompletionScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            _buildHeader(context, isDark),
+            _OnboardingCompletionHeader(
+              onClose: onClose ?? () => Navigator.of(context).pop(),
+              isDark: isDark,
+            ),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: Column(
                   children: [
                     const SizedBox(height: 24),
-                    _buildSuccessVisual(isDark),
+                    _OnboardingCompletionSuccessVisual(isDark: isDark),
                     const SizedBox(height: 32),
                     Text(
                       "You're all set!",
@@ -52,14 +55,14 @@ class OnboardingCompletionScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 40),
-                    _buildStatusCard(
+                    _OnboardingCompletionStatusCard(
                       icon: Icons.location_on,
                       label: 'Location Status',
                       value: 'Active & Monitoring',
                       isDark: isDark,
                     ),
                     const SizedBox(height: 16),
-                    _buildStatusCard(
+                    _OnboardingCompletionStatusCard(
                       icon: Icons.calendar_today,
                       label: 'Google Calendar',
                       value: 'Connected',
@@ -80,21 +83,37 @@ class OnboardingCompletionScreen extends StatelessWidget {
                 ),
               ),
             ),
-            _buildFooter(context, theme, isDark),
+            _OnboardingCompletionFooter(
+              onGetStarted: onGetStarted ?? () => Navigator.of(context).pop(),
+              onAddFirstPlace: onAddFirstPlace,
+              theme: theme,
+              isDark: isDark,
+            ),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildHeader(BuildContext context, bool isDark) {
+class _OnboardingCompletionHeader extends StatelessWidget {
+  const _OnboardingCompletionHeader({
+    required this.onClose,
+    required this.isDark,
+  });
+
+  final VoidCallback onClose;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-            onPressed: onClose ?? () => Navigator.of(context).pop(),
+            onPressed: onClose,
             icon: Icon(
               Icons.close,
               color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
@@ -114,8 +133,15 @@ class OnboardingCompletionScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildSuccessVisual(bool isDark) {
+class _OnboardingCompletionSuccessVisual extends StatelessWidget {
+  const _OnboardingCompletionSuccessVisual({required this.isDark});
+
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -161,13 +187,23 @@ class OnboardingCompletionScreen extends StatelessWidget {
       ],
     );
   }
+}
 
-  Widget _buildStatusCard({
-    required IconData icon,
-    required String label,
-    required String value,
-    required bool isDark,
-  }) {
+class _OnboardingCompletionStatusCard extends StatelessWidget {
+  const _OnboardingCompletionStatusCard({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.isDark,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -223,8 +259,23 @@ class OnboardingCompletionScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildFooter(BuildContext context, ThemeData theme, bool isDark) {
+class _OnboardingCompletionFooter extends StatelessWidget {
+  const _OnboardingCompletionFooter({
+    required this.onGetStarted,
+    this.onAddFirstPlace,
+    required this.theme,
+    required this.isDark,
+  });
+
+  final VoidCallback onGetStarted;
+  final VoidCallback? onAddFirstPlace;
+  final ThemeData theme;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 48),
       child: Column(
@@ -233,7 +284,7 @@ class OnboardingCompletionScreen extends StatelessWidget {
             width: double.infinity,
             height: 56,
             child: FilledButton(
-              onPressed: onGetStarted ?? () => Navigator.of(context).pop(),
+              onPressed: onGetStarted,
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,

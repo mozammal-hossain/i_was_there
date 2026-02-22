@@ -1,49 +1,21 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../domain/settings/repositories/settings_repository.dart';
 
-/// Calendar Sync settings (HTML: settings_screen.html). Sync toggle, connected account, Sync Now.
-class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key, this.onBack, this.settingsRepository});
+/// Calendar Sync settings. Sync toggle, connected account, Sync Now.
+/// All state comes from [SettingsBloc]; this screen only renders and dispatches events.
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({
+    super.key,
+    this.onBack,
+    required this.syncEnabled,
+    required this.loading,
+    required this.onSyncEnabledChanged,
+  });
 
   final VoidCallback? onBack;
-  final SettingsRepository? settingsRepository;
-
-  @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
-  bool _syncEnabled = true;
-  bool _loading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadSyncEnabled();
-  }
-
-  Future<void> _loadSyncEnabled() async {
-    final repo = widget.settingsRepository;
-    if (repo == null) {
-      if (mounted) {
-        setState(() => _loading = false);
-      }
-      return;
-    }
-    final enabled = await repo.getCalendarSyncEnabled();
-    if (mounted) {
-      setState(() {
-        _syncEnabled = enabled;
-        _loading = false;
-      });
-    }
-  }
-
-  Future<void> _setSyncEnabled(bool value) async {
-    setState(() => _syncEnabled = value);
-    await widget.settingsRepository?.setCalendarSyncEnabled(value);
-  }
+  final bool syncEnabled;
+  final bool loading;
+  final void Function(bool) onSyncEnabledChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +26,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            _buildHeader(context, isDark),
+            _SettingsHeader(onBack: onBack, isDark: isDark),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
@@ -64,27 +36,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildSyncSection(context, theme, isDark),
+                    _SettingsSyncSection(
+                      syncEnabled: syncEnabled,
+                      loading: loading,
+                      theme: theme,
+                      isDark: isDark,
+                      onChanged: onSyncEnabledChanged,
+                    ),
                     const SizedBox(height: 32),
-                    _buildConnectedAccountSection(context, theme, isDark),
+                    _SettingsConnectedAccountSection(theme: theme, isDark: isDark),
                     const SizedBox(height: 32),
-                    _buildSyncDetailsSection(context, theme, isDark),
+                    _SettingsSyncDetailsSection(theme: theme, isDark: isDark),
                     const SizedBox(height: 24),
-                    _buildSyncNowButton(context),
+                    const _SettingsSyncNowButton(),
                     const SizedBox(height: 48),
-                    _buildFooter(theme, isDark),
+                    _SettingsFooter(theme: theme, isDark: isDark),
                   ],
                 ),
               ),
             ),
-            _buildBottomNav(context, isDark),
+            _SettingsBottomNav(isDark: isDark),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildHeader(BuildContext context, bool isDark) {
+class _SettingsHeader extends StatelessWidget {
+  const _SettingsHeader({this.onBack, required this.isDark});
+
+  final VoidCallback? onBack;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -98,9 +84,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       child: Row(
         children: [
-          if (widget.onBack != null)
+          if (onBack != null)
             TextButton.icon(
-              onPressed: widget.onBack,
+              onPressed: onBack,
               icon: Icon(
                 Icons.chevron_left,
                 size: 32,
@@ -122,7 +108,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
           ),
-          if (widget.onBack != null)
+          if (onBack != null)
             const SizedBox(width: 80)
           else
             const SizedBox(width: 48),
@@ -130,8 +116,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
     );
   }
+}
 
-  Widget _buildSyncSection(BuildContext context, ThemeData theme, bool isDark) {
+class _SettingsSyncSection extends StatelessWidget {
+  const _SettingsSyncSection({
+    required this.syncEnabled,
+    required this.loading,
+    required this.theme,
+    required this.isDark,
+    required this.onChanged,
+  });
+
+  final bool syncEnabled;
+  final bool loading;
+  final ThemeData theme;
+  final bool isDark;
+  final void Function(bool) onChanged;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -171,8 +174,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
               Switch(
-                value: _syncEnabled,
-                onChanged: _loading ? null : (v) => _setSyncEnabled(v),
+                value: syncEnabled,
+                onChanged: loading ? null : onChanged,
                 activeTrackColor: AppColors.primary,
               ),
             ],
@@ -201,12 +204,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ],
     );
   }
+}
 
-  Widget _buildConnectedAccountSection(
-    BuildContext context,
-    ThemeData theme,
-    bool isDark,
-  ) {
+class _SettingsConnectedAccountSection extends StatelessWidget {
+  const _SettingsConnectedAccountSection({
+    required this.theme,
+    required this.isDark,
+  });
+
+  final ThemeData theme;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -344,12 +355,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ],
     );
   }
+}
 
-  Widget _buildSyncDetailsSection(
-    BuildContext context,
-    ThemeData theme,
-    bool isDark,
-  ) {
+class _SettingsSyncDetailsSection extends StatelessWidget {
+  const _SettingsSyncDetailsSection({
+    required this.theme,
+    required this.isDark,
+  });
+
+  final ThemeData theme;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -428,16 +446,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ],
     );
   }
+}
 
-  Widget _buildSyncNowButton(BuildContext context) {
+class _SettingsSyncNowButton extends StatelessWidget {
+  const _SettingsSyncNowButton();
+
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       height: 56,
       child: FilledButton.icon(
         onPressed: () {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Syncing…')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Syncing…')),
+          );
         },
         icon: const Icon(Icons.sync, size: 20),
         label: const Text(
@@ -454,8 +477,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
     );
   }
+}
 
-  Widget _buildFooter(ThemeData theme, bool isDark) {
+class _SettingsFooter extends StatelessWidget {
+  const _SettingsFooter({required this.theme, required this.isDark});
+
+  final ThemeData theme;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -470,8 +501,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
     );
   }
+}
 
-  Widget _buildBottomNav(BuildContext context, bool isDark) {
+class _SettingsBottomNav extends StatelessWidget {
+  const _SettingsBottomNav({required this.isDark});
+
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(32, 12, 32, 24),
       decoration: BoxDecoration(
@@ -489,21 +527,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _NavIcon(
+            _SettingsNavIcon(
               icon: Icons.map_outlined,
               label: 'Places',
               isSelected: false,
               isDark: isDark,
               onTap: () {},
             ),
-            _NavIcon(
+            _SettingsNavIcon(
               icon: Icons.bar_chart,
               label: 'Activity',
               isSelected: false,
               isDark: isDark,
               onTap: () {},
             ),
-            _NavIcon(
+            _SettingsNavIcon(
               icon: Icons.settings,
               label: 'Settings',
               isSelected: true,
@@ -517,8 +555,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 }
 
-class _NavIcon extends StatelessWidget {
-  const _NavIcon({
+class _SettingsNavIcon extends StatelessWidget {
+  const _SettingsNavIcon({
     required this.icon,
     required this.label,
     required this.isSelected,

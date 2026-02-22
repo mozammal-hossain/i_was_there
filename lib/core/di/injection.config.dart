@@ -31,6 +31,10 @@ import '../../domain/presence/use_cases/get_presence_for_month.dart' as _i833;
 import '../../domain/presence/use_cases/get_presences_for_day.dart' as _i766;
 import '../../domain/presence/use_cases/set_presence.dart' as _i827;
 import '../../domain/settings/repositories/settings_repository.dart' as _i647;
+import '../../domain/settings/use_cases/get_calendar_sync_enabled.dart'
+    as _i630;
+import '../../domain/settings/use_cases/set_calendar_sync_enabled.dart'
+    as _i825;
 import 'app_module.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -63,6 +67,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i827.SetPresence>(
       () => _i827.SetPresence(gh<_i313.PresenceRepository>()),
+    );
+    gh.factory<_i630.GetCalendarSyncEnabled>(
+      () => _i630.GetCalendarSyncEnabled(gh<_i647.SettingsRepository>()),
+    );
+    gh.factory<_i825.SetCalendarSyncEnabled>(
+      () => _i825.SetCalendarSyncEnabled(gh<_i647.SettingsRepository>()),
     );
     gh.factory<_i661.AddPlace>(
       () => _i661.AddPlace(gh<_i267.PlaceRepository>()),
