@@ -45,11 +45,9 @@ class HistoryPage extends StatefulWidget {
 class _HistoryPageState extends State<HistoryPage> {
   int _selectedFilterIndex = 0;
 
-  static const List<String> _filterLabels = [
-    'All Sessions',
-    'Studio',
-    'Gym',
-    'Personal Training',
+  List<String> get _filterLabels => [
+    'All Places',
+    ...widget.places.map((p) => p.name),
   ];
 
   int _daysInMonth() {
@@ -57,7 +55,8 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   int _firstWeekdayOfMonth() {
-    return DateTime(widget.viewMonth.year, widget.viewMonth.month, 1).weekday % 7;
+    return DateTime(widget.viewMonth.year, widget.viewMonth.month, 1).weekday %
+        7;
   }
 
   bool _hasPresence(int day) {
@@ -81,13 +80,13 @@ class _HistoryPageState extends State<HistoryPage> {
       body: SafeArea(
         child: Column(
           children: [
-            HistoryHeader(
-              onBack: widget.onBack,
-              isDark: isDark,
-            ),
+            HistoryHeader(onBack: widget.onBack, isDark: isDark),
             HistoryFilterChips(
               labels: _filterLabels,
-              selectedIndex: _selectedFilterIndex,
+              selectedIndex: _selectedFilterIndex.clamp(
+                0,
+                _filterLabels.length - 1,
+              ),
               isDark: isDark,
               onSelected: (i) => setState(() => _selectedFilterIndex = i),
             ),
@@ -140,8 +139,7 @@ class _HistoryPageState extends State<HistoryPage> {
                         selectedDay: widget.selectedDay,
                         theme: theme,
                         isDark: isDark,
-                        onDayTap: (day) =>
-                            widget.onDaySelected?.call(day),
+                        onDayTap: (day) => widget.onDaySelected?.call(day),
                       ),
                     const SizedBox(height: 40),
                     HistoryDayDetailsSection(
