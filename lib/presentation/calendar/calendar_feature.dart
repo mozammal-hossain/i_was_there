@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/di/injection.dart';
-import '../../domain/places/use_cases/get_places.dart';
-import '../../domain/presence/use_cases/get_aggregated_presence.dart';
-import '../../domain/presence/use_cases/get_presences_for_day.dart';
-import '../../domain/presence/use_cases/set_presence.dart';
+import '../../domain/places/use_cases/get_places_use_case.dart';
+import '../../domain/presence/use_cases/get_aggregated_presence_use_case.dart';
+import '../../domain/presence/use_cases/get_presences_for_day_use_case.dart';
+import '../../domain/presence/use_cases/set_presence_use_case.dart';
 import 'bloc/calendar_bloc.dart';
 import 'bloc/calendar_event.dart';
 import 'bloc/calendar_state.dart';
@@ -18,10 +18,10 @@ class CalendarFeature extends StatelessWidget {
 
   CalendarBloc _createCalendarBloc() {
     return CalendarBloc(
-      getPlaces: getIt<GetPlaces>(),
-      getAggregatedPresence: getIt<GetAggregatedPresence>(),
-      getPresencesForDay: getIt<GetPresencesForDay>(),
-      setPresence: getIt<SetPresence>(),
+      getPlaces: getIt<GetPlacesUseCase>(),
+      getAggregatedPresence: getIt<GetAggregatedPresenceUseCase>(),
+      getPresencesForDay: getIt<GetPresencesForDayUseCase>(),
+      setPresence: getIt<SetPresenceUseCase>(),
     );
   }
 

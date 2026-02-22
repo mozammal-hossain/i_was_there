@@ -4,8 +4,8 @@ import '../entities/place.dart';
 import '../repositories/place_repository.dart';
 
 @injectable
-class UpdatePlace {
-  UpdatePlace(this._repository);
+class UpdatePlaceUseCase {
+  UpdatePlaceUseCase(this._repository);
 
   final PlaceRepository _repository;
 

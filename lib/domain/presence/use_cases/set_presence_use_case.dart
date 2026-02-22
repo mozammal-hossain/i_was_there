@@ -4,8 +4,8 @@ import '../entities/presence.dart';
 import '../repositories/presence_repository.dart';
 
 @injectable
-class SetPresence {
-  SetPresence(this._repository);
+class SetPresenceUseCase {
+  SetPresenceUseCase(this._repository);
 
   final PresenceRepository _repository;
 
@@ -16,10 +16,10 @@ class SetPresence {
     required PresenceSource source,
     DateTime? firstDetectedAt,
   }) => _repository.setPresence(
-    placeId: placeId,
-    date: date,
-    isPresent: isPresent,
-    source: source,
-    firstDetectedAt: firstDetectedAt,
-  );
+        placeId: placeId,
+        date: date,
+        isPresent: isPresent,
+        source: source,
+        firstDetectedAt: firstDetectedAt,
+      );
 }

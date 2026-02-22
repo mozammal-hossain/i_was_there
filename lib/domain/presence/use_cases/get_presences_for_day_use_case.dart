@@ -4,8 +4,8 @@ import '../entities/presence.dart';
 import '../repositories/presence_repository.dart';
 
 @injectable
-class GetPresencesForDay {
-  GetPresencesForDay(this._repository);
+class GetPresencesForDayUseCase {
+  GetPresencesForDayUseCase(this._repository);
 
   final PresenceRepository _repository;
 

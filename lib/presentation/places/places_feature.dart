@@ -5,12 +5,12 @@ import 'package:go_router/go_router.dart';
 import '../../core/di/injection.dart';
 import '../../core/router/app_router.dart';
 import '../../domain/places/entities/place.dart';
-import '../../domain/places/use_cases/add_place.dart';
-import '../../domain/places/use_cases/get_places.dart';
-import '../../domain/places/use_cases/remove_place.dart';
-import '../../domain/places/use_cases/update_place.dart';
+import '../../domain/places/use_cases/add_place_use_case.dart';
+import '../../domain/places/use_cases/get_places_use_case.dart';
+import '../../domain/places/use_cases/remove_place_use_case.dart';
+import '../../domain/places/use_cases/update_place_use_case.dart';
 import '../../domain/presence/entities/presence.dart';
-import '../../domain/presence/use_cases/set_presence.dart';
+import '../../domain/presence/use_cases/set_presence_use_case.dart';
 import '../calendar/widgets/manual_attendance_screen.dart';
 import 'bloc/places_bloc.dart';
 import 'bloc/places_event.dart';
@@ -25,10 +25,10 @@ class PlacesFeature extends StatelessWidget {
 
   PlacesBloc _createPlacesBloc() {
     return PlacesBloc(
-      getPlaces: getIt<GetPlaces>(),
-      addPlace: getIt<AddPlace>(),
-      updatePlace: getIt<UpdatePlace>(),
-      removePlace: getIt<RemovePlace>(),
+      getPlaces: getIt<GetPlacesUseCase>(),
+      addPlace: getIt<AddPlaceUseCase>(),
+      updatePlace: getIt<UpdatePlaceUseCase>(),
+      removePlace: getIt<RemovePlaceUseCase>(),
     );
   }
 
@@ -36,7 +36,7 @@ class PlacesFeature extends StatelessWidget {
     DateTime date,
     Map<String, bool> presence,
   ) async {
-    final setPresence = getIt<SetPresence>();
+    final setPresence = getIt<SetPresenceUseCase>();
     for (final entry in presence.entries) {
       await setPresence.call(
         placeId: entry.key,

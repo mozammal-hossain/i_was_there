@@ -21,20 +21,23 @@ import '../../data/settings/repositories/settings_repository_impl.dart'
     as _i527;
 import '../../domain/location/location_service.dart' as _i192;
 import '../../domain/places/repositories/place_repository.dart' as _i267;
-import '../../domain/places/use_cases/add_place.dart' as _i661;
-import '../../domain/places/use_cases/get_places.dart' as _i868;
-import '../../domain/places/use_cases/remove_place.dart' as _i1018;
-import '../../domain/places/use_cases/update_place.dart' as _i604;
+import '../../domain/places/use_cases/add_place_use_case.dart' as _i662;
+import '../../domain/places/use_cases/get_places_use_case.dart' as _i439;
+import '../../domain/places/use_cases/remove_place_use_case.dart' as _i550;
+import '../../domain/places/use_cases/update_place_use_case.dart' as _i283;
 import '../../domain/presence/repositories/presence_repository.dart' as _i313;
-import '../../domain/presence/use_cases/get_aggregated_presence.dart' as _i653;
-import '../../domain/presence/use_cases/get_presence_for_month.dart' as _i833;
-import '../../domain/presence/use_cases/get_presences_for_day.dart' as _i766;
-import '../../domain/presence/use_cases/set_presence.dart' as _i827;
+import '../../domain/presence/use_cases/get_aggregated_presence_use_case.dart'
+    as _i379;
+import '../../domain/presence/use_cases/get_presence_for_month_use_case.dart'
+    as _i629;
+import '../../domain/presence/use_cases/get_presences_for_day_use_case.dart'
+    as _i374;
+import '../../domain/presence/use_cases/set_presence_use_case.dart' as _i792;
 import '../../domain/settings/repositories/settings_repository.dart' as _i647;
-import '../../domain/settings/use_cases/get_calendar_sync_enabled.dart'
-    as _i630;
-import '../../domain/settings/use_cases/set_calendar_sync_enabled.dart'
-    as _i825;
+import '../../domain/settings/use_cases/get_calendar_sync_enabled_use_case.dart'
+    as _i41;
+import '../../domain/settings/use_cases/set_calendar_sync_enabled_use_case.dart'
+    as _i410;
 import 'app_module.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -56,35 +59,35 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i313.PresenceRepository>(
       () => _i738.PresenceRepositoryImpl(gh<_i160.AppDatabase>()),
     );
-    gh.factory<_i653.GetAggregatedPresence>(
-      () => _i653.GetAggregatedPresence(gh<_i313.PresenceRepository>()),
+    gh.factory<_i379.GetAggregatedPresenceUseCase>(
+      () => _i379.GetAggregatedPresenceUseCase(gh<_i313.PresenceRepository>()),
     );
-    gh.factory<_i833.GetPresenceForMonth>(
-      () => _i833.GetPresenceForMonth(gh<_i313.PresenceRepository>()),
+    gh.factory<_i629.GetPresenceForMonthUseCase>(
+      () => _i629.GetPresenceForMonthUseCase(gh<_i313.PresenceRepository>()),
     );
-    gh.factory<_i766.GetPresencesForDay>(
-      () => _i766.GetPresencesForDay(gh<_i313.PresenceRepository>()),
+    gh.factory<_i374.GetPresencesForDayUseCase>(
+      () => _i374.GetPresencesForDayUseCase(gh<_i313.PresenceRepository>()),
     );
-    gh.factory<_i827.SetPresence>(
-      () => _i827.SetPresence(gh<_i313.PresenceRepository>()),
+    gh.factory<_i792.SetPresenceUseCase>(
+      () => _i792.SetPresenceUseCase(gh<_i313.PresenceRepository>()),
     );
-    gh.factory<_i630.GetCalendarSyncEnabled>(
-      () => _i630.GetCalendarSyncEnabled(gh<_i647.SettingsRepository>()),
+    gh.factory<_i41.GetCalendarSyncEnabledUseCase>(
+      () => _i41.GetCalendarSyncEnabledUseCase(gh<_i647.SettingsRepository>()),
     );
-    gh.factory<_i825.SetCalendarSyncEnabled>(
-      () => _i825.SetCalendarSyncEnabled(gh<_i647.SettingsRepository>()),
+    gh.factory<_i410.SetCalendarSyncEnabledUseCase>(
+      () => _i410.SetCalendarSyncEnabledUseCase(gh<_i647.SettingsRepository>()),
     );
-    gh.factory<_i661.AddPlace>(
-      () => _i661.AddPlace(gh<_i267.PlaceRepository>()),
+    gh.factory<_i662.AddPlaceUseCase>(
+      () => _i662.AddPlaceUseCase(gh<_i267.PlaceRepository>()),
     );
-    gh.factory<_i868.GetPlaces>(
-      () => _i868.GetPlaces(gh<_i267.PlaceRepository>()),
+    gh.factory<_i439.GetPlacesUseCase>(
+      () => _i439.GetPlacesUseCase(gh<_i267.PlaceRepository>()),
     );
-    gh.factory<_i1018.RemovePlace>(
-      () => _i1018.RemovePlace(gh<_i267.PlaceRepository>()),
+    gh.factory<_i550.RemovePlaceUseCase>(
+      () => _i550.RemovePlaceUseCase(gh<_i267.PlaceRepository>()),
     );
-    gh.factory<_i604.UpdatePlace>(
-      () => _i604.UpdatePlace(gh<_i267.PlaceRepository>()),
+    gh.factory<_i283.UpdatePlaceUseCase>(
+      () => _i283.UpdatePlaceUseCase(gh<_i267.PlaceRepository>()),
     );
     return this;
   }

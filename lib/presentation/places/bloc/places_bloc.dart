@@ -1,17 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../domain/places/use_cases/add_place.dart';
-import '../../../../domain/places/use_cases/get_places.dart';
-import '../../../../domain/places/use_cases/remove_place.dart';
-import '../../../../domain/places/use_cases/update_place.dart';
+import '../../../../domain/places/use_cases/add_place_use_case.dart';
+import '../../../../domain/places/use_cases/get_places_use_case.dart';
+import '../../../../domain/places/use_cases/remove_place_use_case.dart';
+import '../../../../domain/places/use_cases/update_place_use_case.dart';
 import 'places_event.dart';
 import 'places_state.dart';
 
 class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
   PlacesBloc({
-    required GetPlaces getPlaces,
-    required AddPlace addPlace,
-    required UpdatePlace updatePlace,
-    required RemovePlace removePlace,
+    required GetPlacesUseCase getPlaces,
+    required AddPlaceUseCase addPlace,
+    required UpdatePlaceUseCase updatePlace,
+    required RemovePlaceUseCase removePlace,
   })  : _getPlaces = getPlaces,
         _addPlace = addPlace,
         _updatePlace = updatePlace,
@@ -23,10 +23,10 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
     on<PlacesRemoveRequested>(_onRemove);
   }
 
-  final GetPlaces _getPlaces;
-  final AddPlace _addPlace;
-  final UpdatePlace _updatePlace;
-  final RemovePlace _removePlace;
+  final GetPlacesUseCase _getPlaces;
+  final AddPlaceUseCase _addPlace;
+  final UpdatePlaceUseCase _updatePlace;
+  final RemovePlaceUseCase _removePlace;
 
   Future<void> _onLoad(PlacesLoadRequested event, Emitter<PlacesState> emit) async {
     try {

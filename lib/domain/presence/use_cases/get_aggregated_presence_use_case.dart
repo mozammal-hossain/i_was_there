@@ -3,8 +3,8 @@ import 'package:injectable/injectable.dart';
 import '../repositories/presence_repository.dart';
 
 @injectable
-class GetAggregatedPresence {
-  GetAggregatedPresence(this._repository);
+class GetAggregatedPresenceUseCase {
+  GetAggregatedPresenceUseCase(this._repository);
 
   final PresenceRepository _repository;
 

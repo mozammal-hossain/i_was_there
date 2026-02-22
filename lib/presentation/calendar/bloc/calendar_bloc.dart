@@ -1,19 +1,19 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../domain/places/use_cases/get_places.dart';
-import '../../../../domain/presence/use_cases/get_aggregated_presence.dart';
-import '../../../../domain/presence/use_cases/get_presences_for_day.dart';
-import '../../../../domain/presence/use_cases/set_presence.dart';
+import '../../../../domain/places/use_cases/get_places_use_case.dart';
+import '../../../../domain/presence/use_cases/get_aggregated_presence_use_case.dart';
+import '../../../../domain/presence/use_cases/get_presences_for_day_use_case.dart';
+import '../../../../domain/presence/use_cases/set_presence_use_case.dart';
 import '../../../../domain/presence/entities/presence.dart';
 import 'calendar_event.dart';
 import 'calendar_state.dart';
 
 class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
   CalendarBloc({
-    required GetPlaces getPlaces,
-    required GetAggregatedPresence getAggregatedPresence,
-    required GetPresencesForDay getPresencesForDay,
-    required SetPresence setPresence,
+    required GetPlacesUseCase getPlaces,
+    required GetAggregatedPresenceUseCase getAggregatedPresence,
+    required GetPresencesForDayUseCase getPresencesForDay,
+    required SetPresenceUseCase setPresence,
   })  : _getPlaces = getPlaces,
         _getAggregatedPresence = getAggregatedPresence,
         _getPresencesForDay = getPresencesForDay,
@@ -25,10 +25,10 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     on<CalendarManualPresenceApplied>(_onManualPresenceApplied);
   }
 
-  final GetPlaces _getPlaces;
-  final GetAggregatedPresence _getAggregatedPresence;
-  final GetPresencesForDay _getPresencesForDay;
-  final SetPresence _setPresence;
+  final GetPlacesUseCase _getPlaces;
+  final GetAggregatedPresenceUseCase _getAggregatedPresence;
+  final GetPresencesForDayUseCase _getPresencesForDay;
+  final SetPresenceUseCase _setPresence;
 
   Future<void> _onLoad(
       CalendarLoadRequested event, Emitter<CalendarState> emit) async {

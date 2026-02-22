@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/di/injection.dart';
-import '../../domain/settings/use_cases/get_calendar_sync_enabled.dart';
-import '../../domain/settings/use_cases/set_calendar_sync_enabled.dart';
+import '../../domain/settings/use_cases/get_calendar_sync_enabled_use_case.dart';
+import '../../domain/settings/use_cases/set_calendar_sync_enabled_use_case.dart';
 import 'bloc/settings_bloc.dart';
 import 'bloc/settings_event.dart';
 import 'bloc/settings_state.dart';
@@ -15,8 +15,8 @@ class SettingsFeature extends StatelessWidget {
 
   SettingsBloc _createSettingsBloc() {
     return SettingsBloc(
-      getCalendarSyncEnabled: getIt<GetCalendarSyncEnabled>(),
-      setCalendarSyncEnabled: getIt<SetCalendarSyncEnabled>(),
+      getCalendarSyncEnabled: getIt<GetCalendarSyncEnabledUseCase>(),
+      setCalendarSyncEnabled: getIt<SetCalendarSyncEnabledUseCase>(),
     );
   }
 

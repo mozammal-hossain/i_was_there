@@ -4,10 +4,10 @@ import '../entities/place.dart';
 import '../repositories/place_repository.dart';
 
 @injectable
-class GetPlaces {
-  GetPlaces(this._repository);
+class AddPlaceUseCase {
+  AddPlaceUseCase(this._repository);
 
   final PlaceRepository _repository;
 
-  Future<List<Place>> call() => _repository.getPlaces();
+  Future<void> call(Place place) => _repository.addPlace(place);
 }

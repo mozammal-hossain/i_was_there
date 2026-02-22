@@ -3,8 +3,8 @@ import 'package:injectable/injectable.dart';
 import '../repositories/settings_repository.dart';
 
 @injectable
-class GetCalendarSyncEnabled {
-  GetCalendarSyncEnabled(this._repository);
+class GetCalendarSyncEnabledUseCase {
+  GetCalendarSyncEnabledUseCase(this._repository);
 
   final SettingsRepository _repository;
 
