@@ -13,13 +13,17 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
 import '../../data/database/app_database.dart' as _i160;
+import '../../data/location/geocoding_service_impl.dart' as _i362;
 import '../../data/location/location_service_impl.dart' as _i420;
 import '../../data/places/repositories/place_repository_impl.dart' as _i587;
 import '../../data/presence/repositories/presence_repository_impl.dart'
     as _i738;
 import '../../data/settings/repositories/settings_repository_impl.dart'
     as _i527;
+import '../../domain/location/geocoding_service.dart' as _i139;
 import '../../domain/location/location_service.dart' as _i192;
+import '../../domain/location/use_cases/get_current_location_with_address_use_case.dart'
+    as _i687;
 import '../../domain/places/repositories/place_repository.dart' as _i267;
 import '../../domain/places/use_cases/add_place_use_case.dart' as _i662;
 import '../../domain/places/use_cases/get_places_use_case.dart' as _i439;
@@ -49,6 +53,9 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final appModule = _$AppModule();
     gh.lazySingleton<_i160.AppDatabase>(() => appModule.appDatabase);
+    gh.lazySingleton<_i139.GeocodingService>(
+      () => _i362.GeocodingServiceImpl(),
+    );
     gh.lazySingleton<_i192.LocationService>(() => _i420.LocationServiceImpl());
     gh.lazySingleton<_i647.SettingsRepository>(
       () => _i527.SettingsRepositoryImpl(gh<_i160.AppDatabase>()),
@@ -76,6 +83,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i410.SetCalendarSyncEnabledUseCase>(
       () => _i410.SetCalendarSyncEnabledUseCase(gh<_i647.SettingsRepository>()),
+    );
+    gh.factory<_i687.GetCurrentLocationWithAddressUseCase>(
+      () => _i687.GetCurrentLocationWithAddressUseCase(
+        gh<_i192.LocationService>(),
+        gh<_i139.GeocodingService>(),
+      ),
     );
     gh.factory<_i662.AddPlaceUseCase>(
       () => _i662.AddPlaceUseCase(gh<_i267.PlaceRepository>()),

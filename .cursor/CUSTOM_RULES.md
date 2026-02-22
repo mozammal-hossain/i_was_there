@@ -65,6 +65,8 @@ presentation/
 ### Widget composition
 
 - Create **StatelessWidget** or **StatefulWidget** classes for all UI; do not use widget methods (e.g. `Widget _buildHeader()`).
+- **Widget class size:** A single widget class should not exceed **80–90 lines**. Break large widgets into smaller, focused widgets (e.g. in the same `widgets/` folder or inline private widgets).
+- **Large widgets:** Prefer extracting sections into named widgets (e.g. `_HeaderSection`, `_BodySection`) rather than one long build method.
 - **ui_models/**: UI-only models (not domain entities).
 - **&lt;page_name&gt;_page.dart**: Main page entry widget (e.g. `history_page.dart` → class `HistoryPage`).
 - **core/** holds shared code: DI (get_it + injectable), router, error handling, constants.
@@ -78,6 +80,7 @@ presentation/
 - **No business logic in the presentation layer.** Keep it in domain (use cases) or data; presentation only dispatches events and displays state.
 - **No UI logic outside the Bloc.** All decisions that affect what the UI shows or does (loading, errors, which data to show) live in the Bloc; widgets only render from state.
 - **No UI updates without Bloc state.** The UI must not change based on local widget state, callbacks, or side effects; every visible change must come from a Bloc-emitted state.
+- **StatefulWidget and Bloc:** If a screen or component is a **StatefulWidget**, its meaningful state must be driven by Bloc state (subscribe via `BlocBuilder`/`BlocListener`). Do not hold in local `State` what the Bloc already owns; prefer StatelessWidget + Bloc when possible.
 - Put Bloc/Cubit, events, and states under **presentation/`<page_name>`/bloc/** (per-page; screen-first; folder name in snake_case).
 - **Flow:** UI dispatches events → Bloc calls **use cases** (never repositories directly) → use case uses repository → Bloc emits states → UI rebuilds.
 - Blocs must not import data layer (no Drift, no data models). Only domain (use cases, entities) and presentation (states/events).
@@ -164,6 +167,13 @@ presentation/
 - **Blocs:** `<Feature>Bloc` / `<Feature>Cubit`; events `<Feature>Event`, states `<Feature>State`.
 - **Feature entry:** `<feature>_feature.dart` (e.g. `places_feature.dart`) for routes, BlocProvider, or main page.
 - **Pages:** One folder per page in **snake_case** (e.g. `history/`, `add_edit_place/`, `dashboard/`); main file `<page_name>_page.dart` (snake_case), widget class **PascalCase** (e.g. `HistoryPage`, `AddEditPlacePage`).
+
+---
+
+## 14. Enums over hard-coded mapping
+
+- **Do not use hard-coded maps** for status, type, or mode → label/icon/color. Prefer **enums** with extensions (e.g. `extension on MyEnum { String get label => ... }`) or enum values for type-safe, single-source mapping.
+- Example: instead of `const map = { 'a': 'Label A', 'b': 'Label B' }`, use `enum Status { a, b }` and `extension on Status { String get label => ... }`.
 
 ---
 

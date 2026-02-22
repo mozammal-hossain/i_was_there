@@ -12,7 +12,7 @@ String _historyMonthName(int month) {
 }
 
 /// Presence history calendar. Month view, filter chips, day details.
-/// All data and loading state come from [CalendarBloc]; this page only renders and dispatches events.
+/// All data and loading state come from [HistoryBloc]; this page only renders and dispatches events.
 class HistoryPage extends StatefulWidget {
   const HistoryPage({
     super.key,

@@ -5,11 +5,11 @@ import '../../../../domain/presence/use_cases/get_aggregated_presence_use_case.d
 import '../../../../domain/presence/use_cases/get_presences_for_day_use_case.dart';
 import '../../../../domain/presence/use_cases/set_presence_use_case.dart';
 import '../../../../domain/presence/entities/presence.dart';
-import 'calendar_event.dart';
-import 'calendar_state.dart';
+import 'history_event.dart';
+import 'history_state.dart';
 
-class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
-  CalendarBloc({
+class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
+  HistoryBloc({
     required GetPlacesUseCase getPlaces,
     required GetAggregatedPresenceUseCase getAggregatedPresence,
     required GetPresencesForDayUseCase getPresencesForDay,
@@ -18,11 +18,11 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         _getAggregatedPresence = getAggregatedPresence,
         _getPresencesForDay = getPresencesForDay,
         _setPresence = setPresence,
-        super(const CalendarState()) {
-    on<CalendarLoadRequested>(_onLoad);
-    on<CalendarMonthChanged>(_onMonthChanged);
-    on<CalendarDaySelected>(_onDaySelected);
-    on<CalendarManualPresenceApplied>(_onManualPresenceApplied);
+        super(const HistoryState()) {
+    on<HistoryLoadRequested>(_onLoad);
+    on<HistoryMonthChanged>(_onMonthChanged);
+    on<HistoryDaySelected>(_onDaySelected);
+    on<HistoryManualPresenceApplied>(_onManualPresenceApplied);
   }
 
   final GetPlacesUseCase _getPlaces;
@@ -31,7 +31,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
   final SetPresenceUseCase _setPresence;
 
   Future<void> _onLoad(
-      CalendarLoadRequested event, Emitter<CalendarState> emit) async {
+      HistoryLoadRequested event, Emitter<HistoryState> emit) async {
     emit(state.copyWith(loadingPlaces: true, errorMessage: null));
     try {
       final places = await _getPlaces.call();
@@ -57,7 +57,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
   }
 
   Future<void> _onMonthChanged(
-      CalendarMonthChanged event, Emitter<CalendarState> emit) async {
+      HistoryMonthChanged event, Emitter<HistoryState> emit) async {
     emit(state.copyWith(
       viewMonth: event.month,
       selectedDay: null,
@@ -82,7 +82,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
   }
 
   Future<void> _onDaySelected(
-      CalendarDaySelected event, Emitter<CalendarState> emit) async {
+      HistoryDaySelected event, Emitter<HistoryState> emit) async {
     if (event.day == null) {
       emit(state.copyWith(selectedDay: null, dayPresences: []));
       return;
@@ -111,7 +111,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
   }
 
   Future<void> _onManualPresenceApplied(
-      CalendarManualPresenceApplied event, Emitter<CalendarState> emit) async {
+      HistoryManualPresenceApplied event, Emitter<HistoryState> emit) async {
     try {
       for (final entry in event.presence.entries) {
         await _setPresence.call(

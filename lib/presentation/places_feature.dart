@@ -12,9 +12,9 @@ import '../domain/places/use_cases/update_place_use_case.dart';
 import '../domain/presence/entities/presence.dart';
 import '../domain/presence/use_cases/set_presence_use_case.dart';
 import 'manual_attendance/manual_attendance_page.dart';
-import 'dashboard/bloc/places_bloc.dart';
-import 'dashboard/bloc/places_event.dart';
-import 'dashboard/bloc/places_state.dart';
+import 'dashboard/bloc/dashboard_bloc.dart';
+import 'dashboard/bloc/dashboard_event.dart';
+import 'dashboard/bloc/dashboard_state.dart';
 import 'dashboard/dashboard_page.dart';
 import 'map/map_page.dart';
 import 'no_place/no_place_page.dart';
@@ -23,8 +23,8 @@ import 'no_place/no_place_page.dart';
 class PlacesFeature extends StatelessWidget {
   const PlacesFeature({super.key});
 
-  PlacesBloc _createPlacesBloc() {
-    return PlacesBloc(
+  DashboardBloc _createDashboardBloc() {
+    return DashboardBloc(
       getPlaces: getIt<GetPlacesUseCase>(),
       addPlace: getIt<AddPlaceUseCase>(),
       updatePlace: getIt<UpdatePlaceUseCase>(),
@@ -50,7 +50,7 @@ class PlacesFeature extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => _createPlacesBloc()..add(PlacesLoadRequested()),
+      create: (_) => _createDashboardBloc()..add(DashboardLoadRequested()),
       child: _PlacesShell(onManualApply: _applyManualPresence),
     );
   }
@@ -71,7 +71,7 @@ class _PlacesShellState extends State<_PlacesShell> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<PlacesBloc, PlacesState>(
+    return BlocConsumer<DashboardBloc, DashboardState>(
       listenWhen: (prev, curr) => curr.errorMessage != null,
       listener: (context, state) {
         if (state.errorMessage != null) {
@@ -120,7 +120,7 @@ class _PlacesShellState extends State<_PlacesShell> {
         onApply: (date, presence) async {
           await widget.onManualApply(date, presence);
           if (context.mounted) {
-            context.read<PlacesBloc>().add(PlacesLoadRequested());
+            context.read<DashboardBloc>().add(DashboardLoadRequested());
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Manual presence updated')),
             );
@@ -131,18 +131,18 @@ class _PlacesShellState extends State<_PlacesShell> {
   }
 
   void _openAddPlace(BuildContext context) {
-    final bloc = context.read<PlacesBloc>();
+    final bloc = context.read<DashboardBloc>();
     context.push<void>(
       '/places/add',
-      extra: AddEditPlaceExtra(placesBloc: bloc),
+      extra: AddEditPlaceExtra(dashboardBloc: bloc),
     );
   }
 
   void _openEditPlace(BuildContext context, Place place) {
-    final bloc = context.read<PlacesBloc>();
+    final bloc = context.read<DashboardBloc>();
     context.push<void>(
       '/places/edit/${place.id}',
-      extra: AddEditPlaceExtra(placesBloc: bloc, place: place),
+      extra: AddEditPlaceExtra(dashboardBloc: bloc, place: place),
     );
   }
 }

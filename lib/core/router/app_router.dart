@@ -3,11 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../di/injection.dart';
+import '../../domain/location/use_cases/get_current_location_with_address_use_case.dart';
 import '../../presentation/main_shell.dart';
 import '../../presentation/onboarding_feature.dart';
-import '../../presentation/dashboard/bloc/places_bloc.dart';
-import '../../presentation/dashboard/bloc/places_event.dart';
+import '../../presentation/dashboard/bloc/dashboard_bloc.dart';
+import '../../presentation/dashboard/bloc/dashboard_event.dart';
 import '../../presentation/add_edit_place/add_edit_place_page.dart';
+import '../../presentation/add_edit_place/bloc/add_edit_place_bloc.dart';
 
 const String _keyOnboardingCompleted = 'onboarding_completed';
 
@@ -23,9 +26,9 @@ Future<void> setOnboardingCompleted(SharedPreferences prefs) async {
 
 /// Extra data passed when pushing add/edit place routes.
 class AddEditPlaceExtra {
-  const AddEditPlaceExtra({required this.placesBloc, this.place});
+  const AddEditPlaceExtra({required this.dashboardBloc, this.place});
 
-  final PlacesBloc placesBloc;
+  final DashboardBloc dashboardBloc;
   final dynamic place; // Place?
 }
 
@@ -68,9 +71,15 @@ GoRouter createAppRouter({
           final extra = state.extra as AddEditPlaceExtra?;
           if (extra == null) return const SizedBox.shrink();
           return BlocProvider.value(
-            value: extra.placesBloc,
-            child: AddEditPlacePage(
-              onSave: (place) => extra.placesBloc.add(PlacesAddRequested(place)),
+            value: extra.dashboardBloc,
+            child: BlocProvider(
+              create: (_) => AddEditPlaceBloc(
+                getIt<GetCurrentLocationWithAddressUseCase>(),
+              ),
+              child: AddEditPlacePage(
+                onSave: (place) =>
+                    extra.dashboardBloc.add(DashboardAddRequested(place)),
+              ),
             ),
           );
         },
@@ -81,11 +90,16 @@ GoRouter createAppRouter({
           final extra = state.extra as AddEditPlaceExtra?;
           if (extra == null || extra.place == null) return const SizedBox.shrink();
           return BlocProvider.value(
-            value: extra.placesBloc,
-            child: AddEditPlacePage(
-              place: extra.place,
-              onSave: (place) =>
-                  extra.placesBloc.add(PlacesUpdateRequested(place)),
+            value: extra.dashboardBloc,
+            child: BlocProvider(
+              create: (_) => AddEditPlaceBloc(
+                getIt<GetCurrentLocationWithAddressUseCase>(),
+              ),
+              child: AddEditPlacePage(
+                place: extra.place,
+                onSave: (place) =>
+                    extra.dashboardBloc.add(DashboardUpdateRequested(place)),
+              ),
             ),
           );
         },

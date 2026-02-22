@@ -1,7 +1,7 @@
 import '../../../../domain/places/entities/place.dart';
 
-class PlacesState {
-  const PlacesState({
+class DashboardState {
+  const DashboardState({
     this.places = const [],
     this.isLoading = false,
     this.errorMessage,
@@ -13,12 +13,12 @@ class PlacesState {
 
   bool get hasPlaces => places.isNotEmpty;
 
-  PlacesState copyWith({
+  DashboardState copyWith({
     List<Place>? places,
     bool? isLoading,
     String? errorMessage,
   }) {
-    return PlacesState(
+    return DashboardState(
       places: places ?? this.places,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,

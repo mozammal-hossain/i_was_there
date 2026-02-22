@@ -1,8 +1,8 @@
 import '../../../../domain/places/entities/place.dart';
 import '../../../../domain/presence/entities/presence.dart';
 
-class CalendarState {
-  const CalendarState({
+class HistoryState {
+  const HistoryState({
     this.places = const [],
     this.loadingPlaces = true,
     this.viewMonth,
@@ -27,7 +27,7 @@ class CalendarState {
   DateTime get effectiveViewMonth =>
       viewMonth ?? DateTime(DateTime.now().year, DateTime.now().month);
 
-  CalendarState copyWith({
+  HistoryState copyWith({
     List<Place>? places,
     bool? loadingPlaces,
     DateTime? viewMonth,
@@ -38,7 +38,7 @@ class CalendarState {
     bool? loadingDayDetails,
     String? errorMessage,
   }) {
-    return CalendarState(
+    return HistoryState(
       places: places ?? this.places,
       loadingPlaces: loadingPlaces ?? this.loadingPlaces,
       viewMonth: viewMonth ?? this.viewMonth,

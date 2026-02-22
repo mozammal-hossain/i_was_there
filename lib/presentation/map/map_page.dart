@@ -22,29 +22,8 @@ class _MapPageState extends State<MapPage> {
   static const double _defaultLng = -118.4912;
   static const double _defaultZoom = 12.0;
 
-  List<Marker> _buildMarkers() {
-    final List<Marker> m = [];
-    for (final place in widget.places) {
-      if (place.latitude != 0 || place.longitude != 0) {
-        m.add(
-          Marker(
-            point: LatLng(place.latitude, place.longitude),
-            width: 40,
-            height: 40,
-            child: Icon(
-              Icons.place,
-              color: Theme.of(context).colorScheme.primary,
-              size: 40,
-            ),
-          ),
-        );
-      }
-    }
-    return m;
-  }
-
   void _onMapReady() {
-    final markers = _buildMarkers();
+    final markers = _MapMarkersLayer.createMarkers(context, widget.places);
     if (markers.isNotEmpty) _fitBounds(markers);
   }
 
@@ -76,7 +55,7 @@ class _MapPageState extends State<MapPage> {
   void didUpdateWidget(MapPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.places != widget.places) {
-      final markers = _buildMarkers();
+      final markers = _MapMarkersLayer.createMarkers(context, widget.places);
       if (markers.isNotEmpty) _fitBounds(markers);
     }
   }
@@ -91,7 +70,6 @@ class _MapPageState extends State<MapPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final markers = _buildMarkers();
 
     return Scaffold(
       body: Stack(
@@ -108,7 +86,7 @@ class _MapPageState extends State<MapPage> {
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'i_was_there',
               ),
-              MarkerLayer(markers: markers),
+              _MapMarkersLayer(places: widget.places),
             ],
           ),
           if (widget.onBack != null)
@@ -189,5 +167,35 @@ class _MapPageState extends State<MapPage> {
         ],
       ),
     );
+  }
+}
+
+/// Builds map markers from places. Widget class per CUSTOM_RULES (no _build* methods).
+class _MapMarkersLayer extends StatelessWidget {
+  const _MapMarkersLayer({required this.places});
+
+  final List<Place> places;
+
+  static List<Marker> createMarkers(BuildContext context, List<Place> places) {
+    final primary = Theme.of(context).colorScheme.primary;
+    final List<Marker> m = [];
+    for (final place in places) {
+      if (place.latitude != 0 || place.longitude != 0) {
+        m.add(
+          Marker(
+            point: LatLng(place.latitude, place.longitude),
+            width: 40,
+            height: 40,
+            child: Icon(Icons.place, color: primary, size: 40),
+          ),
+        );
+      }
+    }
+    return m;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MarkerLayer(markers: createMarkers(context, places));
   }
 }

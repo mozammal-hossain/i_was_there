@@ -1,16 +1,19 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
-import '../../../core/theme/app_theme.dart';
+import 'package:i_was_there/presentation/add_edit_place/widgets/add_edit_place_form_sheet.dart';
+import 'package:i_was_there/presentation/add_edit_place/widgets/add_edit_place_header.dart';
+import 'package:i_was_there/presentation/add_edit_place/widgets/add_edit_place_map_area.dart';
+import 'package:i_was_there/presentation/add_edit_place/widgets/add_edit_place_my_location_button.dart';
 import '../../../domain/places/entities/place.dart';
-import '../dashboard/bloc/places_bloc.dart';
-import '../dashboard/bloc/places_state.dart';
+import '../dashboard/bloc/dashboard_bloc.dart';
+import '../dashboard/bloc/dashboard_state.dart';
+import 'bloc/add_edit_place_bloc.dart';
+import 'bloc/add_edit_place_event.dart';
+import 'bloc/add_edit_place_state.dart';
 
 /// Add or edit a tracked place (PRD R2: pin on map, current location, address search; R3: 20m geofence).
+/// Location logic in AddEditPlaceBloc via use case (CUSTOM_RULES).
 class AddEditPlacePage extends StatefulWidget {
   const AddEditPlacePage({super.key, this.place, required this.onSave});
 
@@ -26,11 +29,6 @@ class _AddEditPlacePageState extends State<AddEditPlacePage> {
   late final TextEditingController _nameController;
   late final TextEditingController _addressController;
 
-  /// Chosen coordinates: from initial place when editing, or from "Use my current location".
-  double? _latitude;
-  double? _longitude;
-  bool _locationLoading = false;
-
   /// Place id we're waiting for after save. When bloc state includes it, we pop.
   String? _pendingSavedPlaceId;
 
@@ -40,10 +38,6 @@ class _AddEditPlacePageState extends State<AddEditPlacePage> {
     final p = widget.place;
     _nameController = TextEditingController(text: p?.name ?? '');
     _addressController = TextEditingController(text: p?.address ?? '');
-    if (p != null) {
-      _latitude = p.latitude;
-      _longitude = p.longitude;
-    }
   }
 
   @override
@@ -53,107 +47,7 @@ class _AddEditPlacePageState extends State<AddEditPlacePage> {
     super.dispose();
   }
 
-  Future<void> _useCurrentLocation() async {
-    if (_locationLoading || !mounted) return;
-    setState(() => _locationLoading = true);
-
-    try {
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Location services are disabled. Please enable them in settings.',
-            ),
-          ),
-        );
-        return;
-      }
-
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-      }
-      if (permission == LocationPermission.deniedForever && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Location permission permanently denied. Enable it in app settings.',
-            ),
-          ),
-        );
-        return;
-      }
-      if (permission == LocationPermission.denied && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Location permission denied.')),
-        );
-        return;
-      }
-
-      final pos = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-          timeLimit: Duration(seconds: 15),
-        ),
-      );
-
-      if (!mounted) return;
-      setState(() {
-        _latitude = pos.latitude;
-        _longitude = pos.longitude;
-      });
-
-      try {
-        final placemarks = await placemarkFromCoordinates(
-          pos.latitude,
-          pos.longitude,
-        );
-        if (placemarks.isNotEmpty && mounted) {
-          final p = placemarks.first;
-          final parts = [
-            if (p.street?.isNotEmpty == true) p.street,
-            if (p.locality?.isNotEmpty == true) p.locality,
-            if (p.administrativeArea?.isNotEmpty == true) p.administrativeArea,
-            if (p.country?.isNotEmpty == true) p.country,
-          ];
-          if (parts.isNotEmpty) {
-            _addressController.text = parts.join(', ');
-          }
-        }
-      } catch (_) {
-        // Optional: keep address as-is if reverse geocoding fails
-      }
-
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Current location set.')));
-      }
-    } on TimeoutException {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Getting location timed out. Try again.'),
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Could not get location: ${e.toString().split('\n').first}',
-            ),
-          ),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _locationLoading = false);
-    }
-  }
-
-  void _save() {
+  void _save(BuildContext context) {
     final name = _nameController.text.trim();
     final address = _addressController.text.trim();
     if (name.isEmpty) {
@@ -162,8 +56,9 @@ class _AddEditPlacePageState extends State<AddEditPlacePage> {
       );
       return;
     }
-    final lat = _latitude ?? widget.place?.latitude ?? 0.0;
-    final lng = _longitude ?? widget.place?.longitude ?? 0.0;
+    final locBloc = context.read<AddEditPlaceBloc>().state.locationResult;
+    final lat = locBloc?.latitude ?? widget.place?.latitude ?? 0.0;
+    final lng = locBloc?.longitude ?? widget.place?.longitude ?? 0.0;
     final place =
         widget.place?.copyWith(
           name: name,
@@ -181,7 +76,6 @@ class _AddEditPlacePageState extends State<AddEditPlacePage> {
         );
     setState(() => _pendingSavedPlaceId = place.id);
     widget.onSave(place);
-    // Pop happens in BlocListener when bloc state includes our place
   }
 
   @override
@@ -189,459 +83,86 @@ class _AddEditPlacePageState extends State<AddEditPlacePage> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return BlocListener<PlacesBloc, PlacesState>(
+    return BlocListener<AddEditPlaceBloc, AddEditPlaceState>(
       listenWhen: (prev, curr) =>
-          _pendingSavedPlaceId != null &&
-          (curr.places.any((p) => p.id == _pendingSavedPlaceId) ||
-              curr.errorMessage != null),
+          prev.locationResult != curr.locationResult ||
+          curr.locationError != null,
       listener: (context, state) {
-        if (_pendingSavedPlaceId == null) return;
-        if (state.errorMessage != null) {
+        if (state.locationResult != null && mounted) {
+          _addressController.text =
+              state.locationResult!.address ?? _addressController.text;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Current location set.')),
+          );
+        }
+        if (state.locationError != null && mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Could not save: ${state.errorMessage}'),
-              backgroundColor: Colors.red,
+              content: Text('Could not get location: ${state.locationError}'),
             ),
           );
-          setState(() => _pendingSavedPlaceId = null);
-          return;
-        }
-        if (state.places.any((p) => p.id == _pendingSavedPlaceId)) {
-          setState(() => _pendingSavedPlaceId = null);
-          if (mounted) context.pop();
         }
       },
-      child: Scaffold(
-        body: Column(
-          children: [
-            AddEditPlaceHeader(isDark: isDark),
-            Expanded(
-              child: Stack(
-                children: [
-                  AddEditPlaceMapArea(isDark: isDark),
-                  AddEditPlaceMyLocationButton(
-                    isLoading: _locationLoading,
-                    onTap: _useCurrentLocation,
-                  ),
-                ],
+      child: BlocListener<DashboardBloc, DashboardState>(
+        listenWhen: (prev, curr) =>
+            _pendingSavedPlaceId != null &&
+            (curr.places.any((p) => p.id == _pendingSavedPlaceId) ||
+                curr.errorMessage != null),
+        listener: (context, state) {
+          if (_pendingSavedPlaceId == null) return;
+          if (state.errorMessage != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Could not save: ${state.errorMessage}'),
+                backgroundColor: Colors.red,
               ),
-            ),
-            AddEditPlaceFormSheet(
-              isDark: isDark,
-              nameController: _nameController,
-              addressController: _addressController,
-              locationLoading: _locationLoading,
-              onUseCurrentLocation: _useCurrentLocation,
-              onSave: _save,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Header bar for add/edit place screen.
-class AddEditPlaceHeader extends StatelessWidget {
-  const AddEditPlaceHeader({super.key, required this.isDark});
-
-  final bool isDark;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-        top: MediaQuery.of(context).padding.top + 8,
-        bottom: 12,
-        left: 16,
-        right: 16,
-      ),
-      decoration: BoxDecoration(
-        color: (isDark ? AppColors.backgroundDark : AppColors.bgWarmLight)
-            .withValues(alpha: 0.9),
-        border: Border(
-          bottom: BorderSide(
-            color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
-          ),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          TextButton.icon(
-            onPressed: () => context.pop(),
-            icon: const Icon(
-              Icons.chevron_left,
-              size: 24,
-              color: AppColors.primary,
-            ),
-            label: const Text(
-              'Back',
-              style: TextStyle(color: AppColors.primary, fontSize: 17),
-            ),
-          ),
-          Text(
-            'Tracked Place',
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-              color: isDark ? Colors.white : const Color(0xFF0F172A),
-            ),
-          ),
-          TextButton(
-            onPressed: () => context.pop(),
-            child: const Text(
-              'Cancel',
-              style: TextStyle(color: AppColors.primary, fontSize: 17),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Map placeholder area for add/edit place screen.
-class AddEditPlaceMapArea extends StatelessWidget {
-  const AddEditPlaceMapArea({super.key, required this.isDark});
-
-  final bool isDark;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      color: isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Center(
-            child: Icon(
-              Icons.map_outlined,
-              size: 64,
-              color: (isDark
-                  ? const Color(0xFF475569)
-                  : const Color(0xFF94A3B8)),
-            ),
-          ),
-          Container(
-            width: 128,
-            height: 128,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.primary.withValues(alpha: 0.4),
-                width: 1,
-              ),
-              color: AppColors.primary.withValues(alpha: 0.08),
-            ),
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: isDark ? const Color(0xFF1E293B) : Colors.white,
-                        width: 2,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Container(
-                        width: 8,
-                        height: 8,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Container(
-                    width: 2,
-                    height: 12,
-                    color: AppColors.primary.withValues(alpha: 0.8),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// My location FAB for add/edit place screen.
-class AddEditPlaceMyLocationButton extends StatelessWidget {
-  const AddEditPlaceMyLocationButton({
-    super.key,
-    required this.isLoading,
-    required this.onTap,
-  });
-
-  final bool isLoading;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      top: 16,
-      right: 16,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: isLoading ? null : onTap,
-          borderRadius: BorderRadius.circular(24),
-          child: Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? const Color(0xFF1E293B).withValues(alpha: 0.9)
-                  : Colors.white.withValues(alpha: 0.9),
-              borderRadius: BorderRadius.circular(22),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: isLoading
-                ? const Padding(
-                    padding: EdgeInsets.all(10),
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(
-                    Icons.my_location,
-                    size: 22,
-                    color: Color(0xFF64748B),
-                  ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Form sheet for add/edit place screen.
-class AddEditPlaceFormSheet extends StatelessWidget {
-  const AddEditPlaceFormSheet({
-    super.key,
-    required this.isDark,
-    required this.nameController,
-    required this.addressController,
-    required this.locationLoading,
-    required this.onUseCurrentLocation,
-    required this.onSave,
-  });
-
-  final bool isDark;
-  final TextEditingController nameController;
-  final TextEditingController addressController;
-  final bool locationLoading;
-  final VoidCallback onUseCurrentLocation;
-  final VoidCallback onSave;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.cardDark : AppColors.bgWarmLight,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
-        border: Border(
-          top: BorderSide(
-            color: isDark ? const Color(0xFF475569) : const Color(0xFFE2E8F0),
-          ),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
-            blurRadius: 24,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        top: false,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            );
+            setState(() => _pendingSavedPlaceId = null);
+            return;
+          }
+          if (state.places.any((p) => p.id == _pendingSavedPlaceId)) {
+            setState(() => _pendingSavedPlaceId = null);
+            if (mounted) context.pop();
+          }
+        },
+        child: Scaffold(
+          body: Column(
             children: [
-              Center(
-                child: Container(
-                  width: 36,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? const Color(0xFF475569)
-                        : const Color(0xFFCBD5E1),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'NAME',
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: isDark
-                      ? const Color(0xFF94A3B8)
-                      : const Color(0xFF64748B),
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(hintText: 'Enter place name'),
-                style: TextStyle(
-                  fontSize: 17,
-                  color: isDark ? Colors.white : const Color(0xFF0F172A),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'ADDRESS',
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: isDark
-                      ? const Color(0xFF94A3B8)
-                      : const Color(0xFF64748B),
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: addressController,
-                decoration: InputDecoration(
-                  hintText: 'Search address...',
-                  prefixIcon: const Icon(
-                    Icons.search,
-                    color: AppColors.primary,
-                    size: 20,
-                  ),
-                ),
-                style: TextStyle(
-                  fontSize: 17,
-                  color: isDark ? Colors.white : const Color(0xFF0F172A),
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextButton.icon(
-                onPressed: locationLoading ? null : onUseCurrentLocation,
-                icon: locationLoading
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: AppColors.primary,
-                        ),
-                      )
-                    : const Icon(
-                        Icons.near_me,
-                        size: 18,
-                        color: AppColors.primary,
-                      ),
-                label: const Text(
-                  'Use my current location',
-                  style: TextStyle(
-                    color: AppColors.primary,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: AppColors.primary.withValues(alpha: 0.1),
-                  ),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              AddEditPlaceHeader(isDark: isDark),
+              Expanded(
+                child: Stack(
                   children: [
-                    const Icon(
-                      Icons.info_outline,
-                      color: AppColors.primary,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        'A 20m geofence ensures accurate attendance tracking while maintaining privacy and battery efficiency.',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: isDark
-                              ? const Color(0xFF94A3B8)
-                              : const Color(0xFF64748B),
-                          height: 1.4,
-                        ),
-                      ),
+                    AddEditPlaceMapArea(isDark: isDark),
+                    BlocBuilder<AddEditPlaceBloc, AddEditPlaceState>(
+                      buildWhen: (prev, curr) =>
+                          prev.locationLoading != curr.locationLoading,
+                      builder: (context, state) {
+                        return AddEditPlaceMyLocationButton(
+                          isLoading: state.locationLoading,
+                          onTap: () => context.read<AddEditPlaceBloc>().add(
+                            const AddEditPlaceUseCurrentLocationRequested(),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: FilledButton(
-                  onPressed: onSave,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    'Save Changes',
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.sync,
-                    size: 14,
-                    color: isDark
-                        ? const Color(0xFF64748B)
-                        : const Color(0xFF94A3B8),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    'Updates sync with Google Calendar',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: isDark
-                          ? const Color(0xFF64748B)
-                          : const Color(0xFF94A3B8),
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
+              BlocBuilder<AddEditPlaceBloc, AddEditPlaceState>(
+                buildWhen: (prev, curr) =>
+                    prev.locationLoading != curr.locationLoading,
+                builder: (context, state) {
+                  return AddEditPlaceFormSheet(
+                    isDark: isDark,
+                    nameController: _nameController,
+                    addressController: _addressController,
+                    locationLoading: state.locationLoading,
+                    onUseCurrentLocation: () => context
+                        .read<AddEditPlaceBloc>()
+                        .add(const AddEditPlaceUseCurrentLocationRequested()),
+                    onSave: () => _save(context),
+                  );
+                },
               ),
             ],
           ),

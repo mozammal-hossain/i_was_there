@@ -6,9 +6,9 @@ import '../domain/places/use_cases/get_places_use_case.dart';
 import '../domain/presence/use_cases/get_aggregated_presence_use_case.dart';
 import '../domain/presence/use_cases/get_presences_for_day_use_case.dart';
 import '../domain/presence/use_cases/set_presence_use_case.dart';
-import 'history/bloc/calendar_bloc.dart';
-import 'history/bloc/calendar_event.dart';
-import 'history/bloc/calendar_state.dart';
+import 'history/bloc/history_bloc.dart';
+import 'history/bloc/history_event.dart';
+import 'history/bloc/history_state.dart';
 import 'history/history_page.dart';
 import 'manual_attendance/manual_attendance_page.dart';
 
@@ -16,8 +16,8 @@ import 'manual_attendance/manual_attendance_page.dart';
 class CalendarFeature extends StatelessWidget {
   const CalendarFeature({super.key});
 
-  CalendarBloc _createCalendarBloc() {
-    return CalendarBloc(
+  HistoryBloc _createHistoryBloc() {
+    return HistoryBloc(
       getPlaces: getIt<GetPlacesUseCase>(),
       getAggregatedPresence: getIt<GetAggregatedPresenceUseCase>(),
       getPresencesForDay: getIt<GetPresencesForDayUseCase>(),
@@ -28,8 +28,8 @@ class CalendarFeature extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => _createCalendarBloc()..add(CalendarLoadRequested()),
-      child: BlocConsumer<CalendarBloc, CalendarState>(
+      create: (_) => _createHistoryBloc()..add(HistoryLoadRequested()),
+      child: BlocConsumer<HistoryBloc, HistoryState>(
         listenWhen: (prev, curr) => curr.errorMessage != prev.errorMessage,
         listener: (context, state) {
           if (state.errorMessage != null) {
@@ -64,9 +64,9 @@ class CalendarFeature extends StatelessWidget {
             dayPresences: state.dayPresences,
             loadingDayDetails: state.loadingDayDetails,
             onMonthChanged: (month) =>
-                context.read<CalendarBloc>().add(CalendarMonthChanged(month)),
+                context.read<HistoryBloc>().add(HistoryMonthChanged(month)),
             onDaySelected: (day) =>
-                context.read<CalendarBloc>().add(CalendarDaySelected(day)),
+                context.read<HistoryBloc>().add(HistoryDaySelected(day)),
             onAddManual: () => _openManualAttendance(context),
           );
         },
@@ -75,7 +75,7 @@ class CalendarFeature extends StatelessWidget {
   }
 
   void _openManualAttendance(BuildContext context) {
-    final state = context.read<CalendarBloc>().state;
+    final state = context.read<HistoryBloc>().state;
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -83,8 +83,8 @@ class CalendarFeature extends StatelessWidget {
       builder: (ctx) => ManualAttendancePage(
         places: state.places,
         onApply: (date, presence) async {
-          context.read<CalendarBloc>().add(
-                CalendarManualPresenceApplied(date, presence),
+          context.read<HistoryBloc>().add(
+                HistoryManualPresenceApplied(date, presence),
               );
           if (ctx.mounted) {
             Navigator.of(ctx).pop();
