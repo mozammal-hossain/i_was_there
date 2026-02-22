@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../domain/places/entities/place.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../domain/places/entities/place.dart';
 
 /// Places dashboard: list of tracked places with weekly attendance dots (PRD R9, R10).
-class DashboardScreen extends StatelessWidget {
-  const DashboardScreen({
+class DashboardPage extends StatelessWidget {
+  const DashboardPage({
     super.key,
     required this.places,
     required this.onAddPlace,

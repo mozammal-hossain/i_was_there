@@ -3,8 +3,8 @@ import '../../../core/theme/app_theme.dart';
 import '../../../domain/places/entities/place.dart';
 
 /// Manual presence override (HTML: manual_attendance.html). Date + list of places with toggles.
-class ManualAttendanceScreen extends StatefulWidget {
-  const ManualAttendanceScreen({
+class ManualAttendancePage extends StatefulWidget {
+  const ManualAttendancePage({
     super.key,
     required this.places,
     this.initialDate,
@@ -18,10 +18,10 @@ class ManualAttendanceScreen extends StatefulWidget {
   final VoidCallback? onCancel;
 
   @override
-  State<ManualAttendanceScreen> createState() => _ManualAttendanceScreenState();
+  State<ManualAttendancePage> createState() => _ManualAttendancePageState();
 }
 
-class _ManualAttendanceScreenState extends State<ManualAttendanceScreen> {
+class _ManualAttendancePageState extends State<ManualAttendancePage> {
   late DateTime _selectedDate;
   late Map<String, bool> _presenceByPlaceId;
 

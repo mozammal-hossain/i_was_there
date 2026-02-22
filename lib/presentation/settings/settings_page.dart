@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 
 /// Calendar Sync settings. Sync toggle, connected account, Sync Now.
-/// All state comes from [SettingsBloc]; this screen only renders and dispatches events.
-class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({
+/// All state comes from [SettingsBloc]; this page only renders and dispatches events.
+class SettingsPage extends StatelessWidget {
+  const SettingsPage({
     super.key,
     this.onBack,
     required this.syncEnabled,

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 
 /// Onboarding completion (HTML: on_boarding_completion.html). Success state, status cards, Get Started / Add First Place.
-class OnboardingCompletionScreen extends StatelessWidget {
-  const OnboardingCompletionScreen({
+class OnboardingCompletionPage extends StatelessWidget {
+  const OnboardingCompletionPage({
     super.key,
     this.onGetStarted,
     this.onAddFirstPlace,

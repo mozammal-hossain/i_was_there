@@ -5,24 +5,24 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../domain/places/entities/place.dart';
-import '../bloc/places_bloc.dart';
-import '../bloc/places_state.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../domain/places/entities/place.dart';
+import '../dashboard/bloc/places_bloc.dart';
+import '../dashboard/bloc/places_state.dart';
 
 /// Add or edit a tracked place (PRD R2: pin on map, current location, address search; R3: 20m geofence).
-class AddEditPlaceScreen extends StatefulWidget {
-  const AddEditPlaceScreen({super.key, this.place, required this.onSave});
+class AddEditPlacePage extends StatefulWidget {
+  const AddEditPlacePage({super.key, this.place, required this.onSave});
 
   /// If null, we are adding; otherwise editing.
   final Place? place;
   final void Function(Place place) onSave;
 
   @override
-  State<AddEditPlaceScreen> createState() => _AddEditPlaceScreenState();
+  State<AddEditPlacePage> createState() => _AddEditPlacePageState();
 }
 
-class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
+class _AddEditPlacePageState extends State<AddEditPlacePage> {
   late final TextEditingController _nameController;
   late final TextEditingController _addressController;
 

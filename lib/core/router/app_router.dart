@@ -4,10 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../presentation/main_shell.dart';
-import '../../presentation/onboarding/onboarding_feature.dart';
-import '../../presentation/places/bloc/places_bloc.dart';
-import '../../presentation/places/bloc/places_event.dart';
-import '../../presentation/places/widgets/add_edit_place_screen.dart';
+import '../../presentation/onboarding_feature.dart';
+import '../../presentation/dashboard/bloc/places_bloc.dart';
+import '../../presentation/dashboard/bloc/places_event.dart';
+import '../../presentation/add_edit_place/add_edit_place_page.dart';
 
 const String _keyOnboardingCompleted = 'onboarding_completed';
 
@@ -69,7 +69,7 @@ GoRouter createAppRouter({
           if (extra == null) return const SizedBox.shrink();
           return BlocProvider.value(
             value: extra.placesBloc,
-            child: AddEditPlaceScreen(
+            child: AddEditPlacePage(
               onSave: (place) => extra.placesBloc.add(PlacesAddRequested(place)),
             ),
           );
@@ -82,7 +82,7 @@ GoRouter createAppRouter({
           if (extra == null || extra.place == null) return const SizedBox.shrink();
           return BlocProvider.value(
             value: extra.placesBloc,
-            child: AddEditPlaceScreen(
+            child: AddEditPlacePage(
               place: extra.place,
               onSave: (place) =>
                   extra.placesBloc.add(PlacesUpdateRequested(place)),

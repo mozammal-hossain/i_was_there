@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../core/di/injection.dart';
-import '../../domain/places/use_cases/get_places_use_case.dart';
-import '../../domain/presence/use_cases/get_aggregated_presence_use_case.dart';
-import '../../domain/presence/use_cases/get_presences_for_day_use_case.dart';
-import '../../domain/presence/use_cases/set_presence_use_case.dart';
-import 'bloc/calendar_bloc.dart';
-import 'bloc/calendar_event.dart';
-import 'bloc/calendar_state.dart';
-import 'widgets/history_screen.dart';
-import 'widgets/manual_attendance_screen.dart';
+import '../core/di/injection.dart';
+import '../domain/places/use_cases/get_places_use_case.dart';
+import '../domain/presence/use_cases/get_aggregated_presence_use_case.dart';
+import '../domain/presence/use_cases/get_presences_for_day_use_case.dart';
+import '../domain/presence/use_cases/set_presence_use_case.dart';
+import 'history/bloc/calendar_bloc.dart';
+import 'history/bloc/calendar_event.dart';
+import 'history/bloc/calendar_state.dart';
+import 'history/history_page.dart';
+import 'manual_attendance/manual_attendance_page.dart';
 
 /// Calendar feature: presence history and manual attendance override.
 class CalendarFeature extends StatelessWidget {
@@ -55,7 +55,7 @@ class CalendarFeature extends StatelessWidget {
               body: Center(child: CircularProgressIndicator()),
             );
           }
-          return HistoryScreen(
+          return HistoryPage(
             places: state.places,
             viewMonth: state.effectiveViewMonth,
             presenceByDay: state.presenceByDay,
@@ -80,7 +80,7 @@ class CalendarFeature extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (ctx) => ManualAttendanceScreen(
+      builder: (ctx) => ManualAttendancePage(
         places: state.places,
         onApply: (date, presence) async {
           context.read<CalendarBloc>().add(

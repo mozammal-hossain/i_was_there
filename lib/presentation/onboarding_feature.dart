@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'bloc/onboarding_bloc.dart';
-import 'bloc/onboarding_event.dart';
-import 'bloc/onboarding_state.dart';
-import 'widgets/background_location_screen.dart';
-import 'widgets/onboarding_completion_screen.dart';
+import 'onboarding/bloc/onboarding_bloc.dart';
+import 'onboarding/bloc/onboarding_event.dart';
+import 'onboarding/bloc/onboarding_state.dart';
+import 'background_location/background_location_page.dart';
+import 'onboarding_completion/onboarding_completion_page.dart';
 
 /// Onboarding flow: foreground/background location permission → completion.
 /// Calls [onComplete] when the user finishes (Get Started or Add First Place).
@@ -22,7 +22,7 @@ class OnboardingFeature extends StatelessWidget {
         builder: (context, state) {
           switch (state.step) {
             case 0:
-              return BackgroundLocationScreen(
+              return BackgroundLocationPage(
                 onOpenSettings: () =>
                     context.read<OnboardingBloc>().add(OnboardingNextStep()),
                 onLater: () =>
@@ -31,7 +31,7 @@ class OnboardingFeature extends StatelessWidget {
               );
             case 1:
             default:
-              return OnboardingCompletionScreen(
+              return OnboardingCompletionPage(
                 onGetStarted: onComplete,
                 onAddFirstPlace: onComplete,
                 onClose: onComplete,

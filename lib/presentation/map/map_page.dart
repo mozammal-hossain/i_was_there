@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../domain/places/entities/place.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../domain/places/entities/place.dart';
 
 /// Map tab: shows tracked places as pins (PRD map in dashboard nav).
 /// Uses OpenStreetMap via flutter_map — no API key required.
-class MapScreen extends StatefulWidget {
-  const MapScreen({super.key, this.places = const [], this.onBack});
+class MapPage extends StatefulWidget {
+  const MapPage({super.key, this.places = const [], this.onBack});
 
   final List<Place> places;
   final VoidCallback? onBack;
 
   @override
-  State<MapScreen> createState() => _MapScreenState();
+  State<MapPage> createState() => _MapPageState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapPageState extends State<MapPage> {
   final MapController _mapController = MapController();
   static const double _defaultLat = 34.0195;
   static const double _defaultLng = -118.4912;
@@ -73,7 +73,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   @override
-  void didUpdateWidget(MapScreen oldWidget) {
+  void didUpdateWidget(MapPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.places != widget.places) {
       final markers = _buildMarkers();

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../core/di/injection.dart';
-import '../../domain/settings/use_cases/get_calendar_sync_enabled_use_case.dart';
-import '../../domain/settings/use_cases/set_calendar_sync_enabled_use_case.dart';
-import 'bloc/settings_bloc.dart';
-import 'bloc/settings_event.dart';
-import 'bloc/settings_state.dart';
-import 'widgets/settings_screen.dart';
+import '../core/di/injection.dart';
+import '../domain/settings/use_cases/get_calendar_sync_enabled_use_case.dart';
+import '../domain/settings/use_cases/set_calendar_sync_enabled_use_case.dart';
+import 'settings/bloc/settings_bloc.dart';
+import 'settings/bloc/settings_event.dart';
+import 'settings/bloc/settings_state.dart';
+import 'settings/settings_page.dart';
 
 /// Settings feature: Calendar Sync and app settings.
 class SettingsFeature extends StatelessWidget {
@@ -37,7 +37,7 @@ class SettingsFeature extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          return SettingsScreen(
+          return SettingsPage(
             syncEnabled: state.syncEnabled,
             loading: state.loading,
             onSyncEnabledChanged: (value) => context

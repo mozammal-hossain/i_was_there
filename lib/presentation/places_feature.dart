@@ -2,24 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/di/injection.dart';
-import '../../core/router/app_router.dart';
-import '../../domain/places/entities/place.dart';
-import '../../domain/places/use_cases/add_place_use_case.dart';
-import '../../domain/places/use_cases/get_places_use_case.dart';
-import '../../domain/places/use_cases/remove_place_use_case.dart';
-import '../../domain/places/use_cases/update_place_use_case.dart';
-import '../../domain/presence/entities/presence.dart';
-import '../../domain/presence/use_cases/set_presence_use_case.dart';
-import '../calendar/widgets/manual_attendance_screen.dart';
-import 'bloc/places_bloc.dart';
-import 'bloc/places_event.dart';
-import 'bloc/places_state.dart';
-import 'widgets/dashboard_screen.dart';
-import 'widgets/map_screen.dart';
-import 'widgets/no_place_screen.dart';
+import '../core/di/injection.dart';
+import '../core/router/app_router.dart';
+import '../domain/places/entities/place.dart';
+import '../domain/places/use_cases/add_place_use_case.dart';
+import '../domain/places/use_cases/get_places_use_case.dart';
+import '../domain/places/use_cases/remove_place_use_case.dart';
+import '../domain/places/use_cases/update_place_use_case.dart';
+import '../domain/presence/entities/presence.dart';
+import '../domain/presence/use_cases/set_presence_use_case.dart';
+import 'manual_attendance/manual_attendance_page.dart';
+import 'dashboard/bloc/places_bloc.dart';
+import 'dashboard/bloc/places_event.dart';
+import 'dashboard/bloc/places_state.dart';
+import 'dashboard/dashboard_page.dart';
+import 'map/map_page.dart';
+import 'no_place/no_place_page.dart';
 
-/// Places feature: list of places, map, add/edit. Only place-related screens.
+/// Places feature: list of places, map, add/edit. Only place-related pages.
 class PlacesFeature extends StatelessWidget {
   const PlacesFeature({super.key});
 
@@ -86,16 +86,16 @@ class _PlacesShellState extends State<_PlacesShell> {
       buildWhen: (prev, curr) => prev.places != curr.places,
       builder: (context, state) {
         if (!state.hasPlaces) {
-          return NoPlaceScreen(onAddPlace: () => _openAddPlace(context));
+          return NoPlacePage(onAddPlace: () => _openAddPlace(context));
         }
         switch (_navIndex) {
           case 1:
-            return MapScreen(
+            return MapPage(
               places: state.places,
               onBack: () => setState(() => _navIndex = 0),
             );
           default:
-            return DashboardScreen(
+            return DashboardPage(
               places: state.places,
               onAddPlace: () => _openAddPlace(context),
               onPlaceTap: (place) => _openEditPlace(context, place),
@@ -115,7 +115,7 @@ class _PlacesShellState extends State<_PlacesShell> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => ManualAttendanceScreen(
+      builder: (context) => ManualAttendancePage(
         places: places,
         onApply: (date, presence) async {
           await widget.onManualApply(date, presence);

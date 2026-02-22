@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../core/theme/app_theme.dart';
 
 /// Shown when the user has no tracked places (PRD R1). Encourages adding the first place.
-class NoPlaceScreen extends StatelessWidget {
-  const NoPlaceScreen({super.key, required this.onAddPlace});
+class NoPlacePage extends StatelessWidget {
+  const NoPlacePage({super.key, required this.onAddPlace});
 
   final VoidCallback onAddPlace;
 

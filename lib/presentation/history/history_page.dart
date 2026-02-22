@@ -12,9 +12,9 @@ String _historyMonthName(int month) {
 }
 
 /// Presence history calendar. Month view, filter chips, day details.
-/// All data and loading state come from [CalendarBloc]; this screen only renders and dispatches events.
-class HistoryScreen extends StatefulWidget {
-  const HistoryScreen({
+/// All data and loading state come from [CalendarBloc]; this page only renders and dispatches events.
+class HistoryPage extends StatefulWidget {
+  const HistoryPage({
     super.key,
     this.places = const [],
     required this.viewMonth,
@@ -42,10 +42,10 @@ class HistoryScreen extends StatefulWidget {
   final VoidCallback? onAddManual;
 
   @override
-  State<HistoryScreen> createState() => _HistoryScreenState();
+  State<HistoryPage> createState() => _HistoryPageState();
 }
 
-class _HistoryScreenState extends State<HistoryScreen> {
+class _HistoryPageState extends State<HistoryPage> {
   int _selectedFilterIndex = 0;
 
   static const List<String> _filterLabels = [

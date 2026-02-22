@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 
 /// Background location permission guide (HTML: background_location.html). Step 2/3, Open Settings / I'll do this later.
-class BackgroundLocationScreen extends StatelessWidget {
-  const BackgroundLocationScreen({
+class BackgroundLocationPage extends StatelessWidget {
+  const BackgroundLocationPage({
     super.key,
     this.onOpenSettings,
     this.onLater,

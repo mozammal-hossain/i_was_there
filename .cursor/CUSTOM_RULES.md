@@ -27,52 +27,46 @@ Each feature follows this template under `lib/`:
 | ---------------- | ------------------------- | ------------------------------------------------------- |
 | **Data**         | `data/<feature>/`         | `data_source/`, `repositories/`, `models/`, `mappers/`  |
 | **Domain**       | `domain/<feature>/`       | `entities/`, `repositories/` (interfaces), `use_cases/` |
-| **Presentation** | `presentation/<feature>/` | See presentation structure below                        |
+| **Presentation** | `presentation/`           | **Screen-first:** see presentation structure below     |
 
-### Presentation layer (per screen)
+### Presentation layer (screen-first, per page)
+
+Presentation is organized **screen-first**: each page is a top-level folder; feature widgets compose pages and sit at presentation root.
+
+**Page folder names use snake_case** (e.g. `add_edit_place/`, `history/`, `dashboard/`, `manual_attendance/`, `map/`, `no_place/`, `settings/`, `background_location/`, `onboarding_completion/`).
 
 ```
 presentation/
-<feature1>/
-  <Screen_Name1>/
+  <page_name1>/              # snake_case, e.g. history/, add_edit_place/, dashboard/
     bloc/
-      <screen_name1>_bloc.dart
-      <screen_name1>_event.dart
-      <screen_name1>_state.dart
+      <page_name1>_bloc.dart
+      <page_name1>_event.dart
+      <page_name1>_state.dart
     widgets/
     utils/
     ui_models/
-    <screen_name1>.dart
-  <Screen_Name2>/
+    <page_name1>_page.dart
+  <page_name2>/
     bloc/
-      <screen_name2>_bloc.dart
-      <screen_name2>_event.dart
-      <screen_name2>_state.dart
-    widgets/
-    utils/
-    ui_models/
-    <screen_name2>.dart
-<feature2>/
-  <Screen_Name3>/
-    bloc/
-      <screen_name3>_bloc.dart
-      <screen_name3>_event.dart
-      <screen_name3>_state.dart
-    widgets/
-    utils/
-    ui_models/
-    <screen_name3>.dart
+    ...
+    <page_name2>_page.dart
+  onboarding/
+    bloc/                    # flow blocs (e.g. onboarding steps) when not page-scoped
+  <feature>_feature.dart      # e.g. calendar_feature.dart, places_feature.dart
+  main_shell.dart
 ```
 
-- **bloc/**: BLoC, events, and states scoped to the screen (snake_case filenames).
-- **widgets/**: Screen-specific widgets.
-- **utils/**: Screen-specific helpers.
+- **Screen-first:** Page folders are direct children of `presentation/`. **Use snake_case for page folder names** (e.g. `history/`, `dashboard/`, `add_edit_place/`).
+- Feature files (`calendar_feature.dart`, `places_feature.dart`, `settings_feature.dart`, `onboarding_feature.dart`) live at presentation root and import the page folders they use.
+- **bloc/**: BLoC, events, and states scoped to the page (snake_case filenames).
+- **widgets/**: Page-specific widgets.
+- **utils/**: Page-specific helpers.
 
 ### Widget composition
 
 - Create **StatelessWidget** or **StatefulWidget** classes for all UI; do not use widget methods (e.g. `Widget _buildHeader()`).
 - **ui_models/**: UI-only models (not domain entities).
-- **&lt;screen_name&gt;.dart**: Main screen entry widget.
+- **&lt;page_name&gt;_page.dart**: Main page entry widget (e.g. `history_page.dart` → class `HistoryPage`).
 - **core/** holds shared code: DI (get_it + injectable), router, error handling, constants.
 - Features: **places**, **presence**, **calendar**, **sync**, **settings**, **onboarding**.
 
@@ -84,7 +78,7 @@ presentation/
 - **No business logic in the presentation layer.** Keep it in domain (use cases) or data; presentation only dispatches events and displays state.
 - **No UI logic outside the Bloc.** All decisions that affect what the UI shows or does (loading, errors, which data to show) live in the Bloc; widgets only render from state.
 - **No UI updates without Bloc state.** The UI must not change based on local widget state, callbacks, or side effects; every visible change must come from a Bloc-emitted state.
-- Put Bloc/Cubit, events, and states under **presentation/`<feature>`/bloc/**.
+- Put Bloc/Cubit, events, and states under **presentation/`<page_name>`/bloc/** (per-page; screen-first; folder name in snake_case).
 - **Flow:** UI dispatches events → Bloc calls **use cases** (never repositories directly) → use case uses repository → Bloc emits states → UI rebuilds.
 - Blocs must not import data layer (no Drift, no data models). Only domain (use cases, entities) and presentation (states/events).
 - Catch exceptions from use cases in the Bloc and emit error states; show user-facing messages in the UI only.
@@ -135,7 +129,7 @@ presentation/
 
 ## 9. Calendar UX and overrides
 
-- **Calendar:** One **aggregated** view (day = present if present at any place); optional **per-place drill-down** (filter or secondary screen).
+- **Calendar:** One **aggregated** view (day = present if present at any place); optional **per-place drill-down** (filter or secondary page).
 - **Manual present:** Set presence to true; mark for sync if Google sync is on.
 - **Manual not present:** Set presence to false and **delete** the corresponding "Present at [Place]" event from Google Calendar.
 
@@ -143,7 +137,7 @@ presentation/
 
 ## 10. Permissions and onboarding
 
-- **Single onboarding flow:** Request **foreground** location first, then **background** with clear rationale. Background only when user explicitly enables "background checks" (toggle or step). Include an in-app screen explaining why background location is needed.
+- **Single onboarding flow:** Request **foreground** location first, then **background** with clear rationale. Background only when user explicitly enables "background checks" (toggle or step). Include an in-app page explaining why background location is needed.
 
 ---
 
@@ -156,7 +150,7 @@ presentation/
 ## 12. Testing
 
 - **Unit:** Repositories (Drift in-memory or mocks), presence/sync logic. Mock external deps.
-- **Widget:** Key screens (places, calendar, settings, onboarding) with BlocProvider and mock use cases/repos.
+- **Widget:** Key pages (places, calendar, settings, onboarding) with BlocProvider and mock use cases/repos.
 - **Integration:** Full flows where useful; **mock** WorkManager, location, and Google APIs (e.g. fake SyncClient / location service).
 
 ---
@@ -168,7 +162,8 @@ presentation/
 - **Repositories:** Interface `PlaceRepository` in domain; implementation `PlaceRepositoryImpl` (or in a single file per repo) in data.
 - **Use cases:** Verb-first, e.g. `GetPlaces`, `MarkDayPresent`, `SyncPendingToGoogle`.
 - **Blocs:** `<Feature>Bloc` / `<Feature>Cubit`; events `<Feature>Event`, states `<Feature>State`.
-- **Feature entry:** `<feature>_feature.dart` (e.g. `places_feature.dart`) for routes, BlocProvider, or main screen.
+- **Feature entry:** `<feature>_feature.dart` (e.g. `places_feature.dart`) for routes, BlocProvider, or main page.
+- **Pages:** One folder per page in **snake_case** (e.g. `history/`, `add_edit_place/`, `dashboard/`); main file `<page_name>_page.dart` (snake_case), widget class **PascalCase** (e.g. `HistoryPage`, `AddEditPlacePage`).
 
 ---
 

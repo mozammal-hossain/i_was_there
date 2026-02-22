@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../core/theme/app_theme.dart';
-import 'calendar/calendar_feature.dart';
-import 'places/places_feature.dart';
-import 'settings/settings_feature.dart';
+import 'calendar_feature.dart';
+import 'places_feature.dart';
+import 'settings_feature.dart';
 
 /// Main shell after onboarding: bottom nav with Places | Calendar | Settings.
 class MainShell extends StatefulWidget {
