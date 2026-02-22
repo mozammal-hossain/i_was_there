@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import '../../../core/theme/app_theme.dart';
-import '../../../domain/places/entities/place.dart';
+import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/domain/places/entities/place.dart';
+import 'package:i_was_there/presentation/map/widgets/map_markers_layer.dart';
 
 /// Map tab: shows tracked places as pins (PRD map in dashboard nav).
 /// Uses OpenStreetMap via flutter_map — no API key required.
@@ -23,7 +24,7 @@ class _MapPageState extends State<MapPage> {
   static const double _defaultZoom = 12.0;
 
   void _onMapReady() {
-    final markers = _MapMarkersLayer.createMarkers(context, widget.places);
+    final markers = MapMarkersLayer.createMarkers(context, widget.places);
     if (markers.isNotEmpty) _fitBounds(markers);
   }
 
@@ -55,7 +56,7 @@ class _MapPageState extends State<MapPage> {
   void didUpdateWidget(MapPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.places != widget.places) {
-      final markers = _MapMarkersLayer.createMarkers(context, widget.places);
+      final markers = MapMarkersLayer.createMarkers(context, widget.places);
       if (markers.isNotEmpty) _fitBounds(markers);
     }
   }
@@ -86,7 +87,7 @@ class _MapPageState extends State<MapPage> {
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'i_was_there',
               ),
-              _MapMarkersLayer(places: widget.places),
+              MapMarkersLayer(places: widget.places),
             ],
           ),
           if (widget.onBack != null)
@@ -167,35 +168,5 @@ class _MapPageState extends State<MapPage> {
         ],
       ),
     );
-  }
-}
-
-/// Builds map markers from places. Widget class per CUSTOM_RULES (no _build* methods).
-class _MapMarkersLayer extends StatelessWidget {
-  const _MapMarkersLayer({required this.places});
-
-  final List<Place> places;
-
-  static List<Marker> createMarkers(BuildContext context, List<Place> places) {
-    final primary = Theme.of(context).colorScheme.primary;
-    final List<Marker> m = [];
-    for (final place in places) {
-      if (place.latitude != 0 || place.longitude != 0) {
-        m.add(
-          Marker(
-            point: LatLng(place.latitude, place.longitude),
-            width: 40,
-            height: 40,
-            child: Icon(Icons.place, color: primary, size: 40),
-          ),
-        );
-      }
-    }
-    return m;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MarkerLayer(markers: createMarkers(context, places));
   }
 }

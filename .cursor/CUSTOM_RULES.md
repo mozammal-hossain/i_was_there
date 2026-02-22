@@ -59,14 +59,14 @@ presentation/
 - **Screen-first:** Page folders are direct children of `presentation/`. **Use snake_case for page folder names** (e.g. `history/`, `dashboard/`, `add_edit_place/`).
 - Feature files (`calendar_feature.dart`, `places_feature.dart`, `settings_feature.dart`, `onboarding_feature.dart`) live at presentation root and import the page folders they use.
 - **bloc/**: BLoC, events, and states scoped to the page (snake_case filenames).
-- **widgets/**: Page-specific widgets.
+- **widgets/**: Page-specific widgets. Put each in its own file under `presentation/<page_name>/widgets/` with filename `<page_name>_<section>.dart` (snake_case) and a public PascalCase class (e.g. `BackgroundLocationHeader`). The page file stays slim and only composes these widgets and Bloc wiring. Use package imports (`package:i_was_there/...`) for presentation imports when convenient.
 - **utils/**: Page-specific helpers.
 
 ### Widget composition
 
 - Create **StatelessWidget** or **StatefulWidget** classes for all UI; do not use widget methods (e.g. `Widget _buildHeader()`).
-- **Widget class size:** A single widget class should not exceed **80–90 lines**. Break large widgets into smaller, focused widgets (e.g. in the same `widgets/` folder or inline private widgets).
-- **Large widgets:** Prefer extracting sections into named widgets (e.g. `_HeaderSection`, `_BodySection`) rather than one long build method.
+- **Widget class size:** A single widget class should not exceed **80–90 lines**. Break large widgets into smaller, focused widgets in the same page's **widgets/** folder (one file per widget, public class name).
+- **Large widgets:** Prefer extracting sections into separate widget classes in the page's **widgets/** folder (e.g. `BackgroundLocationHeader`) rather than keeping many private classes in the page file.
 - **ui_models/**: UI-only models (not domain entities).
 - **&lt;page_name&gt;_page.dart**: Main page entry widget (e.g. `history_page.dart` → class `HistoryPage`).
 - **core/** holds shared code: DI (get_it + injectable), router, error handling, constants.
