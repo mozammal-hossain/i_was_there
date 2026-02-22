@@ -3,10 +3,7 @@ import '../../../../core/theme/app_theme.dart';
 
 /// Shown when the user has no tracked places (PRD R1). Encourages adding the first place.
 class NoPlaceScreen extends StatelessWidget {
-  const NoPlaceScreen({
-    super.key,
-    required this.onAddPlace,
-  });
+  const NoPlaceScreen({super.key, required this.onAddPlace});
 
   final VoidCallback onAddPlace;
 
@@ -26,7 +23,7 @@ class NoPlaceScreen extends StatelessWidget {
               Icon(
                 Icons.place_outlined,
                 size: 80,
-                color: AppColors.primary.withOpacity(0.6),
+                color: AppColors.primary.withValues(alpha: 0.6),
               ),
               const SizedBox(height: 24),
               Text(
@@ -41,7 +38,9 @@ class NoPlaceScreen extends StatelessWidget {
                 'Add a place to start tracking your weekly attendance.',
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                  color: isDark
+                      ? const Color(0xFF94A3B8)
+                      : const Color(0xFF64748B),
                 ),
               ),
               const Spacer(flex: 2),
@@ -52,7 +51,10 @@ class NoPlaceScreen extends StatelessWidget {
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 16,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),

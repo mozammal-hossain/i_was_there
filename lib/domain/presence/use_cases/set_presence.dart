@@ -15,12 +15,11 @@ class SetPresence {
     required bool isPresent,
     required PresenceSource source,
     DateTime? firstDetectedAt,
-  }) =>
-      _repository.setPresence(
-        placeId: placeId,
-        date: date,
-        isPresent: isPresent,
-        source: source,
-        firstDetectedAt: firstDetectedAt,
-      );
+  }) => _repository.setPresence(
+    placeId: placeId,
+    date: date,
+    isPresent: isPresent,
+    source: source,
+    firstDetectedAt: firstDetectedAt,
+  );
 }

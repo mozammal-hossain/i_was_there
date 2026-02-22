@@ -14,14 +14,21 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
   @override
   Future<bool> getCalendarSyncEnabled() async {
-    final row = await (_db.select(_db.settings)..where((t) => t.key.equals(_keyCalendarSyncEnabled))).getSingleOrNull();
+    final row = await (_db.select(
+      _db.settings,
+    )..where((t) => t.key.equals(_keyCalendarSyncEnabled))).getSingleOrNull();
     return row?.value == 'true';
   }
 
   @override
   Future<void> setCalendarSyncEnabled(bool enabled) async {
-    await _db.into(_db.settings).insert(
-          SettingsCompanion.insert(key: _keyCalendarSyncEnabled, value: enabled ? 'true' : 'false'),
+    await _db
+        .into(_db.settings)
+        .insert(
+          SettingsCompanion.insert(
+            key: _keyCalendarSyncEnabled,
+            value: enabled ? 'true' : 'false',
+          ),
           mode: InsertMode.insertOrReplace,
         );
   }

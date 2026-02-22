@@ -15,7 +15,4 @@ class Presence {
   final DateTime? firstDetectedAt;
 }
 
-enum PresenceSource {
-  auto,
-  manual,
-}
+enum PresenceSource { auto, manual }

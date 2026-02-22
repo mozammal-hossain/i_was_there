@@ -54,15 +54,14 @@ Future<bool> runBackgroundLocationCheck() async {
 
 /// Register periodic background work (15 min minimum per Android).
 Future<void> registerBackgroundTask() {
-  return Workmanager().initialize(
-    callbackDispatcher,
-    isInDebugMode: false,
-  ).then((_) {
-    Workmanager().registerPeriodicTask(
-      'periodic_location_check',
-      _taskName,
-      frequency: const Duration(minutes: 15),
-      initialDelay: const Duration(minutes: 1),
-    );
-  });
+  return Workmanager()
+      .initialize(callbackDispatcher)
+      .then((_) {
+        Workmanager().registerPeriodicTask(
+          'periodic_location_check',
+          _taskName,
+          frequency: const Duration(minutes: 15),
+          initialDelay: const Duration(minutes: 1),
+        );
+      });
 }

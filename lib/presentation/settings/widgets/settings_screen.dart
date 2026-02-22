@@ -4,11 +4,7 @@ import '../../../domain/settings/repositories/settings_repository.dart';
 
 /// Calendar Sync settings (HTML: settings_screen.html). Sync toggle, connected account, Sync Now.
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({
-    super.key,
-    this.onBack,
-    this.settingsRepository,
-  });
+  const SettingsScreen({super.key, this.onBack, this.settingsRepository});
 
   final VoidCallback? onBack;
   final SettingsRepository? settingsRepository;
@@ -61,7 +57,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _buildHeader(context, isDark),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 32,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -89,7 +88,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: (isDark ? AppColors.bgDarkGray : AppColors.bgWarmLight).withOpacity(0.8),
+        color: (isDark ? AppColors.bgDarkGray : AppColors.bgWarmLight)
+            .withValues(alpha: 0.8),
         border: Border(
           bottom: BorderSide(
             color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
@@ -101,7 +101,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           if (widget.onBack != null)
             TextButton.icon(
               onPressed: widget.onBack,
-              icon: Icon(Icons.chevron_left, size: 32, color: AppColors.primary),
+              icon: Icon(
+                Icons.chevron_left,
+                size: 32,
+                color: AppColors.primary,
+              ),
               label: Text(
                 'Back',
                 style: TextStyle(color: AppColors.primary, fontSize: 17),
@@ -118,7 +122,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
           ),
-          if (widget.onBack != null) const SizedBox(width: 80) else const SizedBox(width: 48),
+          if (widget.onBack != null)
+            const SizedBox(width: 80)
+          else
+            const SizedBox(width: 48),
         ],
       ),
     );
@@ -154,7 +161,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Text(
                       'Automatic attendance logging',
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                        color: isDark
+                            ? const Color(0xFF94A3B8)
+                            : const Color(0xFF64748B),
                         fontSize: 13,
                       ),
                     ),
@@ -164,7 +173,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Switch(
                 value: _syncEnabled,
                 onChanged: _loading ? null : (v) => _setSyncEnabled(v),
-                activeColor: AppColors.primary,
+                activeTrackColor: AppColors.primary,
               ),
             ],
           ),
@@ -180,7 +189,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 'One-way sync: We only add events to your calendar. We never read or delete your existing data.',
                 style: theme.textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w500,
-                  color: isDark ? const Color(0xFFCBD5E1) : const Color(0xFF475569),
+                  color: isDark
+                      ? const Color(0xFFCBD5E1)
+                      : const Color(0xFF475569),
                   fontSize: 13,
                 ),
               ),
@@ -191,7 +202,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildConnectedAccountSection(BuildContext context, ThemeData theme, bool isDark) {
+  Widget _buildConnectedAccountSection(
+    BuildContext context,
+    ThemeData theme,
+    bool isDark,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -220,8 +235,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   children: [
                     CircleAvatar(
                       radius: 24,
-                      backgroundColor: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
-                      child: Icon(Icons.person, color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
+                      backgroundColor: isDark
+                          ? const Color(0xFF334155)
+                          : const Color(0xFFE2E8F0),
+                      child: Icon(
+                        Icons.person,
+                        color: isDark
+                            ? const Color(0xFF94A3B8)
+                            : const Color(0xFF64748B),
+                      ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
@@ -232,13 +254,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             'Alex Johnson',
                             style: theme.textTheme.titleSmall?.copyWith(
                               fontWeight: FontWeight.w500,
-                              color: isDark ? Colors.white : const Color(0xFF0F172A),
+                              color: isDark
+                                  ? Colors.white
+                                  : const Color(0xFF0F172A),
                             ),
                           ),
                           Text(
                             'alex.j@gmail.com',
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                              color: isDark
+                                  ? const Color(0xFF94A3B8)
+                                  : const Color(0xFF64748B),
                               fontSize: 14,
                             ),
                           ),
@@ -248,32 +274,55 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     TextButton(
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Change account – coming soon')),
+                          const SnackBar(
+                            content: Text('Change account – coming soon'),
+                          ),
                         );
                       },
-                      child: const Text('Change', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600)),
+                      child: const Text(
+                        'Change',
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
-                  color: isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFF8FAFC),
-                  borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.05)
+                      : const Color(0xFFF8FAFC),
+                  borderRadius: const BorderRadius.vertical(
+                    bottom: Radius.circular(16),
+                  ),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.history, size: 16, color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
+                        Icon(
+                          Icons.history,
+                          size: 16,
+                          color: isDark
+                              ? const Color(0xFF94A3B8)
+                              : const Color(0xFF64748B),
+                        ),
                         const SizedBox(width: 6),
                         Text(
                           'Last synced 12m ago',
                           style: theme.textTheme.bodySmall?.copyWith(
                             fontSize: 12,
-                            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                            color: isDark
+                                ? const Color(0xFF94A3B8)
+                                : const Color(0xFF64748B),
                           ),
                         ),
                       ],
@@ -296,7 +345,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildSyncDetailsSection(BuildContext context, ThemeData theme, bool isDark) {
+  Widget _buildSyncDetailsSection(
+    BuildContext context,
+    ThemeData theme,
+    bool isDark,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -321,7 +374,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.event_note, color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
+              Icon(
+                Icons.event_note,
+                color: isDark
+                    ? const Color(0xFF94A3B8)
+                    : const Color(0xFF64748B),
+              ),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -338,7 +396,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Text.rich(
                       TextSpan(
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                          color: isDark
+                              ? const Color(0xFF94A3B8)
+                              : const Color(0xFF64748B),
                           fontSize: 14,
                         ),
                         children: [
@@ -346,8 +406,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           TextSpan(
                             text: 'Present at [Location]',
                             style: TextStyle(
-                              backgroundColor: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
-                              color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF0F172A),
+                              backgroundColor: isDark
+                                  ? const Color(0xFF334155)
+                                  : const Color(0xFFE2E8F0),
+                              color: isDark
+                                  ? const Color(0xFFE2E8F0)
+                                  : const Color(0xFF0F172A),
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -371,16 +435,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
       height: 56,
       child: FilledButton.icon(
         onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Syncing…')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Syncing…')));
         },
         icon: const Icon(Icons.sync, size: 20),
-        label: const Text('Sync Now', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+        label: const Text(
+          'Sync Now',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
         style: FilledButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
       ),
     );
@@ -406,7 +475,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Container(
       padding: const EdgeInsets.fromLTRB(32, 12, 32, 24),
       decoration: BoxDecoration(
-        color: (isDark ? const Color(0xFF1E1E1E) : Colors.white).withOpacity(0.8),
+        color: (isDark ? const Color(0xFF1E1E1E) : Colors.white).withValues(
+          alpha: 0.8,
+        ),
         border: Border(
           top: BorderSide(
             color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
@@ -418,9 +489,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _NavIcon(icon: Icons.map_outlined, label: 'Places', isSelected: false, isDark: isDark, onTap: () {}),
-            _NavIcon(icon: Icons.bar_chart, label: 'Activity', isSelected: false, isDark: isDark, onTap: () {}),
-            _NavIcon(icon: Icons.settings, label: 'Settings', isSelected: true, isDark: isDark, onTap: () {}),
+            _NavIcon(
+              icon: Icons.map_outlined,
+              label: 'Places',
+              isSelected: false,
+              isDark: isDark,
+              onTap: () {},
+            ),
+            _NavIcon(
+              icon: Icons.bar_chart,
+              label: 'Activity',
+              isSelected: false,
+              isDark: isDark,
+              onTap: () {},
+            ),
+            _NavIcon(
+              icon: Icons.settings,
+              label: 'Settings',
+              isSelected: true,
+              isDark: isDark,
+              onTap: () {},
+            ),
           ],
         ),
       ),
@@ -456,7 +545,11 @@ class _NavIcon extends StatelessWidget {
             Icon(
               icon,
               size: 26,
-              color: isSelected ? AppColors.primary : (isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8)),
+              color: isSelected
+                  ? AppColors.primary
+                  : (isDark
+                        ? const Color(0xFF64748B)
+                        : const Color(0xFF94A3B8)),
             ),
             const SizedBox(height: 4),
             Text(
@@ -464,7 +557,11 @@ class _NavIcon extends StatelessWidget {
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: isSelected ? AppColors.primary : (isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8)),
+                color: isSelected
+                    ? AppColors.primary
+                    : (isDark
+                          ? const Color(0xFF64748B)
+                          : const Color(0xFF94A3B8)),
               ),
             ),
           ],

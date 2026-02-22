@@ -27,7 +27,10 @@ class BackgroundLocationScreen extends StatelessWidget {
             _buildProgress(isDark),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 24,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -44,7 +47,9 @@ class BackgroundLocationScreen extends StatelessWidget {
                     Text(
                       'To automatically sync your physical presence with Google Calendar every 10 minutes, we need background location access even when the app is closed.',
                       style: theme.textTheme.bodyLarge?.copyWith(
-                        color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                        color: isDark
+                            ? const Color(0xFF94A3B8)
+                            : const Color(0xFF64748B),
                         height: 1.5,
                       ),
                     ),
@@ -68,9 +73,14 @@ class BackgroundLocationScreen extends StatelessWidget {
         children: [
           IconButton(
             onPressed: onBack ?? () => Navigator.of(context).pop(),
-            icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : const Color(0xFF0F172A)),
+            icon: Icon(
+              Icons.arrow_back,
+              color: isDark ? Colors.white : const Color(0xFF0F172A),
+            ),
             style: IconButton.styleFrom(
-              backgroundColor: isDark ? const Color(0xFF334155).withOpacity(0.5) : const Color(0xFFF1F5F9),
+              backgroundColor: isDark
+                  ? const Color(0xFF334155).withValues(alpha: 0.5)
+                  : const Color(0xFFF1F5F9),
             ),
           ),
           Expanded(
@@ -111,9 +121,9 @@ class BackgroundLocationScreen extends StatelessWidget {
       constraints: const BoxConstraints(maxHeight: 220),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.1),
+        color: AppColors.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
       ),
       child: Center(
         child: Container(
@@ -123,7 +133,7 @@ class BackgroundLocationScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 16,
                 offset: const Offset(0, 4),
               ),
@@ -141,7 +151,9 @@ class BackgroundLocationScreen extends StatelessWidget {
                     height: 8,
                     width: 80,
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF475569) : const Color(0xFFE2E8F0),
+                      color: isDark
+                          ? const Color(0xFF475569)
+                          : const Color(0xFFE2E8F0),
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -152,7 +164,9 @@ class BackgroundLocationScreen extends StatelessWidget {
                 height: 12,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF475569) : const Color(0xFFE2E8F0),
+                  color: isDark
+                      ? const Color(0xFF475569)
+                      : const Color(0xFFE2E8F0),
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
@@ -161,7 +175,9 @@ class BackgroundLocationScreen extends StatelessWidget {
                 height: 12,
                 width: 120,
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF475569) : const Color(0xFFE2E8F0),
+                  color: isDark
+                      ? const Color(0xFF475569)
+                      : const Color(0xFFE2E8F0),
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
@@ -174,13 +190,16 @@ class BackgroundLocationScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(color: AppColors.primary, width: 2),
-                      color: AppColors.primary.withOpacity(0.1),
+                      color: AppColors.primary.withValues(alpha: 0.1),
                     ),
                     child: Center(
                       child: Container(
                         width: 6,
                         height: 6,
-                        decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+                        decoration: const BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                        ),
                       ),
                     ),
                   ),
@@ -203,7 +222,11 @@ class BackgroundLocationScreen extends StatelessWidget {
                     height: 16,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: isDark ? const Color(0xFF475569) : const Color(0xFFCBD5E1)),
+                      border: Border.all(
+                        color: isDark
+                            ? const Color(0xFF475569)
+                            : const Color(0xFFCBD5E1),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -211,7 +234,9 @@ class BackgroundLocationScreen extends StatelessWidget {
                     height: 8,
                     width: 100,
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF475569) : const Color(0xFFE2E8F0),
+                      color: isDark
+                          ? const Color(0xFF475569)
+                          : const Color(0xFFE2E8F0),
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -284,17 +309,26 @@ class BackgroundLocationScreen extends StatelessWidget {
               width: double.infinity,
               height: 56,
               child: FilledButton.icon(
-                onPressed: onOpenSettings ?? () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Opening system settings…')),
-                  );
-                },
+                onPressed:
+                    onOpenSettings ??
+                    () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Opening system settings…'),
+                        ),
+                      );
+                    },
                 icon: const Icon(Icons.open_in_new, size: 20),
-                label: const Text('Open Settings', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                label: const Text(
+                  'Open Settings',
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                ),
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
             ),
@@ -304,7 +338,9 @@ class BackgroundLocationScreen extends StatelessWidget {
               child: Text(
                 "I'll do this later",
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                  color: isDark
+                      ? const Color(0xFF94A3B8)
+                      : const Color(0xFF64748B),
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -314,7 +350,9 @@ class BackgroundLocationScreen extends StatelessWidget {
               'Your data is only used for calendar synchronization and is fully encrypted. We never share your location with third parties.',
               textAlign: TextAlign.center,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+                color: isDark
+                    ? const Color(0xFF64748B)
+                    : const Color(0xFF94A3B8),
                 fontSize: 11,
               ),
             ),
@@ -336,7 +374,9 @@ class _ProgressBar extends StatelessWidget {
     return Container(
       height: 6,
       decoration: BoxDecoration(
-        color: filled ? AppColors.primary : (isDark ? const Color(0xFF475569) : const Color(0xFFCBD5E1)),
+        color: filled
+            ? AppColors.primary
+            : (isDark ? const Color(0xFF475569) : const Color(0xFFCBD5E1)),
         borderRadius: BorderRadius.circular(3),
       ),
     );
@@ -370,12 +410,23 @@ class _StepRow extends StatelessWidget {
             height: 32,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: highlight ? AppColors.primary.withOpacity(0.2) : AppColors.primary.withOpacity(0.1),
+              color: highlight
+                  ? AppColors.primary.withValues(alpha: 0.2)
+                  : AppColors.primary.withValues(alpha: 0.1),
               border: Border.all(
-                color: highlight ? AppColors.primary : AppColors.primary.withOpacity(0.2),
+                color: highlight
+                    ? AppColors.primary
+                    : AppColors.primary.withValues(alpha: 0.2),
                 width: highlight ? 2 : 1,
               ),
-              boxShadow: highlight ? [BoxShadow(color: AppColors.primary.withOpacity(0.3), blurRadius: 15)] : null,
+              boxShadow: highlight
+                  ? [
+                      BoxShadow(
+                        color: AppColors.primary.withValues(alpha: 0.3),
+                        blurRadius: 15,
+                      ),
+                    ]
+                  : null,
             ),
             child: Center(
               child: Text(
@@ -397,7 +448,9 @@ class _StepRow extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF1E293B),
+                  color: isDark
+                      ? const Color(0xFFE2E8F0)
+                      : const Color(0xFF1E293B),
                 ),
               ),
             ),

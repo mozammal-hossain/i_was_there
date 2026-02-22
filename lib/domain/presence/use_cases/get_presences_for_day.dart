@@ -9,5 +9,6 @@ class GetPresencesForDay {
 
   final PresenceRepository _repository;
 
-  Future<List<Presence>> call(DateTime date) => _repository.getPresencesForDay(date);
+  Future<List<Presence>> call(DateTime date) =>
+      _repository.getPresencesForDay(date);
 }

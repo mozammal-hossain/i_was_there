@@ -6,10 +6,17 @@ abstract class PresenceRepository {
   Future<Presence?> getPresence(String placeId, DateTime date);
 
   /// All presence rows for a place in the given month (for calendar UI).
-  Future<List<Presence>> getPresenceForMonth(String placeId, int year, int month);
+  Future<List<Presence>> getPresenceForMonth(
+    String placeId,
+    int year,
+    int month,
+  );
 
   /// Aggregated: for each day in [start, end], true if present at any place.
-  Future<Map<DateTime, bool>> getAggregatedPresenceInRange(DateTime start, DateTime end);
+  Future<Map<DateTime, bool>> getAggregatedPresenceInRange(
+    DateTime start,
+    DateTime end,
+  );
 
   /// All presence records for a single calendar day (for day-detail UI).
   Future<List<Presence>> getPresencesForDay(DateTime date);

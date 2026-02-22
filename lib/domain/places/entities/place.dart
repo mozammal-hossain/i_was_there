@@ -7,7 +7,15 @@ class Place {
     required this.latitude,
     required this.longitude,
     this.syncStatus = PlaceSyncStatus.none,
-    this.weeklyPresence = const [false, false, false, false, false, false, false],
+    this.weeklyPresence = const [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+    ],
   });
 
   final String id;
@@ -43,12 +51,7 @@ class Place {
   }
 }
 
-enum PlaceSyncStatus {
-  none,
-  syncedToCalendar,
-  geofenceActive,
-  autoSyncEnabled,
-}
+enum PlaceSyncStatus { none, syncedToCalendar, geofenceActive, autoSyncEnabled }
 
 extension PlaceSyncStatusX on PlaceSyncStatus {
   String get label {

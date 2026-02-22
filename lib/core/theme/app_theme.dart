@@ -30,7 +30,9 @@ ThemeData buildAppTheme({required bool isDark}) {
   return ThemeData(
     useMaterial3: true,
     colorScheme: colorScheme,
-    scaffoldBackgroundColor: isDark ? AppColors.bgDarkGray : AppColors.bgWarmLight,
+    scaffoldBackgroundColor: isDark
+        ? AppColors.bgDarkGray
+        : AppColors.bgWarmLight,
     fontFamily: GoogleFonts.inter().fontFamily,
     textTheme: GoogleFonts.interTextTheme(),
     appBarTheme: AppBarTheme(
@@ -46,15 +48,17 @@ ThemeData buildAppTheme({required bool isDark}) {
     cardTheme: CardThemeData(
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      color: isDark ? const Color(0xFF1E293B).withOpacity(0.4) : Colors.white,
+      color: isDark
+          ? const Color(0xFF1E293B).withValues(alpha: 0.4)
+          : Colors.white,
       margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: isDark
-          ? const Color(0xFF334155).withOpacity(0.4)
-          : const Color(0xFFF1F5F9).withOpacity(0.5),
+          ? const Color(0xFF334155).withValues(alpha: 0.4)
+          : const Color(0xFFF1F5F9).withValues(alpha: 0.5),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),

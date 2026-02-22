@@ -63,6 +63,7 @@ dependencies:
   # Routing & onboarding
   go_router: ^14.6.2
   shared_preferences: ^2.3.3
+  latlong2: ^0.9.1
 
 dev_dependencies:
   flutter_test:

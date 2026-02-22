@@ -7,11 +7,7 @@ import '../../../../domain/places/entities/place.dart';
 /// Map tab: shows tracked places as pins (PRD map in dashboard nav).
 /// Uses OpenStreetMap via flutter_map — no API key required.
 class MapScreen extends StatefulWidget {
-  const MapScreen({
-    super.key,
-    this.places = const [],
-    this.onBack,
-  });
+  const MapScreen({super.key, this.places = const [], this.onBack});
 
   final List<Place> places;
   final VoidCallback? onBack;
@@ -57,10 +53,7 @@ class _MapScreenState extends State<MapScreen> {
     final points = markers.map((m) => m.point).toList();
     final bounds = LatLngBounds.fromPoints(points);
     _mapController.fitCamera(
-      CameraFit.bounds(
-        bounds: bounds,
-        padding: const EdgeInsets.all(80),
-      ),
+      CameraFit.bounds(bounds: bounds, padding: const EdgeInsets.all(80)),
     );
   }
 
@@ -132,11 +125,14 @@ class _MapScreenState extends State<MapScreen> {
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: (isDark ? AppColors.bgDarkGray : Colors.white)
-                          .withOpacity(0.95),
+                          .withValues(alpha: 0.95),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
-                        Icons.chevron_left, size: 28, color: AppColors.primary),
+                      Icons.chevron_left,
+                      size: 28,
+                      color: AppColors.primary,
+                    ),
                   ),
                 ),
               ),
@@ -148,11 +144,11 @@ class _MapScreenState extends State<MapScreen> {
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   color: (isDark ? AppColors.bgDarkGray : Colors.white)
-                      .withOpacity(0.95),
+                      .withValues(alpha: 0.95),
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
+                      color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.1),
                       blurRadius: 16,
                       offset: const Offset(0, 4),
                     ),

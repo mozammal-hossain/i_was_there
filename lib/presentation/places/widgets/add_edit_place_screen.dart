@@ -8,11 +8,7 @@ import '../../../../domain/places/entities/place.dart';
 
 /// Add or edit a tracked place (PRD R2: pin on map, current location, address search; R3: 20m geofence).
 class AddEditPlaceScreen extends StatefulWidget {
-  const AddEditPlaceScreen({
-    super.key,
-    this.place,
-    required this.onSave,
-  });
+  const AddEditPlaceScreen({super.key, this.place, required this.onSave});
 
   /// If null, we are adding; otherwise editing.
   final Place? place;
@@ -59,7 +55,9 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
       if (!serviceEnabled && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Location services are disabled. Please enable them in settings.'),
+            content: Text(
+              'Location services are disabled. Please enable them in settings.',
+            ),
           ),
         );
         return;
@@ -72,7 +70,9 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
       if (permission == LocationPermission.deniedForever && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Location permission permanently denied. Enable it in app settings.'),
+            content: Text(
+              'Location permission permanently denied. Enable it in app settings.',
+            ),
           ),
         );
         return;
@@ -98,7 +98,10 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
       });
 
       try {
-        final placemarks = await placemarkFromCoordinates(pos.latitude, pos.longitude);
+        final placemarks = await placemarkFromCoordinates(
+          pos.latitude,
+          pos.longitude,
+        );
         if (placemarks.isNotEmpty && mounted) {
           final p = placemarks.first;
           final parts = [
@@ -116,20 +119,26 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
       }
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Current location set.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Current location set.')));
       }
     } on TimeoutException {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Getting location timed out. Try again.')),
+          const SnackBar(
+            content: Text('Getting location timed out. Try again.'),
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not get location: ${e.toString().split('\n').first}')),
+          SnackBar(
+            content: Text(
+              'Could not get location: ${e.toString().split('\n').first}',
+            ),
+          ),
         );
       }
     } finally {
@@ -148,7 +157,8 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
     }
     final lat = _latitude ?? widget.place?.latitude ?? 0.0;
     final lng = _longitude ?? widget.place?.longitude ?? 0.0;
-    final place = widget.place?.copyWith(
+    final place =
+        widget.place?.copyWith(
           name: name,
           address: address.isNotEmpty ? address : widget.place!.address,
           latitude: lat,
@@ -198,7 +208,8 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
         right: 16,
       ),
       decoration: BoxDecoration(
-        color: (isDark ? AppColors.backgroundDark : AppColors.bgWarmLight).withOpacity(0.9),
+        color: (isDark ? AppColors.backgroundDark : AppColors.bgWarmLight)
+            .withValues(alpha: 0.9),
         border: Border(
           bottom: BorderSide(
             color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
@@ -210,8 +221,15 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
         children: [
           TextButton.icon(
             onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(Icons.chevron_left, size: 24, color: AppColors.primary),
-            label: const Text('Back', style: TextStyle(color: AppColors.primary, fontSize: 17)),
+            icon: const Icon(
+              Icons.chevron_left,
+              size: 24,
+              color: AppColors.primary,
+            ),
+            label: const Text(
+              'Back',
+              style: TextStyle(color: AppColors.primary, fontSize: 17),
+            ),
           ),
           Text(
             'Tracked Place',
@@ -223,7 +241,10 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel', style: TextStyle(color: AppColors.primary, fontSize: 17)),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: AppColors.primary, fontSize: 17),
+            ),
           ),
         ],
       ),
@@ -242,7 +263,9 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
             child: Icon(
               Icons.map_outlined,
               size: 64,
-              color: (isDark ? const Color(0xFF475569) : const Color(0xFF94A3B8)),
+              color: (isDark
+                  ? const Color(0xFF475569)
+                  : const Color(0xFF94A3B8)),
             ),
           ),
           Container(
@@ -250,8 +273,11 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
             height: 128,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.primary.withOpacity(0.4), width: 1),
-              color: AppColors.primary.withOpacity(0.08),
+              border: Border.all(
+                color: AppColors.primary.withValues(alpha: 0.4),
+                width: 1,
+              ),
+              color: AppColors.primary.withValues(alpha: 0.08),
             ),
             child: Center(
               child: Column(
@@ -269,7 +295,7 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withValues(alpha: 0.2),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
                         ),
@@ -290,7 +316,7 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
                   Container(
                     width: 2,
                     height: 12,
-                    color: AppColors.primary.withOpacity(0.8),
+                    color: AppColors.primary.withValues(alpha: 0.8),
                   ),
                 ],
               ),
@@ -315,12 +341,12 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
             height: 44,
             decoration: BoxDecoration(
               color: Theme.of(context).brightness == Brightness.dark
-                  ? const Color(0xFF1E293B).withOpacity(0.9)
-                  : Colors.white.withOpacity(0.9),
+                  ? const Color(0xFF1E293B).withValues(alpha: 0.9)
+                  : Colors.white.withValues(alpha: 0.9),
               borderRadius: BorderRadius.circular(22),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
+                  color: Colors.black.withValues(alpha: 0.08),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -331,7 +357,11 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
                     padding: EdgeInsets.all(10),
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : const Icon(Icons.my_location, size: 22, color: Color(0xFF64748B)),
+                : const Icon(
+                    Icons.my_location,
+                    size: 22,
+                    color: Color(0xFF64748B),
+                  ),
           ),
         ),
       ),
@@ -350,7 +380,7 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
             blurRadius: 24,
             offset: const Offset(0, -4),
           ),
@@ -368,7 +398,9 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
                   width: 36,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: isDark ? const Color(0xFF475569) : const Color(0xFFCBD5E1),
+                    color: isDark
+                        ? const Color(0xFF475569)
+                        : const Color(0xFFCBD5E1),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -377,16 +409,16 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
               Text(
                 'NAME',
                 style: theme.textTheme.labelMedium?.copyWith(
-                  color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                  color: isDark
+                      ? const Color(0xFF94A3B8)
+                      : const Color(0xFF64748B),
                   fontWeight: FontWeight.w500,
                 ),
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  hintText: 'Enter place name',
-                ),
+                decoration: const InputDecoration(hintText: 'Enter place name'),
                 style: TextStyle(
                   fontSize: 17,
                   color: isDark ? Colors.white : const Color(0xFF0F172A),
@@ -396,7 +428,9 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
               Text(
                 'ADDRESS',
                 style: theme.textTheme.labelMedium?.copyWith(
-                  color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                  color: isDark
+                      ? const Color(0xFF94A3B8)
+                      : const Color(0xFF64748B),
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -405,7 +439,11 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
                 controller: _addressController,
                 decoration: InputDecoration(
                   hintText: 'Search address...',
-                  prefixIcon: const Icon(Icons.search, color: AppColors.primary, size: 20),
+                  prefixIcon: const Icon(
+                    Icons.search,
+                    color: AppColors.primary,
+                    size: 20,
+                  ),
                 ),
                 style: TextStyle(
                   fontSize: 17,
@@ -419,32 +457,51 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
                     ? const SizedBox(
                         width: 18,
                         height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.primary,
+                        ),
                       )
-                    : const Icon(Icons.near_me, size: 18, color: AppColors.primary),
+                    : const Icon(
+                        Icons.near_me,
+                        size: 18,
+                        color: AppColors.primary,
+                      ),
                 label: const Text(
                   'Use my current location',
-                  style: TextStyle(color: AppColors.primary, fontSize: 15, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.05),
+                  color: AppColors.primary.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.primary.withOpacity(0.1)),
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                  ),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.info_outline, color: AppColors.primary, size: 20),
+                    const Icon(
+                      Icons.info_outline,
+                      color: AppColors.primary,
+                      size: 20,
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         'A 20m geofence ensures accurate attendance tracking while maintaining privacy and battery efficiency.',
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                          color: isDark
+                              ? const Color(0xFF94A3B8)
+                              : const Color(0xFF64748B),
                           height: 1.4,
                         ),
                       ),
@@ -461,21 +518,34 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                  child: const Text('Save Changes', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
+                  child: const Text(
+                    'Save Changes',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.sync, size: 14, color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8)),
+                  Icon(
+                    Icons.sync,
+                    size: 14,
+                    color: isDark
+                        ? const Color(0xFF64748B)
+                        : const Color(0xFF94A3B8),
+                  ),
                   const SizedBox(width: 6),
                   Text(
                     'Updates sync with Google Calendar',
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+                      color: isDark
+                          ? const Color(0xFF64748B)
+                          : const Color(0xFF94A3B8),
                       fontSize: 12,
                     ),
                   ),

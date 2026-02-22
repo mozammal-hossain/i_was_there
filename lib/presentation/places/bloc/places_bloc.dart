@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../domain/places/entities/place.dart';
 import '../../../../domain/places/use_cases/add_place.dart';
 import '../../../../domain/places/use_cases/get_places.dart';
 import '../../../../domain/places/use_cases/remove_place.dart';

@@ -82,7 +82,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   bool _isToday(int day) {
     final now = DateTime.now();
-    return now.year == _viewMonth.year && now.month == _viewMonth.month && now.day == day;
+    return now.year == _viewMonth.year &&
+        now.month == _viewMonth.month &&
+        now.day == day;
   }
 
   Future<void> _loadDayDetails(int day) async {
@@ -112,7 +114,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
             _buildFilterChips(isDark),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 24,
+                ),
                 child: Column(
                   children: [
                     _buildMonthNav(context, theme, isDark),
@@ -156,7 +161,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       decoration: BoxDecoration(
-        color: (isDark ? AppColors.bgDarkGray : AppColors.bgWarmLight).withOpacity(0.9),
+        color: (isDark ? AppColors.bgDarkGray : AppColors.bgWarmLight)
+            .withValues(alpha: 0.9),
         border: Border(
           bottom: BorderSide(
             color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
@@ -170,7 +176,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
               onPressed: widget.onBack,
               icon: const Icon(Icons.chevron_left),
               style: IconButton.styleFrom(
-                foregroundColor: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                foregroundColor: isDark
+                    ? const Color(0xFF94A3B8)
+                    : const Color(0xFF64748B),
               ),
             )
           else
@@ -204,27 +212,38 @@ class _HistoryScreenState extends State<HistoryScreen> {
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       child: Row(
-        children: List.generate(
-          _filterLabels.length,
-          (i) {
-            final selected = i == _selectedFilterIndex;
-            return Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: FilterChip(
-                label: Text(_filterLabels[i], style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                selected: selected,
-                onSelected: (_) => setState(() => _selectedFilterIndex = i),
-                backgroundColor: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
-                selectedColor: AppColors.primary,
-                labelStyle: TextStyle(
-                  color: selected ? Colors.white : (isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569)),
+        children: List.generate(_filterLabels.length, (i) {
+          final selected = i == _selectedFilterIndex;
+          return Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: FilterChip(
+              label: Text(
+                _filterLabels[i],
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
               ),
-            );
-          },
-        ),
+              selected: selected,
+              onSelected: (_) => setState(() => _selectedFilterIndex = i),
+              backgroundColor: isDark
+                  ? const Color(0xFF334155)
+                  : const Color(0xFFE2E8F0),
+              selectedColor: AppColors.primary,
+              labelStyle: TextStyle(
+                color: selected
+                    ? Colors.white
+                    : (isDark
+                          ? const Color(0xFF94A3B8)
+                          : const Color(0xFF475569)),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(999),
+              ),
+            ),
+          );
+        }),
       ),
     );
   }
@@ -244,8 +263,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
             _loadPresence();
           },
           style: IconButton.styleFrom(
-            backgroundColor: isDark ? const Color(0xFF334155).withOpacity(0.5) : const Color(0xFFF1F5F9),
-            foregroundColor: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+            backgroundColor: isDark
+                ? const Color(0xFF334155).withValues(alpha: 0.5)
+                : const Color(0xFFF1F5F9),
+            foregroundColor: isDark
+                ? const Color(0xFF94A3B8)
+                : const Color(0xFF64748B),
           ),
           icon: const Icon(Icons.chevron_left),
         ),
@@ -266,8 +289,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
             _loadPresence();
           },
           style: IconButton.styleFrom(
-            backgroundColor: isDark ? const Color(0xFF334155).withOpacity(0.5) : const Color(0xFFF1F5F9),
-            foregroundColor: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+            backgroundColor: isDark
+                ? const Color(0xFF334155).withValues(alpha: 0.5)
+                : const Color(0xFFF1F5F9),
+            foregroundColor: isDark
+                ? const Color(0xFF94A3B8)
+                : const Color(0xFF64748B),
           ),
           icon: const Icon(Icons.chevron_right),
         ),
@@ -276,8 +303,20 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 
   String _monthName(int month) {
-    const names = ['January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'];
+    const names = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
     return names[month - 1];
   }
 
@@ -289,18 +328,24 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return Column(
       children: [
         Row(
-          children: weekdays.map((d) => Expanded(
-            child: Center(
-              child: Text(
-                d,
-                style: theme.textTheme.labelSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.2,
-                  color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+          children: weekdays
+              .map(
+                (d) => Expanded(
+                  child: Center(
+                    child: Text(
+                      d,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.2,
+                        color: isDark
+                            ? const Color(0xFF64748B)
+                            : const Color(0xFF94A3B8),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          )).toList(),
+              )
+              .toList(),
         ),
         const SizedBox(height: 8),
         GridView.count(
@@ -326,10 +371,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 child: Container(
                   decoration: BoxDecoration(
                     color: highlight
-                        ? AppColors.primary.withOpacity(isDark ? 0.2 : 0.1)
-                        : (isDark ? const Color(0xFF334155).withOpacity(0.4) : const Color(0xFFF1F5F9)),
+                        ? AppColors.primary.withValues(
+                            alpha: isDark ? 0.2 : 0.1,
+                          )
+                        : (isDark
+                              ? const Color(0xFF334155).withValues(alpha: 0.4)
+                              : const Color(0xFFF1F5F9)),
                     borderRadius: BorderRadius.circular(12),
-                    border: highlight ? Border.all(color: AppColors.primary, width: 2) : null,
+                    border: highlight
+                        ? Border.all(color: AppColors.primary, width: 2)
+                        : null,
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -337,8 +388,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       Text(
                         '$day',
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          fontWeight: highlight ? FontWeight.bold : FontWeight.w500,
-                          color: highlight ? AppColors.primary : (isDark ? Colors.white : const Color(0xFF0F172A)),
+                          fontWeight: highlight
+                              ? FontWeight.bold
+                              : FontWeight.w500,
+                          color: highlight
+                              ? AppColors.primary
+                              : (isDark
+                                    ? Colors.white
+                                    : const Color(0xFF0F172A)),
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -347,8 +404,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         height: 6,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: hasPresence ? AppColors.primary : (isDark ? const Color(0xFF475569) : const Color(0xFFCBD5E1)),
-                          border: hasPresence ? null : Border.all(color: isDark ? const Color(0xFF475569) : const Color(0xFF94A3B8)),
+                          color: hasPresence
+                              ? AppColors.primary
+                              : (isDark
+                                    ? const Color(0xFF475569)
+                                    : const Color(0xFFCBD5E1)),
+                          border: hasPresence
+                              ? null
+                              : Border.all(
+                                  color: isDark
+                                      ? const Color(0xFF475569)
+                                      : const Color(0xFF94A3B8),
+                                ),
                         ),
                       ),
                     ],
@@ -382,14 +449,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF334155).withOpacity(0.3) : const Color(0xFFF1F5F9),
+              color: isDark
+                  ? const Color(0xFF334155).withValues(alpha: 0.3)
+                  : const Color(0xFFF1F5F9),
               borderRadius: BorderRadius.circular(24),
             ),
             child: Center(
               child: Text(
                 'Tap a day on the calendar to see sessions',
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                  color: isDark
+                      ? const Color(0xFF94A3B8)
+                      : const Color(0xFF64748B),
                 ),
               ),
             ),
@@ -410,14 +481,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
               style: theme.textTheme.labelSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 letterSpacing: 0.15,
-                color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+                color: isDark
+                    ? const Color(0xFF64748B)
+                    : const Color(0xFF94A3B8),
               ),
             ),
             if (hasPresence)
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(999),
                 ),
                 child: Text(
@@ -432,13 +505,17 @@ class _HistoryScreenState extends State<HistoryScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                  color: isDark
+                      ? const Color(0xFF334155)
+                      : const Color(0xFFE2E8F0),
                   borderRadius: BorderRadius.circular(999),
                 ),
                 child: Text(
                   'NO SESSIONS',
                   style: theme.textTheme.labelSmall?.copyWith(
-                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                    color: isDark
+                        ? const Color(0xFF94A3B8)
+                        : const Color(0xFF64748B),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -457,14 +534,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF334155).withOpacity(0.3) : const Color(0xFFF1F5F9),
+              color: isDark
+                  ? const Color(0xFF334155).withValues(alpha: 0.3)
+                  : const Color(0xFFF1F5F9),
               borderRadius: BorderRadius.circular(24),
             ),
             child: Center(
               child: Text(
                 'No recorded sessions for this day',
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                  color: isDark
+                      ? const Color(0xFF94A3B8)
+                      : const Color(0xFF64748B),
                 ),
               ),
             ),
@@ -496,9 +577,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   static IconData _iconForPlaceName(String name) {
     final n = name.toLowerCase();
-    if (n.contains('gym') || n.contains('fitness')) return Icons.fitness_center;
-    if (n.contains('yoga') || n.contains('studio')) return Icons.self_improvement;
-    if (n.contains('office')) return Icons.apartment;
+    if (n.contains('gym') || n.contains('fitness')) {
+      return Icons.fitness_center;
+    }
+    if (n.contains('yoga') || n.contains('studio')) {
+      return Icons.self_improvement;
+    }
+    if (n.contains('office')) {
+      return Icons.apartment;
+    }
     return Icons.place;
   }
 
@@ -513,7 +600,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
       decoration: BoxDecoration(
-        color: (isDark ? AppColors.bgDarkGray : AppColors.bgWarmLight).withOpacity(0.95),
+        color: (isDark ? AppColors.bgDarkGray : AppColors.bgWarmLight)
+            .withValues(alpha: 0.95),
         border: Border(
           top: BorderSide(
             color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
@@ -525,10 +613,30 @@ class _HistoryScreenState extends State<HistoryScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _HistoryNavItem(icon: Icons.calendar_month, label: 'History', selected: true, isDark: isDark),
-            _HistoryNavItem(icon: Icons.analytics_outlined, label: 'Stats', selected: false, isDark: isDark),
-            _HistoryNavItem(icon: Icons.explore_outlined, label: 'Classes', selected: false, isDark: isDark),
-            _HistoryNavItem(icon: Icons.person_outline, label: 'Profile', selected: false, isDark: isDark),
+            _HistoryNavItem(
+              icon: Icons.calendar_month,
+              label: 'History',
+              selected: true,
+              isDark: isDark,
+            ),
+            _HistoryNavItem(
+              icon: Icons.analytics_outlined,
+              label: 'Stats',
+              selected: false,
+              isDark: isDark,
+            ),
+            _HistoryNavItem(
+              icon: Icons.explore_outlined,
+              label: 'Classes',
+              selected: false,
+              isDark: isDark,
+            ),
+            _HistoryNavItem(
+              icon: Icons.person_outline,
+              label: 'Profile',
+              selected: false,
+              isDark: isDark,
+            ),
           ],
         ),
       ),
@@ -556,7 +664,9 @@ class _SessionTile extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Material(
-      color: isDark ? const Color(0xFF334155).withOpacity(0.4) : const Color(0xFFF1F5F9),
+      color: isDark
+          ? const Color(0xFF334155).withValues(alpha: 0.4)
+          : const Color(0xFFF1F5F9),
       borderRadius: BorderRadius.circular(24),
       child: InkWell(
         onTap: onTap,
@@ -569,7 +679,7 @@ class _SessionTile extends StatelessWidget {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: AppColors.primary, size: 22),
@@ -589,14 +699,21 @@ class _SessionTile extends StatelessWidget {
                     Text(
                       subtitle,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                        color: isDark
+                            ? const Color(0xFF94A3B8)
+                            : const Color(0xFF64748B),
                         fontSize: 12,
                       ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8)),
+              Icon(
+                Icons.chevron_right,
+                color: isDark
+                    ? const Color(0xFF64748B)
+                    : const Color(0xFF94A3B8),
+              ),
             ],
           ),
         ),
@@ -626,7 +743,9 @@ class _HistoryNavItem extends StatelessWidget {
         Icon(
           icon,
           size: 24,
-          color: selected ? AppColors.primary : (isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8)),
+          color: selected
+              ? AppColors.primary
+              : (isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8)),
         ),
         const SizedBox(height: 4),
         Text(
@@ -634,7 +753,9 @@ class _HistoryNavItem extends StatelessWidget {
           style: TextStyle(
             fontSize: 10,
             fontWeight: selected ? FontWeight.bold : FontWeight.w500,
-            color: selected ? AppColors.primary : (isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8)),
+            color: selected
+                ? AppColors.primary
+                : (isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8)),
           ),
         ),
       ],

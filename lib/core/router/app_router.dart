@@ -49,10 +49,7 @@ GoRouter createAppRouter({
           },
         ),
       ),
-      GoRoute(
-        path: '/',
-        builder: (context, state) => const MainShell(),
-      ),
+      GoRoute(path: '/', builder: (context, state) => const MainShell()),
     ],
   );
 }

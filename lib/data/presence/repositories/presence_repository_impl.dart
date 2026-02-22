@@ -16,9 +16,10 @@ class PresenceRepositoryImpl implements PresenceRepository {
   @override
   Future<domain.Presence?> getPresence(String placeId, DateTime date) async {
     final day = _calendarDay(date);
-    final row = await (_db.select(_db.presences)
-          ..where((t) => t.placeId.equals(placeId) & t.date.equals(day)))
-        .getSingleOrNull();
+    final row =
+        await (_db.select(_db.presences)
+              ..where((t) => t.placeId.equals(placeId) & t.date.equals(day)))
+            .getSingleOrNull();
     if (row == null) return null;
     return domain.Presence(
       placeId: row.placeId,
@@ -30,56 +31,75 @@ class PresenceRepositoryImpl implements PresenceRepository {
   }
 
   @override
-  Future<List<domain.Presence>> getPresenceForMonth(String placeId, int year, int month) async {
+  Future<List<domain.Presence>> getPresenceForMonth(
+    String placeId,
+    int year,
+    int month,
+  ) async {
     final start = DateTime(year, month, 1);
     final end = DateTime(year, month + 1, 0); // last day of month
-    final rows = await (_db.select(_db.presences)
-          ..where((t) =>
-              t.placeId.equals(placeId) &
-              t.date.isBiggerOrEqualValue(start) &
-              t.date.isSmallerOrEqualValue(end)))
-        .get();
-    return rows
-        .map((r) => domain.Presence(
-              placeId: r.placeId,
-              date: r.date,
-              isPresent: r.isPresent,
-              source: domain.PresenceSource.values[r.source],
-              firstDetectedAt: r.firstDetectedAt,
+    final rows =
+        await (_db.select(_db.presences)..where(
+              (t) =>
+                  t.placeId.equals(placeId) &
+                  t.date.isBiggerOrEqualValue(start) &
+                  t.date.isSmallerOrEqualValue(end),
             ))
+            .get();
+    return rows
+        .map(
+          (r) => domain.Presence(
+            placeId: r.placeId,
+            date: r.date,
+            isPresent: r.isPresent,
+            source: domain.PresenceSource.values[r.source],
+            firstDetectedAt: r.firstDetectedAt,
+          ),
+        )
         .toList();
   }
 
   @override
   Future<List<domain.Presence>> getPresencesForDay(DateTime date) async {
     final day = _calendarDay(date);
-    final rows = await (_db.select(_db.presences)
-          ..where((t) => t.date.equals(day) & t.isPresent.equals(true)))
-        .get();
+    final rows = await (_db.select(
+      _db.presences,
+    )..where((t) => t.date.equals(day) & t.isPresent.equals(true))).get();
     return rows
-        .map((r) => domain.Presence(
-              placeId: r.placeId,
-              date: r.date,
-              isPresent: r.isPresent,
-              source: domain.PresenceSource.values[r.source],
-              firstDetectedAt: r.firstDetectedAt,
-            ))
+        .map(
+          (r) => domain.Presence(
+            placeId: r.placeId,
+            date: r.date,
+            isPresent: r.isPresent,
+            source: domain.PresenceSource.values[r.source],
+            firstDetectedAt: r.firstDetectedAt,
+          ),
+        )
         .toList();
   }
 
   @override
-  Future<Map<DateTime, bool>> getAggregatedPresenceInRange(DateTime start, DateTime end) async {
+  Future<Map<DateTime, bool>> getAggregatedPresenceInRange(
+    DateTime start,
+    DateTime end,
+  ) async {
     final startDay = _calendarDay(start);
     final endDay = _calendarDay(end);
     // Any place present on that day => day is present (aggregated view).
-    final rows = await (_db.select(_db.presences)
-          ..where((t) =>
-              t.isPresent.equals(true) &
-              t.date.isBiggerOrEqualValue(startDay) &
-              t.date.isSmallerOrEqualValue(endDay)))
-        .get();
+    final rows =
+        await (_db.select(_db.presences)..where(
+              (t) =>
+                  t.isPresent.equals(true) &
+                  t.date.isBiggerOrEqualValue(startDay) &
+                  t.date.isSmallerOrEqualValue(endDay),
+            ))
+            .get();
     final map = <DateTime, bool>{};
-    for (var d = startDay; !d.isAfter(endDay); d = d.add(const Duration(days: 1))) {
+    for (
+      var d = startDay;
+      !d.isAfter(endDay);
+      d = d.add(const Duration(days: 1))
+    ) {
       map[d] = false;
     }
     for (final r in rows) {
@@ -97,7 +117,9 @@ class PresenceRepositoryImpl implements PresenceRepository {
     DateTime? firstDetectedAt,
   }) async {
     final day = _calendarDay(date);
-    await _db.into(_db.presences).insert(
+    await _db
+        .into(_db.presences)
+        .insert(
           PresencesCompanion.insert(
             placeId: placeId,
             date: day,

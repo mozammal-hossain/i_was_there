@@ -10,8 +10,6 @@ class SettingsFeature extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SettingsScreen(
-      settingsRepository: getIt<SettingsRepository>(),
-    );
+    return SettingsScreen(settingsRepository: getIt<SettingsRepository>());
   }
 }

@@ -180,9 +180,12 @@ class _PlaceCard extends StatelessWidget {
 
   static IconData _iconForPlace(Place place) {
     final n = place.name.toLowerCase();
-    if (n.contains('gym') || n.contains('fitness')) return Icons.fitness_center;
-    if (n.contains('yoga') || n.contains('studio'))
+    if (n.contains('gym') || n.contains('fitness')) {
+      return Icons.fitness_center;
+    }
+    if (n.contains('yoga') || n.contains('studio')) {
       return Icons.self_improvement;
+    }
     return Icons.apartment;
   }
 
@@ -206,7 +209,9 @@ class _PlaceCard extends StatelessWidget {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(isDark ? 0.2 : 0.1),
+                      color: AppColors.primary.withValues(
+                        alpha: isDark ? 0.2 : 0.1,
+                      ),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Icon(
@@ -291,7 +296,9 @@ class _PlaceCard extends StatelessWidget {
                         boxShadow: present
                             ? [
                                 BoxShadow(
-                                  color: AppColors.primary.withOpacity(0.3),
+                                  color: AppColors.primary.withValues(
+                                    alpha: 0.3,
+                                  ),
                                   blurRadius: 8,
                                 ),
                               ]
@@ -332,7 +339,9 @@ class _BottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: (isDark ? AppColors.bgDarkGray : Colors.white).withOpacity(0.9),
+        color: (isDark ? AppColors.bgDarkGray : Colors.white).withValues(
+          alpha: 0.9,
+        ),
         border: Border(
           top: BorderSide(
             color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),

@@ -44,7 +44,9 @@ class OnboardingCompletionScreen extends StatelessWidget {
                     Text(
                       "Background tracking is now active. We'll automatically sync your visits to your Google Calendar.",
                       style: theme.textTheme.bodyLarge?.copyWith(
-                        color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                        color: isDark
+                            ? const Color(0xFF94A3B8)
+                            : const Color(0xFF64748B),
                         height: 1.5,
                       ),
                       textAlign: TextAlign.center,
@@ -68,7 +70,9 @@ class OnboardingCompletionScreen extends StatelessWidget {
                       '"Tip: Add your office to start tracking your work hours."',
                       style: theme.textTheme.bodySmall?.copyWith(
                         fontStyle: FontStyle.italic,
-                        color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                        color: isDark
+                            ? const Color(0xFF94A3B8)
+                            : const Color(0xFF64748B),
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -91,7 +95,10 @@ class OnboardingCompletionScreen extends StatelessWidget {
         children: [
           IconButton(
             onPressed: onClose ?? () => Navigator.of(context).pop(),
-            icon: Icon(Icons.close, color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
+            icon: Icon(
+              Icons.close,
+              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+            ),
           ),
           Text(
             'STEP 3 OF 3',
@@ -117,8 +124,11 @@ class OnboardingCompletionScreen extends StatelessWidget {
           height: 128,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: AppColors.primary.withOpacity(isDark ? 0.2 : 0.1),
-            border: Border.all(color: AppColors.primary.withOpacity(0.3), width: 4),
+            color: AppColors.primary.withValues(alpha: isDark ? 0.2 : 0.1),
+            border: Border.all(
+              color: AppColors.primary.withValues(alpha: 0.3),
+              width: 4,
+            ),
           ),
           child: Icon(Icons.check_circle, size: 64, color: AppColors.primary),
         ),
@@ -131,13 +141,19 @@ class OnboardingCompletionScreen extends StatelessWidget {
             decoration: BoxDecoration(
               color: const Color(0xFF10B981),
               shape: BoxShape.circle,
-              border: Border.all(color: isDark ? AppColors.bgDarkGray : AppColors.bgWarmLight, width: 4),
+              border: Border.all(
+                color: isDark ? AppColors.bgDarkGray : AppColors.bgWarmLight,
+                width: 4,
+              ),
             ),
             child: Center(
               child: Container(
                 width: 8,
                 height: 8,
-                decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
               ),
             ),
           ),
@@ -155,10 +171,14 @@ class OnboardingCompletionScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.primary.withOpacity(0.05) : const Color(0xFFF1F5F9),
+        color: isDark
+            ? AppColors.primary.withValues(alpha: 0.05)
+            : const Color(0xFFF1F5F9),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark ? AppColors.primary.withOpacity(0.1) : const Color(0xFFE2E8F0),
+          color: isDark
+              ? AppColors.primary.withValues(alpha: 0.1)
+              : const Color(0xFFE2E8F0),
         ),
       ),
       child: Row(
@@ -167,7 +187,7 @@ class OnboardingCompletionScreen extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: AppColors.primary, size: 24),
@@ -182,7 +202,9 @@ class OnboardingCompletionScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                    color: isDark
+                        ? const Color(0xFF94A3B8)
+                        : const Color(0xFF64748B),
                   ),
                 ),
                 Text(
@@ -215,14 +237,19 @@ class OnboardingCompletionScreen extends StatelessWidget {
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 elevation: 4,
-                shadowColor: AppColors.primary.withOpacity(0.3),
+                shadowColor: AppColors.primary.withValues(alpha: 0.3),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Get Started', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Get Started',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(width: 8),
                   const Icon(Icons.arrow_forward, size: 20),
                 ],
@@ -236,11 +263,20 @@ class OnboardingCompletionScreen extends StatelessWidget {
             child: OutlinedButton.icon(
               onPressed: onAddFirstPlace,
               style: OutlinedButton.styleFrom(
-                side: BorderSide(color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                side: BorderSide(
+                  color: isDark
+                      ? const Color(0xFF334155)
+                      : const Color(0xFFE2E8F0),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               icon: const Icon(Icons.add_location_alt, size: 20),
-              label: const Text('Add Your First Place', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
+              label: const Text(
+                'Add Your First Place',
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+              ),
             ),
           ),
         ],

@@ -32,12 +32,14 @@ class PlaceRepositoryImpl implements PlaceRepository {
     final places = <domain.Place>[];
 
     for (final row in rows) {
-      final presences = await (_db.select(_db.presences)
-            ..where((t) =>
-                t.placeId.equals(row.placeId) &
-                t.date.isBiggerOrEqualValue(start) &
-                t.date.isSmallerOrEqualValue(_endOfWeek(now))))
-          .get();
+      final presences =
+          await (_db.select(_db.presences)..where(
+                (t) =>
+                    t.placeId.equals(row.placeId) &
+                    t.date.isBiggerOrEqualValue(start) &
+                    t.date.isSmallerOrEqualValue(_endOfWeek(now)),
+              ))
+              .get();
 
       // Build [Mon..Sun] presence (index 0 = Monday).
       final weeklyPresence = List<bool>.filled(7, false);
@@ -55,16 +57,20 @@ class PlaceRepositoryImpl implements PlaceRepository {
 
   @override
   Future<domain.Place?> getPlace(String id) async {
-    final row = await (_db.select(_db.places)..where((t) => t.placeId.equals(id))).getSingleOrNull();
+    final row = await (_db.select(
+      _db.places,
+    )..where((t) => t.placeId.equals(id))).getSingleOrNull();
     if (row == null) return null;
     final now = DateTime.now();
     final start = _startOfWeek(now);
-    final presences = await (_db.select(_db.presences)
-          ..where((t) =>
-              t.placeId.equals(id) &
-              t.date.isBiggerOrEqualValue(start) &
-              t.date.isSmallerOrEqualValue(_endOfWeek(now))))
-        .get();
+    final presences =
+        await (_db.select(_db.presences)..where(
+              (t) =>
+                  t.placeId.equals(id) &
+                  t.date.isBiggerOrEqualValue(start) &
+                  t.date.isSmallerOrEqualValue(_endOfWeek(now)),
+            ))
+            .get();
     final weeklyPresence = List<bool>.filled(7, false);
     for (final p in presences) {
       if (!p.isPresent) continue;
@@ -76,26 +82,34 @@ class PlaceRepositoryImpl implements PlaceRepository {
 
   @override
   Future<void> addPlace(domain.Place place) async {
-    await _db.into(_db.places).insert(PlacesCompanion.insert(
-          placeId: place.id,
-          name: place.name,
-          address: place.address,
-          latitude: place.latitude,
-          longitude: place.longitude,
-          syncStatusIndex: Value(place.syncStatus.index),
-        ));
+    await _db
+        .into(_db.places)
+        .insert(
+          PlacesCompanion.insert(
+            placeId: place.id,
+            name: place.name,
+            address: place.address,
+            latitude: place.latitude,
+            longitude: place.longitude,
+            syncStatusIndex: Value(place.syncStatus.index),
+          ),
+        );
   }
 
   @override
   Future<void> updatePlace(domain.Place place) async {
-    await _db.update(_db.places).replace(PlacesCompanion(
-          placeId: Value(place.id),
-          name: Value(place.name),
-          address: Value(place.address),
-          latitude: Value(place.latitude),
-          longitude: Value(place.longitude),
-          syncStatusIndex: Value(place.syncStatus.index),
-        ));
+    await _db
+        .update(_db.places)
+        .replace(
+          PlacesCompanion(
+            placeId: Value(place.id),
+            name: Value(place.name),
+            address: Value(place.address),
+            latitude: Value(place.latitude),
+            longitude: Value(place.longitude),
+            syncStatusIndex: Value(place.syncStatus.index),
+          ),
+        );
   }
 
   @override

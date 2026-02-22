@@ -5,10 +5,7 @@ import 'widgets/onboarding_completion_screen.dart';
 /// Onboarding flow: foreground/background location permission → completion.
 /// Calls [onComplete] when the user finishes (Get Started or Add First Place).
 class OnboardingFeature extends StatefulWidget {
-  const OnboardingFeature({
-    super.key,
-    required this.onComplete,
-  });
+  const OnboardingFeature({super.key, required this.onComplete});
 
   final Future<void> Function() onComplete;
 

@@ -7,7 +7,15 @@ class PlaceModel {
     required this.latitude,
     required this.longitude,
     this.syncStatusIndex = 0,
-    this.weeklyPresence = const [false, false, false, false, false, false, false],
+    this.weeklyPresence = const [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+    ],
   });
 
   final String id;

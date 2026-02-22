@@ -11,7 +11,11 @@ class PlaceMapper {
       address: row.address,
       latitude: row.latitude,
       longitude: row.longitude,
-      syncStatus: PlaceSyncStatus.values[row.syncStatusIndex.clamp(0, PlaceSyncStatus.values.length - 1)],
+      syncStatus:
+          PlaceSyncStatus.values[row.syncStatusIndex.clamp(
+            0,
+            PlaceSyncStatus.values.length - 1,
+          )],
       weeklyPresence: weeklyPresence,
     );
   }
@@ -23,7 +27,11 @@ class PlaceMapper {
       address: model.address,
       latitude: model.latitude,
       longitude: model.longitude,
-      syncStatus: PlaceSyncStatus.values[model.syncStatusIndex.clamp(0, PlaceSyncStatus.values.length - 1)],
+      syncStatus:
+          PlaceSyncStatus.values[model.syncStatusIndex.clamp(
+            0,
+            PlaceSyncStatus.values.length - 1,
+          )],
       weeklyPresence: List<bool>.from(model.weeklyPresence),
     );
   }

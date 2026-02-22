@@ -46,7 +46,10 @@ class _CalendarFeatureState extends State<CalendarFeature> {
     }
   }
 
-  Future<void> _applyManualPresence(DateTime date, Map<String, bool> presence) async {
+  Future<void> _applyManualPresence(
+    DateTime date,
+    Map<String, bool> presence,
+  ) async {
     for (final entry in presence.entries) {
       await _setPresence.call(
         placeId: entry.key,
@@ -56,9 +59,9 @@ class _CalendarFeatureState extends State<CalendarFeature> {
       );
     }
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Manual presence updated')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Manual presence updated')));
     }
   }
 
@@ -79,9 +82,7 @@ class _CalendarFeatureState extends State<CalendarFeature> {
   @override
   Widget build(BuildContext context) {
     if (_loadingPlaces) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     return HistoryScreen(
       places: _places,

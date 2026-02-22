@@ -31,7 +31,10 @@ class PlacesFeature extends StatelessWidget {
     );
   }
 
-  Future<void> _applyManualPresence(DateTime date, Map<String, bool> presence) async {
+  Future<void> _applyManualPresence(
+    DateTime date,
+    Map<String, bool> presence,
+  ) async {
     final setPresence = getIt<SetPresence>();
     for (final entry in presence.entries) {
       await setPresence.call(
@@ -53,11 +56,10 @@ class PlacesFeature extends StatelessWidget {
 }
 
 class _PlacesShell extends StatefulWidget {
-  const _PlacesShell({
-    required this.onManualApply,
-  });
+  const _PlacesShell({required this.onManualApply});
 
-  final Future<void> Function(DateTime date, Map<String, bool> presence) onManualApply;
+  final Future<void> Function(DateTime date, Map<String, bool> presence)
+  onManualApply;
 
   @override
   State<_PlacesShell> createState() => _PlacesShellState();
@@ -72,9 +74,7 @@ class _PlacesShellState extends State<_PlacesShell> {
       buildWhen: (prev, curr) => prev.places != curr.places,
       builder: (context, state) {
         if (!state.hasPlaces) {
-          return NoPlaceScreen(
-            onAddPlace: () => _openAddPlace(context),
-          );
+          return NoPlaceScreen(onAddPlace: () => _openAddPlace(context));
         }
         switch (_navIndex) {
           case 1:
@@ -87,7 +87,8 @@ class _PlacesShellState extends State<_PlacesShell> {
               places: state.places,
               onAddPlace: () => _openAddPlace(context),
               onPlaceTap: (place) => _openEditPlace(context, place),
-              onManualOverride: () => _openManualAttendance(context, state.places),
+              onManualOverride: () =>
+                  _openManualAttendance(context, state.places),
               currentNavIndex: _navIndex,
               onNavTap: (index) => setState(() => _navIndex = index),
               placesOnlyNav: true,

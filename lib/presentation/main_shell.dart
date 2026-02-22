@@ -9,7 +9,6 @@ import 'settings/settings_feature.dart';
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
 
-
   @override
   State<MainShell> createState() => _MainShellState();
 }
@@ -31,7 +30,9 @@ class _MainShellState extends State<MainShell> {
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: (isDark ? AppColors.bgDarkGray : Colors.white).withOpacity(0.95),
+          color: (isDark ? AppColors.bgDarkGray : Colors.white).withValues(
+            alpha: 0.95,
+          ),
           border: Border(
             top: BorderSide(
               color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
@@ -105,7 +106,9 @@ class _TabItem extends StatelessWidget {
               size: 26,
               color: selected
                   ? AppColors.primary
-                  : (isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8)),
+                  : (isDark
+                        ? const Color(0xFF64748B)
+                        : const Color(0xFF94A3B8)),
             ),
             const SizedBox(height: 4),
             Text(
@@ -115,7 +118,9 @@ class _TabItem extends StatelessWidget {
                 fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
                 color: selected
                     ? AppColors.primary
-                    : (isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8)),
+                    : (isDark
+                          ? const Color(0xFF64748B)
+                          : const Color(0xFF94A3B8)),
               ),
             ),
           ],
