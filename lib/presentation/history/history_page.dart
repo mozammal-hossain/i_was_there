@@ -54,6 +54,15 @@ class _HistoryPageState extends State<HistoryPage> {
     return DateTime(widget.viewMonth.year, widget.viewMonth.month + 1, 0).day;
   }
 
+  /// Selected day valid for current [viewMonth]; null if none or out of range.
+  int? get _effectiveSelectedDay {
+    final day = widget.selectedDay;
+    if (day == null) return null;
+    final daysInMonth = _daysInMonth();
+    if (day < 1 || day > daysInMonth) return null;
+    return day;
+  }
+
   int _firstWeekdayOfMonth() {
     return DateTime(widget.viewMonth.year, widget.viewMonth.month, 1).weekday %
         7;
@@ -136,7 +145,7 @@ class _HistoryPageState extends State<HistoryPage> {
                         firstWeekday: _firstWeekdayOfMonth(),
                         hasPresence: _hasPresence,
                         isToday: _isToday,
-                        selectedDay: widget.selectedDay,
+                        selectedDay: _effectiveSelectedDay,
                         theme: theme,
                         isDark: isDark,
                         onDayTap: (day) => widget.onDaySelected?.call(day),
@@ -144,9 +153,13 @@ class _HistoryPageState extends State<HistoryPage> {
                     const SizedBox(height: 40),
                     HistoryDayDetailsSection(
                       viewMonth: widget.viewMonth,
-                      selectedDay: widget.selectedDay,
-                      dayPresences: widget.dayPresences,
-                      loadingDayDetails: widget.loadingDayDetails,
+                      selectedDay: _effectiveSelectedDay,
+                      dayPresences: _effectiveSelectedDay != null
+                          ? widget.dayPresences
+                          : const [],
+                      loadingDayDetails: _effectiveSelectedDay != null
+                          ? widget.loadingDayDetails
+                          : false,
                       places: widget.places,
                       theme: theme,
                       isDark: isDark,

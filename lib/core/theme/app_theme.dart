@@ -1,27 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// App colors from design (PRD / HTML screens).
+/// App color palette derived from the I Was There logo.
+///
+/// Logo: terracotta circle (#753C2F) with black location pin.
+/// Palette is warm, personal, minimal; no gradients.
 abstract class AppColors {
-  static const Color primary = Color(0xFF137FEC);
+  // --- Brand (from logo) ---
+  /// Primary brand: logo terracotta. Use for CTAs, selected states, key UI.
+  static const Color primary = Color(0xFF753C2F);
+  /// Lighter terracotta for subtle backgrounds (e.g. selected chip, highlight).
+  static const Color primaryLight = Color(0xFFA85D4A);
+  /// Very light tint for large areas (e.g. onboarding hero background).
+  static const Color primaryTint = Color(0xFFF5EDEB);
+  /// On primary: text and icons on primary buttons/surfaces (logo pin = black).
+  static const Color onPrimary = Color(0xFFFFFFFF);
+
+  // --- Backgrounds ---
+  /// Light mode scaffold: warm off-white.
   static const Color bgWarmLight = Color(0xFFFDFCFB);
+  /// Dark mode scaffold: warm dark.
   static const Color bgDarkGray = Color(0xFF101922);
-  static const Color neutralDot = Color(0xFFE2E8F0);
-  static const Color neutralDotDark = Color(0xFF334155);
+  /// Dark cards/sheets (e.g. add-edit place).
   static const Color cardDark = Color(0xFF1E293B);
+  /// Darkest background (headers, full-screen dark).
   static const Color backgroundDark = Color(0xFF0F172A);
+
+  // --- Neutrals (warm grays for dots, borders, secondary text) ---
+  /// Inactive/empty state (e.g. calendar dot) — light mode.
+  static const Color neutralDot = Color(0xFFE2E8F0);
+  /// Inactive/empty state — dark mode.
+  static const Color neutralDotDark = Color(0xFF334155);
+
+  // --- Semantic (optional) ---
+  /// Success (e.g. “present”, sync success). Warm-friendly green.
+  static const Color success = Color(0xFF0D9488);
+  /// Error/destructive.
+  static const Color error = Color(0xFFB91C1C);
 }
 
 ThemeData buildAppTheme({required bool isDark}) {
   final colorScheme = isDark
       ? ColorScheme.dark(
           primary: AppColors.primary,
+          onPrimary: AppColors.onPrimary,
           surface: AppColors.bgDarkGray,
           onSurface: const Color(0xFFE2E8F0),
           onSurfaceVariant: const Color(0xFF94A3B8),
         )
       : ColorScheme.light(
           primary: AppColors.primary,
+          onPrimary: AppColors.onPrimary,
           surface: AppColors.bgWarmLight,
           onSurface: const Color(0xFF1E293B),
           onSurfaceVariant: const Color(0xFF64748B),

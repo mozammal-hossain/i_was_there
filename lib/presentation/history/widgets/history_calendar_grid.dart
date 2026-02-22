@@ -66,59 +66,63 @@ class HistoryCalendarGrid extends StatelessWidget {
               final isSelected = selectedDay == day;
               final today = isToday(day);
               final highlight = today || isSelected;
-              return GestureDetector(
-                onTap: () => onDayTap(day),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: highlight
-                        ? AppColors.primary.withValues(
-                            alpha: isDark ? 0.2 : 0.1,
-                          )
-                        : (isDark
-                              ? const Color(0xFF334155).withValues(alpha: 0.4)
-                              : const Color(0xFFF1F5F9)),
-                    borderRadius: BorderRadius.circular(12),
-                    border: highlight
-                        ? Border.all(color: AppColors.primary, width: 2)
-                        : null,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '$day',
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontWeight: highlight
-                              ? FontWeight.bold
-                              : FontWeight.w500,
-                          color: highlight
-                              ? AppColors.primary
-                              : (isDark
-                                    ? Colors.white
-                                    : const Color(0xFF0F172A)),
+              return Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => onDayTap(day),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: highlight
+                          ? AppColors.primary.withValues(
+                              alpha: isDark ? 0.2 : 0.1,
+                            )
+                          : (isDark
+                                ? const Color(0xFF334155).withValues(alpha: 0.4)
+                                : const Color(0xFFF1F5F9)),
+                      borderRadius: BorderRadius.circular(12),
+                      border: highlight
+                          ? Border.all(color: AppColors.primary, width: 2)
+                          : null,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '$day',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: highlight
+                                ? FontWeight.bold
+                                : FontWeight.w500,
+                            color: highlight
+                                ? AppColors.primary
+                                : (isDark
+                                      ? Colors.white
+                                      : const Color(0xFF0F172A)),
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Container(
-                        width: 6,
-                        height: 6,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: hasP
-                              ? AppColors.primary
-                              : (isDark
-                                    ? const Color(0xFF475569)
-                                    : const Color(0xFFCBD5E1)),
-                          border: hasP
-                              ? null
-                              : Border.all(
-                                  color: isDark
+                        const SizedBox(height: 4),
+                        Container(
+                          width: 6,
+                          height: 6,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: hasP
+                                ? AppColors.primary
+                                : (isDark
                                       ? const Color(0xFF475569)
-                                      : const Color(0xFF94A3B8),
-                                ),
+                                      : const Color(0xFFCBD5E1)),
+                            border: hasP
+                                ? null
+                                : Border.all(
+                                    color: isDark
+                                        ? const Color(0xFF475569)
+                                        : const Color(0xFF94A3B8),
+                                  ),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               );
