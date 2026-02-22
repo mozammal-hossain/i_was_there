@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -207,29 +208,47 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
         }
         if (state.places.any((p) => p.id == _pendingSavedPlaceId)) {
           setState(() => _pendingSavedPlaceId = null);
-          if (mounted) Navigator.of(context).pop();
+          if (mounted) context.pop();
         }
       },
       child: Scaffold(
         body: Column(
           children: [
-            _buildHeader(context, isDark),
+            AddEditPlaceHeader(isDark: isDark),
             Expanded(
               child: Stack(
                 children: [
-                  _buildMapArea(isDark),
-                  _buildMyLocationButton(context),
+                  AddEditPlaceMapArea(isDark: isDark),
+                  AddEditPlaceMyLocationButton(
+                    isLoading: _locationLoading,
+                    onTap: _useCurrentLocation,
+                  ),
                 ],
               ),
             ),
-            _buildFormSheet(context, theme, isDark),
-        ],
+            AddEditPlaceFormSheet(
+              isDark: isDark,
+              nameController: _nameController,
+              addressController: _addressController,
+              locationLoading: _locationLoading,
+              onUseCurrentLocation: _useCurrentLocation,
+              onSave: _save,
+            ),
+          ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildHeader(BuildContext context, bool isDark) {
+/// Header bar for add/edit place screen.
+class AddEditPlaceHeader extends StatelessWidget {
+  const AddEditPlaceHeader({super.key, required this.isDark});
+
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).padding.top + 8,
@@ -250,7 +269,7 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           TextButton.icon(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
             icon: const Icon(
               Icons.chevron_left,
               size: 24,
@@ -270,7 +289,7 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
             ),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
             child: const Text(
               'Cancel',
               style: TextStyle(color: AppColors.primary, fontSize: 17),
@@ -280,8 +299,16 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
       ),
     );
   }
+}
 
-  Widget _buildMapArea(bool isDark) {
+/// Map placeholder area for add/edit place screen.
+class AddEditPlaceMapArea extends StatelessWidget {
+  const AddEditPlaceMapArea({super.key, required this.isDark});
+
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       height: double.infinity,
@@ -356,15 +383,28 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
       ),
     );
   }
+}
 
-  Widget _buildMyLocationButton(BuildContext context) {
+/// My location FAB for add/edit place screen.
+class AddEditPlaceMyLocationButton extends StatelessWidget {
+  const AddEditPlaceMyLocationButton({
+    super.key,
+    required this.isLoading,
+    required this.onTap,
+  });
+
+  final bool isLoading;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
     return Positioned(
       top: 16,
       right: 16,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: _locationLoading ? null : _useCurrentLocation,
+          onTap: isLoading ? null : onTap,
           borderRadius: BorderRadius.circular(24),
           child: Container(
             width: 44,
@@ -382,7 +422,7 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
                 ),
               ],
             ),
-            child: _locationLoading
+            child: isLoading
                 ? const Padding(
                     padding: EdgeInsets.all(10),
                     child: CircularProgressIndicator(strokeWidth: 2),
@@ -397,8 +437,30 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
       ),
     );
   }
+}
 
-  Widget _buildFormSheet(BuildContext context, ThemeData theme, bool isDark) {
+/// Form sheet for add/edit place screen.
+class AddEditPlaceFormSheet extends StatelessWidget {
+  const AddEditPlaceFormSheet({
+    super.key,
+    required this.isDark,
+    required this.nameController,
+    required this.addressController,
+    required this.locationLoading,
+    required this.onUseCurrentLocation,
+    required this.onSave,
+  });
+
+  final bool isDark;
+  final TextEditingController nameController;
+  final TextEditingController addressController;
+  final bool locationLoading;
+  final VoidCallback onUseCurrentLocation;
+  final VoidCallback onSave;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(
         color: isDark ? AppColors.cardDark : AppColors.bgWarmLight,
@@ -447,7 +509,7 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
               ),
               const SizedBox(height: 8),
               TextField(
-                controller: _nameController,
+                controller: nameController,
                 decoration: const InputDecoration(hintText: 'Enter place name'),
                 style: TextStyle(
                   fontSize: 17,
@@ -466,7 +528,7 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
               ),
               const SizedBox(height: 8),
               TextField(
-                controller: _addressController,
+                controller: addressController,
                 decoration: InputDecoration(
                   hintText: 'Search address...',
                   prefixIcon: const Icon(
@@ -482,8 +544,8 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
               ),
               const SizedBox(height: 16),
               TextButton.icon(
-                onPressed: _locationLoading ? null : _useCurrentLocation,
-                icon: _locationLoading
+                onPressed: locationLoading ? null : onUseCurrentLocation,
+                icon: locationLoading
                     ? const SizedBox(
                         width: 18,
                         height: 18,
@@ -544,7 +606,7 @@ class _AddEditPlaceScreenState extends State<AddEditPlaceScreen> {
                 width: double.infinity,
                 height: 56,
                 child: FilledButton(
-                  onPressed: _save,
+                  onPressed: onSave,
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,

@@ -23,12 +23,56 @@ Project-specific architecture and coding rules. Follow these when adding or chan
 
 Each feature follows this template under `lib/`:
 
-| Layer        | Path                     | Contents |
-|-------------|---------------------------|----------|
-| **Data**    | `data/<feature>/`        | `data_source/`, `repositories/`, `models/`, `mappers/` |
-| **Domain**  | `domain/<feature>/`       | `entities/`, `repositories/` (interfaces), `use_cases/` |
-| **Presentation** | `presentation/<feature>/` | `bloc/`, `widgets/`, `utils/`, `<feature>_feature.dart` |
+| Layer            | Path                      | Contents                                                |
+| ---------------- | ------------------------- | ------------------------------------------------------- |
+| **Data**         | `data/<feature>/`         | `data_source/`, `repositories/`, `models/`, `mappers/`  |
+| **Domain**       | `domain/<feature>/`       | `entities/`, `repositories/` (interfaces), `use_cases/` |
+| **Presentation** | `presentation/<feature>/` | See presentation structure below                        |
 
+### Presentation layer (per screen)
+
+```
+presentation/
+<feature1>/
+  <Screen_Name1>/
+    bloc/
+      <screen_name1>_bloc.dart
+      <screen_name1>_event.dart
+      <screen_name1>_state.dart
+    widgets/
+    utils/
+    ui_models/
+    <screen_name1>.dart
+  <Screen_Name2>/
+    bloc/
+      <screen_name2>_bloc.dart
+      <screen_name2>_event.dart
+      <screen_name2>_state.dart
+    widgets/
+    utils/
+    ui_models/
+    <screen_name2>.dart
+<feature2>/
+  <Screen_Name3>/
+    bloc/
+      <screen_name3>_bloc.dart
+      <screen_name3>_event.dart
+      <screen_name3>_state.dart
+    widgets/
+    utils/
+    ui_models/
+    <screen_name3>.dart
+```
+
+- **bloc/**: BLoC, events, and states scoped to the screen (snake_case filenames).
+- **widgets/**: Screen-specific widgets.
+- **utils/**: Screen-specific helpers.
+
+### Widget composition
+
+- Create **StatelessWidget** or **StatefulWidget** classes for all UI; do not use widget methods (e.g. `Widget _buildHeader()`).
+- **ui_models/**: UI-only models (not domain entities).
+- **&lt;screen_name&gt;.dart**: Main screen entry widget.
 - **core/** holds shared code: DI (get_it + injectable), router, error handling, constants.
 - Features: **places**, **presence**, **calendar**, **sync**, **settings**, **onboarding**.
 
@@ -37,7 +81,10 @@ Each feature follows this template under `lib/`:
 ## 3. State management (BLoC)
 
 - Use **flutter_bloc** only. No other state management (Provider, Riverpod, etc.) for feature state.
-- Put Bloc/Cubit, events, and states under **presentation/<feature>/bloc/**.
+- **No business logic in the presentation layer.** Keep it in domain (use cases) or data; presentation only dispatches events and displays state.
+- **No UI logic outside the Bloc.** All decisions that affect what the UI shows or does (loading, errors, which data to show) live in the Bloc; widgets only render from state.
+- **No UI updates without Bloc state.** The UI must not change based on local widget state, callbacks, or side effects; every visible change must come from a Bloc-emitted state.
+- Put Bloc/Cubit, events, and states under **presentation/`<feature>`/bloc/**.
 - **Flow:** UI dispatches events → Bloc calls **use cases** (never repositories directly) → use case uses repository → Bloc emits states → UI rebuilds.
 - Blocs must not import data layer (no Drift, no data models). Only domain (use cases, entities) and presentation (states/events).
 - Catch exceptions from use cases in the Bloc and emit error states; show user-facing messages in the UI only.
@@ -47,8 +94,8 @@ Each feature follows this template under `lib/`:
 ## 4. Repositories and use cases
 
 - **One repository per entity:** PlaceRepository, PresenceRepository, SyncRepository. Domain defines the interface; data implements it.
-- Repository interfaces live in **domain/<feature>/repositories/**; implementations in **data/<feature>/repositories/**.
-- Business logic lives in **use cases** in **domain/<feature>/use_cases/**. Use cases call repository interfaces and return entities or throw.
+- Repository interfaces live in **domain/`<feature>`/repositories/**; implementations in **data/`<feature>`/repositories/**.
+- Business logic lives in **use cases** in **domain/`<feature>`/use_cases/**. Use cases call repository interfaces and return entities or throw.
 - Presentation (Blocs) must not call repositories directly; always go through use cases.
 
 ---
@@ -125,4 +172,4 @@ Each feature follows this template under `lib/`:
 
 ---
 
-*Reference: architecture plan in `docs/ARCHITECTURE_PLAN.md` (when present) and `docs/PRD.md`, `docs/TECHNICAL_ANALYSIS.md`.*
+_Reference: architecture plan in `docs/ARCHITECTURE_PLAN.md` (when present) and `docs/PRD.md`, `docs/TECHNICAL_ANALYSIS.md`._

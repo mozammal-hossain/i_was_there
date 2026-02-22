@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../presentation/main_shell.dart';
 import '../../presentation/onboarding/onboarding_feature.dart';
+import '../../presentation/places/bloc/places_bloc.dart';
+import '../../presentation/places/bloc/places_event.dart';
+import '../../presentation/places/widgets/add_edit_place_screen.dart';
 
 const String _keyOnboardingCompleted = 'onboarding_completed';
 
@@ -17,7 +21,15 @@ Future<void> setOnboardingCompleted(SharedPreferences prefs) async {
   await prefs.setBool(_keyOnboardingCompleted, true);
 }
 
-/// App router: /onboarding (flow) and / (main shell with Places | Calendar | Settings).
+/// Extra data passed when pushing add/edit place routes.
+class AddEditPlaceExtra {
+  const AddEditPlaceExtra({required this.placesBloc, this.place});
+
+  final PlacesBloc placesBloc;
+  final dynamic place; // Place?
+}
+
+/// App router: /onboarding (flow), / (main shell), /places/add, /places/edit/:id.
 GoRouter createAppRouter({
   required SharedPreferences prefs,
   required ValueNotifier<bool> onboardingCompleteNotifier,
@@ -50,6 +62,34 @@ GoRouter createAppRouter({
         ),
       ),
       GoRoute(path: '/', builder: (context, state) => const MainShell()),
+      GoRoute(
+        path: '/places/add',
+        builder: (context, state) {
+          final extra = state.extra as AddEditPlaceExtra?;
+          if (extra == null) return const SizedBox.shrink();
+          return BlocProvider.value(
+            value: extra.placesBloc,
+            child: AddEditPlaceScreen(
+              onSave: (place) => extra.placesBloc.add(PlacesAddRequested(place)),
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/places/edit/:id',
+        builder: (context, state) {
+          final extra = state.extra as AddEditPlaceExtra?;
+          if (extra == null || extra.place == null) return const SizedBox.shrink();
+          return BlocProvider.value(
+            value: extra.placesBloc,
+            child: AddEditPlaceScreen(
+              place: extra.place,
+              onSave: (place) =>
+                  extra.placesBloc.add(PlacesUpdateRequested(place)),
+            ),
+          );
+        },
+      ),
     ],
   );
 }

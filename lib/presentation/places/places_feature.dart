@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/di/injection.dart';
+import '../../core/router/app_router.dart';
 import '../../domain/places/entities/place.dart';
 import '../../domain/places/use_cases/add_place.dart';
 import '../../domain/places/use_cases/get_places.dart';
@@ -13,7 +15,6 @@ import '../calendar/widgets/manual_attendance_screen.dart';
 import 'bloc/places_bloc.dart';
 import 'bloc/places_event.dart';
 import 'bloc/places_state.dart';
-import 'widgets/add_edit_place_screen.dart';
 import 'widgets/dashboard_screen.dart';
 import 'widgets/map_screen.dart';
 import 'widgets/no_place_screen.dart';
@@ -131,30 +132,17 @@ class _PlacesShellState extends State<_PlacesShell> {
 
   void _openAddPlace(BuildContext context) {
     final bloc = context.read<PlacesBloc>();
-    Navigator.of(context).push<void>(
-      MaterialPageRoute(
-        builder: (context) => BlocProvider.value(
-          value: bloc,
-          child: AddEditPlaceScreen(
-            onSave: (place) => bloc.add(PlacesAddRequested(place)),
-          ),
-        ),
-      ),
+    context.push<void>(
+      '/places/add',
+      extra: AddEditPlaceExtra(placesBloc: bloc),
     );
   }
 
   void _openEditPlace(BuildContext context, Place place) {
     final bloc = context.read<PlacesBloc>();
-    Navigator.of(context).push<void>(
-      MaterialPageRoute(
-        builder: (context) => BlocProvider.value(
-          value: bloc,
-          child: AddEditPlaceScreen(
-            place: place,
-            onSave: (place) => bloc.add(PlacesUpdateRequested(place)),
-          ),
-        ),
-      ),
+    context.push<void>(
+      '/places/edit/${place.id}',
+      extra: AddEditPlaceExtra(placesBloc: bloc, place: place),
     );
   }
 }
