@@ -148,12 +148,23 @@ class DashboardPage extends StatelessWidget {
         ),
       ),
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 80),
-        child: FloatingActionButton(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: FloatingActionButton.extended(
+          elevation: 5,
           onPressed: onAddPlace,
-          child: const Icon(Icons.add, size: 28),
+          backgroundColor: AppColors.primary,
+          icon: const Icon(Icons.add_location_alt, color: Colors.white),
+          label: const Text(
+            'Add Location',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+          ),
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: placesOnlyNav
           ? null
           : DashboardBottomNav(
