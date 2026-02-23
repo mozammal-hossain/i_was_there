@@ -10,6 +10,7 @@ import '../domain/places/use_cases/get_places_use_case.dart';
 import '../domain/places/use_cases/remove_place_use_case.dart';
 import '../domain/places/use_cases/update_place_use_case.dart';
 import '../domain/presence/entities/presence.dart';
+import '../domain/presence/use_cases/get_presences_for_day_use_case.dart';
 import '../domain/presence/use_cases/set_presence_use_case.dart';
 import 'manual_attendance/manual_attendance_page.dart';
 import 'dashboard/bloc/dashboard_bloc.dart';
@@ -98,12 +99,21 @@ class _PlacesShellState extends State<_PlacesShell> {
   }
 
   void _openManualAttendance(BuildContext context, List<Place> places) {
+    final getPresencesForDay = getIt<GetPresencesForDayUseCase>();
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => ManualAttendancePage(
         places: places,
+        initialDate: DateTime.now(),
+        getPresenceForDate: (date) async {
+          final list = await getPresencesForDay.call(date);
+          return {
+            for (final p in places)
+              p.id: list.any((e) => e.placeId == p.id && e.isPresent),
+          };
+        },
         onApply: (date, presence) async {
           await widget.onManualApply(date, presence);
           if (context.mounted) {

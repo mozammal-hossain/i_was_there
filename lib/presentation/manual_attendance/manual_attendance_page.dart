@@ -4,17 +4,24 @@ import 'package:i_was_there/domain/places/entities/place.dart';
 import 'package:i_was_there/presentation/manual_attendance/widgets/manual_attendance_place_row.dart';
 
 /// Manual presence override (HTML: manual_attendance.html). Date + list of places with toggles.
+/// Toggles reflect that day's presence when [initialPresenceByPlaceId] or [getPresenceForDate] is provided.
 class ManualAttendancePage extends StatefulWidget {
   const ManualAttendancePage({
     super.key,
     required this.places,
     this.initialDate,
+    this.initialPresenceByPlaceId,
+    this.getPresenceForDate,
     this.onApply,
     this.onCancel,
   });
 
   final List<Place> places;
   final DateTime? initialDate;
+  /// Presence for [initialDate] per place id (true = present). If null and [getPresenceForDate] is set, presence is loaded for the initial date.
+  final Map<String, bool>? initialPresenceByPlaceId;
+  /// When the user changes the date, toggles are updated from this. Also used for initial date when [initialPresenceByPlaceId] is null.
+  final Future<Map<String, bool>> Function(DateTime date)? getPresenceForDate;
   final void Function(DateTime date, Map<String, bool> placePresence)? onApply;
   final VoidCallback? onCancel;
 
@@ -25,12 +32,46 @@ class ManualAttendancePage extends StatefulWidget {
 class _ManualAttendancePageState extends State<ManualAttendancePage> {
   late DateTime _selectedDate;
   late Map<String, bool> _presenceByPlaceId;
+  bool _loadingPresence = false;
 
   @override
   void initState() {
     super.initState();
     _selectedDate = widget.initialDate ?? DateTime.now();
-    _presenceByPlaceId = {for (final p in widget.places) p.id: false};
+    _presenceByPlaceId = _buildPresenceMap(widget.initialPresenceByPlaceId);
+    if (widget.initialPresenceByPlaceId == null &&
+        widget.getPresenceForDate != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _loadPresenceForDate(_selectedDate));
+    }
+  }
+
+  Map<String, bool> _buildPresenceMap(Map<String, bool>? source) {
+    final map = {for (final p in widget.places) p.id: false};
+    if (source != null) {
+      for (final e in source.entries) {
+        if (map.containsKey(e.key)) map[e.key] = e.value;
+      }
+    }
+    return map;
+  }
+
+  Future<void> _loadPresenceForDate(DateTime date) async {
+    final getPresence = widget.getPresenceForDate;
+    if (getPresence == null || !mounted) return;
+    setState(() => _loadingPresence = true);
+    try {
+      final map = await getPresence(date);
+      if (mounted) {
+        setState(() {
+          _presenceByPlaceId = _buildPresenceMap(map);
+          _loadingPresence = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() => _loadingPresence = false);
+      }
+    }
   }
 
   static IconData _iconForPlace(Place place) {
@@ -136,6 +177,7 @@ class _ManualAttendancePageState extends State<ManualAttendancePage> {
                             );
                             if (picked != null && mounted) {
                               setState(() => _selectedDate = picked);
+                              await _loadPresenceForDate(picked);
                             }
                           },
                           borderRadius: BorderRadius.circular(12),
@@ -187,6 +229,7 @@ class _ManualAttendancePageState extends State<ManualAttendancePage> {
                     icon: _iconForPlace(place),
                     onChanged: (v) =>
                         setState(() => _presenceByPlaceId[place.id] = v),
+                    enabled: !_loadingPresence,
                   );
                 }).toList(),
               ),

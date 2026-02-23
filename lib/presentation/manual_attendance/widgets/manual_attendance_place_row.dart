@@ -10,6 +10,7 @@ class ManualAttendancePlaceRow extends StatelessWidget {
     required this.isDark,
     required this.icon,
     required this.onChanged,
+    this.enabled = true,
   });
 
   final Place place;
@@ -17,6 +18,7 @@ class ManualAttendancePlaceRow extends StatelessWidget {
   final bool isDark;
   final IconData icon;
   final ValueChanged<bool> onChanged;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +93,7 @@ class ManualAttendancePlaceRow extends StatelessWidget {
           ),
           Switch(
             value: present,
-            onChanged: onChanged,
+            onChanged: enabled ? onChanged : null,
             activeTrackColor: AppColors.primary,
           ),
         ],

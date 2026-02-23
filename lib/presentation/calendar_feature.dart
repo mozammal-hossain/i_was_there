@@ -82,12 +82,34 @@ class CalendarFeature extends StatelessWidget {
 
   void _openManualAttendance(BuildContext context) {
     final state = context.read<HistoryBloc>().state;
+    final effectiveMonth = state.effectiveViewMonth;
+    final initialDate = state.selectedDay != null
+        ? DateTime(effectiveMonth.year, effectiveMonth.month, state.selectedDay!)
+        : DateTime.now();
+    final initialPresenceByPlaceId = state.selectedDay != null
+        ? {
+            for (final p in state.places)
+              p.id: state.dayPresences
+                  .any((d) => d.placeId == p.id && d.isPresent),
+          }
+        : null;
+    final getPresencesForDay = getIt<GetPresencesForDayUseCase>();
+
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => ManualAttendancePage(
         places: state.places,
+        initialDate: initialDate,
+        initialPresenceByPlaceId: initialPresenceByPlaceId,
+        getPresenceForDate: (date) async {
+          final list = await getPresencesForDay.call(date);
+          return {
+            for (final p in state.places)
+              p.id: list.any((e) => e.placeId == p.id && e.isPresent),
+          };
+        },
         onApply: (date, presence) async {
           context.read<HistoryBloc>().add(
                 HistoryManualPresenceApplied(date, presence),
