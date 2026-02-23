@@ -87,5 +87,21 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(FloatingActionButton), findsOneWidget);
     });
+
+    testWidgets('manual attendance Apply closes sheet and keeps Presence History visible', (tester) async {
+      await pumpApp(tester);
+      await openCalendarTab(tester);
+
+      expect(find.text('Presence History'), findsOneWidget);
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Apply Changes'), findsOneWidget);
+      await tester.tap(find.text('Apply Changes'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Presence History'), findsOneWidget);
+      expect(find.text('Manual presence updated'), findsOneWidget);
+    });
   });
 }

@@ -93,7 +93,6 @@ class CalendarFeature extends StatelessWidget {
                 HistoryManualPresenceApplied(date, presence),
               );
           if (ctx.mounted) {
-            Navigator.of(ctx).pop();
             ScaffoldMessenger.of(ctx).showSnackBar(
               const SnackBar(content: Text('Manual presence updated')),
             );
