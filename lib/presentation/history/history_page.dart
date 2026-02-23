@@ -20,9 +20,11 @@ class HistoryPage extends StatefulWidget {
     this.selectedDay,
     this.dayPresences = const [],
     this.loadingDayDetails = false,
+    this.selectedPlaceId,
     this.onBack,
     this.onMonthChanged,
     this.onDaySelected,
+    this.onFilterChanged,
     this.onAddManual,
   });
 
@@ -33,9 +35,11 @@ class HistoryPage extends StatefulWidget {
   final int? selectedDay;
   final List<Presence> dayPresences;
   final bool loadingDayDetails;
+  final String? selectedPlaceId;
   final VoidCallback? onBack;
   final void Function(DateTime month)? onMonthChanged;
   final void Function(int? day)? onDaySelected;
+  final void Function(String? placeId)? onFilterChanged;
   final VoidCallback? onAddManual;
 
   @override
@@ -43,12 +47,18 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
-  int _selectedFilterIndex = 0;
-
   List<String> get _filterLabels => [
     'All Places',
     ...widget.places.map((p) => p.name),
   ];
+
+  /// Selected chip index: 0 = "All Places", 1..n = place at index i-1.
+  int get _selectedFilterIndex {
+    final id = widget.selectedPlaceId;
+    if (id == null) return 0;
+    final i = widget.places.indexWhere((p) => p.id == id);
+    return i < 0 ? 0 : i + 1;
+  }
 
   int _daysInMonth() {
     return DateTime(widget.viewMonth.year, widget.viewMonth.month + 1, 0).day;
@@ -97,7 +107,11 @@ class _HistoryPageState extends State<HistoryPage> {
                 _filterLabels.length - 1,
               ),
               isDark: isDark,
-              onSelected: (i) => setState(() => _selectedFilterIndex = i),
+              onSelected: (i) {
+                final placeId =
+                    i == 0 ? null : widget.places[i - 1].id;
+                widget.onFilterChanged?.call(placeId);
+              },
             ),
             Expanded(
               child: SingleChildScrollView(

@@ -1,6 +1,9 @@
 import '../../../../domain/places/entities/place.dart';
 import '../../../../domain/presence/entities/presence.dart';
 
+/// Sentinel for copyWith: omit [selectedPlaceId] to keep current value.
+const _keepSelectedPlaceId = Object();
+
 class HistoryState {
   const HistoryState({
     this.places = const [],
@@ -11,6 +14,7 @@ class HistoryState {
     this.selectedDay,
     this.dayPresences = const [],
     this.loadingDayDetails = false,
+    this.selectedPlaceId,
     this.errorMessage,
   });
 
@@ -22,6 +26,7 @@ class HistoryState {
   final int? selectedDay;
   final List<Presence> dayPresences;
   final bool loadingDayDetails;
+  final String? selectedPlaceId;
   final String? errorMessage;
 
   DateTime get effectiveViewMonth =>
@@ -36,6 +41,7 @@ class HistoryState {
     int? selectedDay,
     List<Presence>? dayPresences,
     bool? loadingDayDetails,
+    Object? selectedPlaceId = _keepSelectedPlaceId,
     String? errorMessage,
   }) {
     return HistoryState(
@@ -47,6 +53,9 @@ class HistoryState {
       selectedDay: selectedDay,
       dayPresences: dayPresences ?? this.dayPresences,
       loadingDayDetails: loadingDayDetails ?? this.loadingDayDetails,
+      selectedPlaceId: identical(selectedPlaceId, _keepSelectedPlaceId)
+          ? this.selectedPlaceId
+          : selectedPlaceId as String?,
       errorMessage: errorMessage,
     );
   }

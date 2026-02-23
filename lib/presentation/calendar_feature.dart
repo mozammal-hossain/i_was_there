@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../core/di/injection.dart';
 import '../domain/places/use_cases/get_places_use_case.dart';
 import '../domain/presence/use_cases/get_aggregated_presence_use_case.dart';
+import '../domain/presence/use_cases/get_presence_for_month_use_case.dart';
 import '../domain/presence/use_cases/get_presences_for_day_use_case.dart';
 import '../domain/presence/use_cases/set_presence_use_case.dart';
 import 'history/bloc/history_bloc.dart';
@@ -20,6 +21,7 @@ class CalendarFeature extends StatelessWidget {
     return HistoryBloc(
       getPlaces: getIt<GetPlacesUseCase>(),
       getAggregatedPresence: getIt<GetAggregatedPresenceUseCase>(),
+      getPresenceForMonth: getIt<GetPresenceForMonthUseCase>(),
       getPresencesForDay: getIt<GetPresencesForDayUseCase>(),
       setPresence: getIt<SetPresenceUseCase>(),
     );
@@ -48,7 +50,8 @@ class CalendarFeature extends StatelessWidget {
             prev.loadingPresence != curr.loadingPresence ||
             prev.selectedDay != curr.selectedDay ||
             prev.dayPresences != curr.dayPresences ||
-            prev.loadingDayDetails != curr.loadingDayDetails,
+            prev.loadingDayDetails != curr.loadingDayDetails ||
+            prev.selectedPlaceId != curr.selectedPlaceId,
         builder: (context, state) {
           if (state.loadingPlaces) {
             return const Scaffold(
@@ -63,6 +66,9 @@ class CalendarFeature extends StatelessWidget {
             selectedDay: state.selectedDay,
             dayPresences: state.dayPresences,
             loadingDayDetails: state.loadingDayDetails,
+            selectedPlaceId: state.selectedPlaceId,
+            onFilterChanged: (placeId) =>
+                context.read<HistoryBloc>().add(HistoryFilterChanged(placeId)),
             onMonthChanged: (month) =>
                 context.read<HistoryBloc>().add(HistoryMonthChanged(month)),
             onDaySelected: (day) =>

@@ -17,3 +17,8 @@ class HistoryManualPresenceApplied extends HistoryEvent {
   final DateTime date;
   final Map<String, bool> presence;
 }
+
+class HistoryFilterChanged extends HistoryEvent {
+  HistoryFilterChanged(this.placeId);
+  final String? placeId;
+}
