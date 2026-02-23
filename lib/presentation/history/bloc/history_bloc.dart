@@ -88,10 +88,10 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       emit(state.copyWith(selectedDay: null, dayPresences: []));
       return;
     }
-    // emit(state.copyWith(
-    //   selectedDay: event.day,
-    //   loadingDayDetails: true,
-    // ));
+    emit(state.copyWith(
+      selectedDay: event.day,
+      loadingDayDetails: true,
+    ));
     try {
       final date = DateTime(
         state.effectiveViewMonth.year,
@@ -99,10 +99,18 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
         event.day!,
       );
       final list = await _getPresencesForDay.call(date);
-      emit(state.copyWith(dayPresences: list, loadingDayDetails: false));
+      emit(state.copyWith(
+        selectedDay: event.day,
+        dayPresences: list,
+        loadingDayDetails: false,
+      ));
     } catch (e, _) {
       emit(
-        state.copyWith(loadingDayDetails: false, errorMessage: e.toString()),
+        state.copyWith(
+          selectedDay: event.day,
+          loadingDayDetails: false,
+          errorMessage: e.toString(),
+        ),
       );
     }
   }
