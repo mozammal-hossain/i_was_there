@@ -7,6 +7,7 @@ import '../di/injection.dart';
 import '../../domain/location/use_cases/get_current_location_with_address_use_case.dart';
 import '../../domain/location/use_cases/get_location_from_address_use_case.dart';
 import '../../domain/location/use_cases/get_location_from_coordinates_use_case.dart';
+import '../../presentation/force_update/force_update_page.dart';
 import '../../presentation/main_shell.dart';
 import '../../presentation/onboarding_feature.dart';
 import '../../presentation/dashboard/bloc/dashboard_bloc.dart';
@@ -34,15 +35,19 @@ class AddEditPlaceExtra {
   final dynamic place; // Place?
 }
 
-/// App router: /onboarding (flow), / (main shell), /places/add, /places/edit/:id.
+/// App router: /force-update, /onboarding (flow), / (main shell), /places/add, /places/edit/:id.
 GoRouter createAppRouter({
   required SharedPreferences prefs,
   required ValueNotifier<bool> onboardingCompleteNotifier,
+  required ValueNotifier<bool> updateRequiredNotifier,
 }) {
   return GoRouter(
-    refreshListenable: Listenable.merge([onboardingCompleteNotifier]),
+    refreshListenable: Listenable.merge([onboardingCompleteNotifier, updateRequiredNotifier]),
     initialLocation: '/',
     redirect: (BuildContext context, GoRouterState state) {
+      if (updateRequiredNotifier.value) {
+        return '/force-update';
+      }
       final completed = onboardingCompleteNotifier.value;
       final onOnboarding = state.matchedLocation == '/onboarding';
       if (!completed && !onOnboarding) {
@@ -54,6 +59,10 @@ GoRouter createAppRouter({
       return null;
     },
     routes: [
+      GoRoute(
+        path: '/force-update',
+        builder: (context, state) => const ForceUpdatePage(),
+      ),
       GoRoute(
         path: '/onboarding',
         builder: (context, state) => OnboardingFeature(

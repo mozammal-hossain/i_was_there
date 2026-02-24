@@ -66,6 +66,12 @@ dependencies:
   shared_preferences: ^2.3.3
   latlong2: ^0.9.1
 
+  # Firebase force update
+  firebase_core: ^3.8.1
+  firebase_remote_config: ^5.1.4
+  package_info_plus: ^8.1.2
+  url_launcher: 6.3.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

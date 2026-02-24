@@ -46,6 +46,7 @@ import '../../domain/settings/use_cases/get_calendar_sync_enabled_use_case.dart'
     as _i41;
 import '../../domain/settings/use_cases/set_calendar_sync_enabled_use_case.dart'
     as _i410;
+import '../force_update/force_update_service.dart' as _iForceUpdate;
 import 'app_module.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -112,6 +113,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i283.UpdatePlaceUseCase>(
       () => _i283.UpdatePlaceUseCase(gh<_i267.PlaceRepository>()),
+    );
+    gh.lazySingleton<_iForceUpdate.ForceUpdateService>(
+      () => _iForceUpdate.ForceUpdateService(),
     );
     return this;
   }

@@ -15,9 +15,11 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   await setOnboardingCompleted(prefs);
   final onboardingCompleteNotifier = ValueNotifier<bool>(true);
+  final updateRequiredNotifier = ValueNotifier<bool>(false);
   final router = createAppRouter(
     prefs: prefs,
     onboardingCompleteNotifier: onboardingCompleteNotifier,
+    updateRequiredNotifier: updateRequiredNotifier,
   );
   runApp(app.MyApp(router: router));
 }
