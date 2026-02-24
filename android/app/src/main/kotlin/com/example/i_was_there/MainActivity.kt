@@ -1,4 +1,4 @@
-package com.example.i_was_there
+package com.iwasthere.app
 
 import io.flutter.embedding.android.FlutterActivity
 

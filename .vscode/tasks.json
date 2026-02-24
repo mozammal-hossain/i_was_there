@@ -5,13 +5,8 @@
       "label": "build_runner",
       "type": "shell",
       "command": "fvm dart run build_runner build --delete-conflicting-outputs",
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": { "kind": "build", "isDefault": true },
       "presentation": {
         "echo": true,
         "reveal": "always",
@@ -26,9 +21,7 @@
       "label": "build_runner (watch)",
       "type": "shell",
       "command": "fvm dart run build_runner watch --delete-conflicting-outputs",
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
+      "options": { "cwd": "${workspaceFolder}" },
       "group": "build",
       "presentation": {
         "echo": true,
@@ -39,9 +32,22 @@
       },
       "problemMatcher": ["$dart"],
       "isBackground": true,
-      "runOptions": {
-        "instanceLimit": 1
-      }
+      "runOptions": { "instanceLimit": 1 }
+    },
+    {
+      "label": "Build signed AAB",
+      "type": "shell",
+      "command": "fvm flutter build appbundle",
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
     }
   ]
 }
