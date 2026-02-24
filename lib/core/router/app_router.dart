@@ -4,13 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../di/injection.dart';
+import 'app_routes.dart';
+import 'route_args.dart';
 import '../../domain/location/use_cases/get_current_location_with_address_use_case.dart';
 import '../../domain/location/use_cases/get_location_from_address_use_case.dart';
 import '../../domain/location/use_cases/get_location_from_coordinates_use_case.dart';
 import '../../presentation/force_update/force_update_page.dart';
 import '../../presentation/main_shell.dart';
 import '../../presentation/onboarding_feature.dart';
-import '../../presentation/dashboard/bloc/dashboard_bloc.dart';
 import '../../presentation/dashboard/bloc/dashboard_event.dart';
 import '../../presentation/add_edit_place/add_edit_place_page.dart';
 import '../../presentation/add_edit_place/bloc/add_edit_place_bloc.dart';
@@ -27,15 +28,7 @@ Future<void> setOnboardingCompleted(SharedPreferences prefs) async {
   await prefs.setBool(_keyOnboardingCompleted, true);
 }
 
-/// Extra data passed when pushing add/edit place routes.
-class AddEditPlaceExtra {
-  const AddEditPlaceExtra({required this.dashboardBloc, this.place});
-
-  final DashboardBloc dashboardBloc;
-  final dynamic place; // Place?
-}
-
-/// App router: /force-update, /onboarding (flow), / (main shell), /places/add, /places/edit/:id.
+/// App router: force-update, onboarding (flow), root (main shell), place add/edit.
 GoRouter createAppRouter({
   required SharedPreferences prefs,
   required ValueNotifier<bool> onboardingCompleteNotifier,
@@ -43,46 +36,46 @@ GoRouter createAppRouter({
 }) {
   return GoRouter(
     refreshListenable: Listenable.merge([onboardingCompleteNotifier, updateRequiredNotifier]),
-    initialLocation: '/',
+    initialLocation: AppRoutes.root,
     redirect: (BuildContext context, GoRouterState state) {
       if (updateRequiredNotifier.value) {
-        return '/force-update';
+        return AppRoutes.forceUpdate;
       }
       final completed = onboardingCompleteNotifier.value;
-      final onOnboarding = state.matchedLocation == '/onboarding';
+      final onOnboarding = state.matchedLocation == AppRoutes.onboarding;
       if (!completed && !onOnboarding) {
-        return '/onboarding';
+        return AppRoutes.onboarding;
       }
       if (completed && onOnboarding) {
-        return '/';
+        return AppRoutes.root;
       }
       return null;
     },
     routes: [
       GoRoute(
-        path: '/force-update',
+        path: AppRoutes.forceUpdate,
         builder: (context, state) => const ForceUpdatePage(),
       ),
       GoRoute(
-        path: '/onboarding',
+        path: AppRoutes.onboarding,
         builder: (context, state) => OnboardingFeature(
           onComplete: () async {
             await setOnboardingCompleted(prefs);
             onboardingCompleteNotifier.value = true;
             if (context.mounted) {
-              context.go('/');
+              context.go(AppRoutes.root);
             }
           },
         ),
       ),
-      GoRoute(path: '/', builder: (context, state) => const MainShell()),
+      GoRoute(path: AppRoutes.root, builder: (context, state) => const MainShell()),
       GoRoute(
-        path: '/places/add',
+        path: AppRoutes.placeAdd,
         builder: (context, state) {
-          final extra = state.extra as AddEditPlaceExtra?;
-          if (extra == null) return const SizedBox.shrink();
+          final args = state.extra as AddEditPlaceRouteArgs?;
+          if (args == null) return const SizedBox.shrink();
           return BlocProvider.value(
-            value: extra.dashboardBloc,
+            value: args.dashboardBloc,
             child: BlocProvider(
               create: (_) => AddEditPlaceBloc(
                 getIt<GetCurrentLocationWithAddressUseCase>(),
@@ -91,19 +84,19 @@ GoRouter createAppRouter({
               ),
               child: AddEditPlacePage(
                 onSave: (place) =>
-                    extra.dashboardBloc.add(DashboardAddRequested(place)),
+                    args.dashboardBloc.add(DashboardAddRequested(place)),
               ),
             ),
           );
         },
       ),
       GoRoute(
-        path: '/places/edit/:id',
+        path: AppRoutes.placeEditPath,
         builder: (context, state) {
-          final extra = state.extra as AddEditPlaceExtra?;
-          if (extra == null || extra.place == null) return const SizedBox.shrink();
+          final args = state.extra as AddEditPlaceRouteArgs?;
+          if (args == null || args.place == null) return const SizedBox.shrink();
           return BlocProvider.value(
-            value: extra.dashboardBloc,
+            value: args.dashboardBloc,
             child: BlocProvider(
               create: (_) => AddEditPlaceBloc(
                 getIt<GetCurrentLocationWithAddressUseCase>(),
@@ -111,9 +104,9 @@ GoRouter createAppRouter({
                 getIt<GetLocationFromCoordinatesUseCase>(),
               ),
               child: AddEditPlacePage(
-                place: extra.place,
+                place: args.place,
                 onSave: (place) =>
-                    extra.dashboardBloc.add(DashboardUpdateRequested(place)),
+                    args.dashboardBloc.add(DashboardUpdateRequested(place)),
               ),
             ),
           );

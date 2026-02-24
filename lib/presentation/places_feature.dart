@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/di/injection.dart';
-import '../core/router/app_router.dart';
+import '../core/router/app_routes.dart';
+import '../core/router/route_args.dart';
 import '../domain/places/entities/place.dart';
 import '../domain/places/use_cases/add_place_use_case.dart';
 import '../domain/places/use_cases/get_places_use_case.dart';
@@ -130,16 +131,16 @@ class _PlacesShellState extends State<_PlacesShell> {
   void _openAddPlace(BuildContext context) {
     final bloc = context.read<DashboardBloc>();
     context.push<void>(
-      '/places/add',
-      extra: AddEditPlaceExtra(dashboardBloc: bloc),
+      AppRoutes.placeAdd,
+      extra: AddEditPlaceRouteArgs(dashboardBloc: bloc),
     );
   }
 
   void _openEditPlace(BuildContext context, Place place) {
     final bloc = context.read<DashboardBloc>();
     context.push<void>(
-      '/places/edit/${place.id}',
-      extra: AddEditPlaceExtra(dashboardBloc: bloc, place: place),
+      AppRoutes.placeEdit(place.id),
+      extra: AddEditPlaceRouteArgs(dashboardBloc: bloc, place: place),
     );
   }
 }
