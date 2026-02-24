@@ -112,6 +112,7 @@ presentation/
 ## 6. Dependency injection
 
 - Use **get_it** + **injectable**. Register repositories, use cases, SyncClient, SyncScheduler, location service, WorkManager callback in **core**.
+- **Inject services and use cases through DI only.** Resolve them from the DI container (e.g. `getIt<T>()`); do **not** pass them class by class (e.g. passing a use case or service through constructors from parent to child widgets or from one class to another). Each class that needs a dependency should obtain it from DI.
 - Blocs: register as factories (depending on use cases) or provide via **BlocProvider** in the widget tree. Prefer one approach per feature for consistency.
 
 ---

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
 import 'package:i_was_there/domain/places/entities/place.dart';
 import 'package:i_was_there/presentation/dashboard/widgets/dashboard_bottom_nav.dart';
-import 'package:i_was_there/presentation/dashboard/widgets/dashboard_place_card.dart';
+import 'package:i_was_there/presentation/dashboard/widgets/dashboard_page_header.dart';
+import 'package:i_was_there/presentation/dashboard/widgets/dashboard_place_list_section.dart';
 
 /// Places dashboard: list of tracked places with weekly attendance dots (PRD R9, R10).
 class DashboardPage extends StatelessWidget {
@@ -44,76 +45,10 @@ class DashboardPage extends StatelessWidget {
         child: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Places',
-                            style: theme.textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: isDark
-                                  ? Colors.white
-                                  : const Color(0xFF0F172A),
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Row(
-                            children: [
-                              Text(
-                                'Weekly Attendance',
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: isDark
-                                      ? const Color(0xFF94A3B8)
-                                      : const Color(0xFF64748B),
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              if (onManualOverride != null) ...[
-                                const SizedBox(width: 12),
-                                TextButton(
-                                  onPressed: onManualOverride,
-                                  style: TextButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                    ),
-                                    minimumSize: Size.zero,
-                                    tapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
-                                  ),
-                                  child: Text(
-                                    'Override',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.primary,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundColor: isDark
-                          ? const Color(0xFF334155)
-                          : const Color(0xFFE2E8F0),
-                      child: Icon(
-                        Icons.person_outline,
-                        color: isDark
-                            ? const Color(0xFF94A3B8)
-                            : const Color(0xFF64748B),
-                      ),
-                    ),
-                  ],
-                ),
+              child: DashboardPageHeader(
+                theme: theme,
+                isDark: isDark,
+                onManualOverride: onManualOverride,
               ),
             ),
             const SliverToBoxAdapter(
@@ -130,18 +65,10 @@ class DashboardPage extends StatelessWidget {
                 ),
               ),
             ),
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  final place = places[index];
-                  return DashboardPlaceCard(
-                    place: place,
-                    isDark: isDark,
-                    onTap: () => onPlaceTap(place),
-                  );
-                }, childCount: places.length),
-              ),
+            DashboardPlaceListSection(
+              places: places,
+              isDark: isDark,
+              onPlaceTap: onPlaceTap,
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 120)),
           ],

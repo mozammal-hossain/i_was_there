@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:i_was_there/presentation/add_edit_place/widgets/add_edit_place_form_sheet.dart';
+import 'package:i_was_there/domain/places/entities/place.dart';
+import 'package:i_was_there/presentation/add_edit_place/widgets/add_edit_place_form_section.dart';
 import 'package:i_was_there/presentation/add_edit_place/widgets/add_edit_place_header.dart';
-import 'package:i_was_there/presentation/add_edit_place/widgets/add_edit_place_map_area.dart';
-import 'package:i_was_there/presentation/add_edit_place/widgets/add_edit_place_my_location_button.dart';
-import '../../../domain/places/entities/place.dart';
+import 'package:i_was_there/presentation/add_edit_place/widgets/add_edit_place_map_section.dart';
 import '../dashboard/bloc/dashboard_bloc.dart';
 import '../dashboard/bloc/dashboard_state.dart';
 import 'bloc/add_edit_place_bloc.dart';
-import 'bloc/add_edit_place_event.dart';
 import 'bloc/add_edit_place_state.dart';
 
 /// Add or edit a tracked place (PRD R2: pin on map, current location, address search; R3: 20m geofence).
@@ -18,7 +15,6 @@ import 'bloc/add_edit_place_state.dart';
 class AddEditPlacePage extends StatefulWidget {
   const AddEditPlacePage({super.key, this.place, required this.onSave});
 
-  /// If null, we are adding; otherwise editing.
   final Place? place;
   final void Function(Place place) onSave;
 
@@ -29,8 +25,6 @@ class AddEditPlacePage extends StatefulWidget {
 class _AddEditPlacePageState extends State<AddEditPlacePage> {
   late final TextEditingController _nameController;
   late final TextEditingController _addressController;
-
-  /// Place id we're waiting for after save. When bloc state includes it, we pop.
   String? _pendingSavedPlaceId;
 
   @override
@@ -81,8 +75,7 @@ class _AddEditPlacePageState extends State<AddEditPlacePage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return BlocListener<AddEditPlaceBloc, AddEditPlaceState>(
       listenWhen: (prev, curr) =>
@@ -131,70 +124,16 @@ class _AddEditPlacePageState extends State<AddEditPlacePage> {
             children: [
               AddEditPlaceHeader(isDark: isDark),
               Expanded(
-                child: Stack(
-                  children: [
-                    BlocBuilder<AddEditPlaceBloc, AddEditPlaceState>(
-                      buildWhen: (prev, curr) =>
-                          prev.locationResult != curr.locationResult,
-                      builder: (context, state) {
-                        final loc = state.locationResult;
-                        final p = widget.place;
-                        final hasLoc = loc != null;
-                        final hasPlace = p != null &&
-                            (p.latitude != 0 || p.longitude != 0);
-                        final LatLng? center = hasLoc
-                            ? LatLng(loc.latitude, loc.longitude)
-                            : (hasPlace
-                                ? LatLng(p.latitude, p.longitude)
-                                : null);
-                        return AddEditPlaceMapArea(
-                          isDark: isDark,
-                          center: center,
-                          onMapTap: (point) =>
-                              context.read<AddEditPlaceBloc>().add(
-                                    AddEditPlaceMapLocationSelected(
-                                      point.latitude,
-                                      point.longitude,
-                                    ),
-                                  ),
-                        );
-                      },
-                    ),
-                    BlocBuilder<AddEditPlaceBloc, AddEditPlaceState>(
-                      buildWhen: (prev, curr) =>
-                          prev.locationLoading != curr.locationLoading,
-                      builder: (context, state) {
-                        return AddEditPlaceMyLocationButton(
-                          isLoading: state.locationLoading,
-                          onTap: () => context.read<AddEditPlaceBloc>().add(
-                            const AddEditPlaceUseCurrentLocationRequested(),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                child: AddEditPlaceMapSection(
+                  isDark: isDark,
+                  place: widget.place,
                 ),
               ),
-              BlocBuilder<AddEditPlaceBloc, AddEditPlaceState>(
-                buildWhen: (prev, curr) =>
-                    prev.locationLoading != curr.locationLoading,
-                builder: (context, state) {
-                  return AddEditPlaceFormSheet(
-                    isDark: isDark,
-                    nameController: _nameController,
-                    addressController: _addressController,
-                    locationLoading: state.locationLoading,
-                    onUseCurrentLocation: () => context
-                        .read<AddEditPlaceBloc>()
-                        .add(const AddEditPlaceUseCurrentLocationRequested()),
-                    onSearchAddress: () => context.read<AddEditPlaceBloc>().add(
-                          AddEditPlaceAddressSearchRequested(
-                            _addressController.text,
-                          ),
-                        ),
-                    onSave: () => _save(context),
-                  );
-                },
+              AddEditPlaceFormSection(
+                isDark: isDark,
+                nameController: _nameController,
+                addressController: _addressController,
+                onSave: () => _save(context),
               ),
             ],
           ),
