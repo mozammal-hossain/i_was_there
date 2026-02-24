@@ -23,4 +23,10 @@ class ForceUpdateService {
       recommendedUpdateAvailable: recommendedAvailable,
     );
   }
+
+  /// Returns the store URL from Remote Config (e.g. Play Store listing).
+  String getStoreUrl() {
+    final remoteConfig = FirebaseRemoteConfig.instance;
+    return remoteConfig.getString('androidStoreUrl');
+  }
 }

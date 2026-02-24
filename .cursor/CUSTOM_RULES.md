@@ -77,6 +77,7 @@ presentation/
 ## 3. State management (BLoC)
 
 - Use **flutter_bloc** only. No other state management (Provider, Riverpod, etc.) for feature state.
+- **No logic within widgets.** Do not write or handle logic inside widget classes; write and handle all logic through Bloc, state, and events. Widgets only dispatch events and render from state.
 - **No business logic in the presentation layer.** Keep it in domain (use cases) or data; presentation only dispatches events and displays state.
 - **No UI logic outside the Bloc.** All decisions that affect what the UI shows or does (loading, errors, which data to show) live in the Bloc; widgets only render from state.
 - **No UI updates without Bloc state.** The UI must not change based on local widget state, callbacks, or side effects; every visible change must come from a Bloc-emitted state.

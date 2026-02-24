@@ -46,7 +46,8 @@ import '../../domain/settings/use_cases/get_calendar_sync_enabled_use_case.dart'
     as _i41;
 import '../../domain/settings/use_cases/set_calendar_sync_enabled_use_case.dart'
     as _i410;
-import '../force_update/force_update_service.dart' as _iForceUpdate;
+import '../force_update/force_update_service.dart' as _i378;
+import '../url_launcher/url_launcher_service.dart' as _i491;
 import 'app_module.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -58,6 +59,12 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final appModule = _$AppModule();
     gh.lazySingleton<_i160.AppDatabase>(() => appModule.appDatabase);
+    gh.lazySingleton<_i378.ForceUpdateService>(
+      () => _i378.ForceUpdateService(),
+    );
+    gh.lazySingleton<_i491.UrlLauncherService>(
+      () => _i491.UrlLauncherService(),
+    );
     gh.lazySingleton<_i139.GeocodingService>(
       () => _i362.GeocodingServiceImpl(),
     );
@@ -113,9 +120,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i283.UpdatePlaceUseCase>(
       () => _i283.UpdatePlaceUseCase(gh<_i267.PlaceRepository>()),
-    );
-    gh.lazySingleton<_iForceUpdate.ForceUpdateService>(
-      () => _iForceUpdate.ForceUpdateService(),
     );
     return this;
   }
