@@ -74,12 +74,12 @@ class _AddEditPlaceMapAreaState extends State<AddEditPlaceMapArea> {
               markers: [
                 Marker(
                   point: widget.center!,
-                  width: 40,
-                  height: 40,
+                  width: AppSize.avatarSm,
+                  height: AppSize.avatarSm,
                   child: Icon(
                     Icons.place,
                     color: AppColors.primary,
-                    size: 40,
+                    size: AppSize.avatarSm,
                   ),
                 ),
               ],

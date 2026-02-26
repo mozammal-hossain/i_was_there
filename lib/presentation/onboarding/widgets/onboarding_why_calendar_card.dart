@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../bloc/onboarding_bloc.dart';
-import '../bloc/onboarding_event.dart';
 
 class OnboardingWhyCalendarCard extends StatelessWidget {
   const OnboardingWhyCalendarCard({
@@ -23,19 +20,19 @@ class OnboardingWhyCalendarCard extends StatelessWidget {
         : const Color(0xFF64748B);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: AppSize.spacingL),
       child: Container(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(AppSize.spacingXl),
         decoration: BoxDecoration(
           color: isDark
               ? const Color(0xFF334155).withValues(alpha: 0.5)
               : Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppSize.radiusL),
           border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 4,
+              blurRadius: AppSize.spacingS,
               offset: const Offset(0, 2),
             ),
           ],
@@ -43,19 +40,19 @@ class OnboardingWhyCalendarCard extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 48,
-              height: 48,
+              width: AppSize.avatarLg,
+              height: AppSize.avatarLg,
               decoration: BoxDecoration(
                 color: AppColors.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(AppSize.radiusL),
               ),
               child: Icon(
                 Icons.calendar_today,
                 color: AppColors.primary,
-                size: 28,
+                size: AppSize.iconL3,
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSize.spacingL),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,7 +65,7 @@ class OnboardingWhyCalendarCard extends StatelessWidget {
                       color: titleColor,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSize.spacingS),
                   Text(
                     'See all your activity and gym sessions in one place.',
                     style: theme.textTheme.bodySmall?.copyWith(

@@ -30,7 +30,9 @@ class AddEditPlaceFormSheet extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? AppColors.cardDark : AppColors.bgWarmLight,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(AppSize.radiusSheet),
+        ),
         border: Border(
           top: BorderSide(
             color: isDark ? const Color(0xFF475569) : const Color(0xFFE2E8F0),
@@ -39,20 +41,25 @@ class AddEditPlaceFormSheet extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
-            blurRadius: 24,
-            offset: const Offset(0, -4),
+            blurRadius: AppSize.spacingXl,
+            offset: const Offset(0, -AppSize.spacingM),
           ),
         ],
       ),
       child: SafeArea(
         top: false,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+          padding: const EdgeInsets.fromLTRB(
+            AppSize.spacingXl,
+            AppSize.spacingM3,
+            AppSize.spacingXl,
+            AppSize.spacingXl,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AddEditPlaceSheetHandle(isDark: isDark),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSize.spacingXl),
               AddEditPlaceFormFields(
                 isDark: isDark,
                 nameController: nameController,
@@ -61,9 +68,9 @@ class AddEditPlaceFormSheet extends StatelessWidget {
                 onUseCurrentLocation: onUseCurrentLocation,
                 onSearchAddress: onSearchAddress,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSize.spacingL),
               AddEditPlaceGeofenceInfo(isDark: isDark),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSize.spacingXl),
               AddEditPlaceSaveSection(isDark: isDark, onSave: onSave),
             ],
           ),

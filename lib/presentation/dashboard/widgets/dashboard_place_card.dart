@@ -30,33 +30,33 @@ class DashboardPlaceCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppSize.spacingM3),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(AppSize.radiusCard),
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(AppSize.spacingXl),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   Container(
-                    width: 48,
-                    height: 48,
+                    width: AppSize.avatarLg,
+                    height: AppSize.avatarLg,
                     decoration: BoxDecoration(
                       color: AppColors.primary.withValues(
                         alpha: isDark ? 0.2 : 0.1,
                       ),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(AppSize.radiusXl),
                     ),
                     child: Icon(
                       _iconForPlace(place),
                       color: AppColors.primary,
-                      size: 24,
+                      size: AppSize.iconL,
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSize.spacingL),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,14 +70,14 @@ class DashboardPlaceCard extends StatelessWidget {
                                 : const Color(0xFF0F172A),
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: AppSize.spacingXs),
                         Text(
                           place.syncStatus.label,
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: isDark
                                 ? const Color(0xFF94A3B8)
                                 : const Color(0xFF64748B),
-                            fontSize: 12,
+                            fontSize: AppSize.fontSmall,
                           ),
                         ),
                       ],
@@ -91,21 +91,23 @@ class DashboardPlaceCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSize.spacingL),
               Row(
                 children: [
-                  const SizedBox(width: 4),
+                  const SizedBox(width: AppSize.spacingS),
                   ...['M', 'T', 'W', 'T', 'F', 'S', 'S'].asMap().entries.map((
                     e,
                   ) {
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSize.spacingXs,
+                      ),
                       child: Text(
                         e.value,
                         style: const TextStyle(
-                          fontSize: 10,
+                          fontSize: AppSize.fontCaption,
                           fontWeight: FontWeight.bold,
-                          letterSpacing: 0.5,
+                          letterSpacing: AppSize.letterSpacingLg,
                           color: Color(0xFF94A3B8),
                         ),
                       ),
@@ -113,15 +115,15 @@ class DashboardPlaceCard extends StatelessWidget {
                   }),
                 ],
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSize.spacingM),
               Row(
                 children: List.generate(7, (i) {
                   final present = place.weeklyPresence[i];
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 3),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSize.radiusS),
                     child: Container(
-                      width: 12,
-                      height: 12,
+                      width: AppSize.dotMd,
+                      height: AppSize.dotMd,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: present
@@ -135,7 +137,7 @@ class DashboardPlaceCard extends StatelessWidget {
                                   color: AppColors.primary.withValues(
                                     alpha: 0.3,
                                   ),
-                                  blurRadius: 8,
+                                  blurRadius: AppSize.spacingM,
                                 ),
                               ]
                             : null,

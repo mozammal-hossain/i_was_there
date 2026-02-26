@@ -51,15 +51,20 @@ class DashboardPage extends StatelessWidget {
                 onManualOverride: onManualOverride,
               ),
             ),
-            const SliverToBoxAdapter(
+            SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(24, 8, 24, 12),
-                child: Text(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSize.spacingXl,
+                  AppSize.spacingM,
+                  AppSize.spacingXl,
+                  AppSize.spacingM3,
+                ),
+                child: const Text(
                   'TRACKED STUDIOS',
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: AppSize.fontCaption2,
                     fontWeight: FontWeight.bold,
-                    letterSpacing: 0.1,
+                    letterSpacing: AppSize.letterSpacingTight,
                     color: Color(0xFF94A3B8),
                   ),
                 ),
@@ -70,21 +75,21 @@ class DashboardPage extends StatelessWidget {
               isDark: isDark,
               onPlaceTap: onPlaceTap,
             ),
-            const SliverToBoxAdapter(child: SizedBox(height: 120)),
+            const SliverToBoxAdapter(child: SizedBox(height: AppSize.spacingHeroBottom)),
           ],
         ),
       ),
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 20),
+        padding: const EdgeInsets.only(bottom: AppSize.spacingL2),
         child: FloatingActionButton.extended(
-          elevation: 5,
+          elevation: AppSize.elevationFabExtended,
           onPressed: onAddPlace,
           backgroundColor: AppColors.primary,
           icon: const Icon(Icons.add_location_alt, color: Colors.white),
           label: const Text(
             'Add Location',
             style: TextStyle(
-              fontSize: 16,
+              fontSize: AppSize.fontBodyLg,
               fontWeight: FontWeight.w500,
               color: Colors.white,
             ),

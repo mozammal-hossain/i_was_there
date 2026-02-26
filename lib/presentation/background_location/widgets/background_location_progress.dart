@@ -9,13 +9,16 @@ class BackgroundLocationProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSize.spacingL,
+        vertical: AppSize.spacingM,
+      ),
       child: Row(
         children: [
           Expanded(child: _ProgressBar(filled: true, isDark: isDark)),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSize.spacingS),
           Expanded(child: _ProgressBar(filled: true, isDark: isDark)),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSize.spacingS),
           Expanded(child: _ProgressBar(filled: false, isDark: isDark)),
         ],
       ),
@@ -32,12 +35,12 @@ class _ProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 6,
+      height: AppSize.progressHeight,
       decoration: BoxDecoration(
         color: filled
             ? AppColors.primary
             : (isDark ? const Color(0xFF475569) : const Color(0xFFCBD5E1)),
-        borderRadius: BorderRadius.circular(3),
+        borderRadius: BorderRadius.circular(AppSize.radiusS),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:i_was_there/core/theme/app_theme.dart';
 import 'package:i_was_there/presentation/background_location/widgets/background_location_footer.dart';
 import 'package:i_was_there/presentation/background_location/widgets/background_location_header.dart';
 import 'package:i_was_there/presentation/background_location/widgets/background_location_hero_illustration.dart';
@@ -35,14 +36,14 @@ class BackgroundLocationPage extends StatelessWidget {
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 24,
+                  horizontal: AppSize.spacingL,
+                  vertical: AppSize.spacingXl,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     BackgroundLocationHeroIllustration(isDark: isDark),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSize.spacingXl),
                     Text(
                       "Enable 'Allow all the time'",
                       style: theme.textTheme.headlineMedium?.copyWith(
@@ -50,17 +51,17 @@ class BackgroundLocationPage extends StatelessWidget {
                         color: isDark ? Colors.white : const Color(0xFF0F172A),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSize.spacingM3),
                     Text(
                       'To automatically sync your physical presence with Google Calendar every 10 minutes, we need background location access even when the app is closed.',
                       style: theme.textTheme.bodyLarge?.copyWith(
                         color: isDark
                             ? const Color(0xFF94A3B8)
                             : const Color(0xFF64748B),
-                        height: 1.5,
+                        height: AppSize.lineHeightLoose,
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSize.spacingXl3),
                     BackgroundLocationStepsSection(
                       theme: theme,
                       isDark: isDark,

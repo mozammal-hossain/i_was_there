@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/theme/app_theme.dart';
 import '../bloc/onboarding_bloc.dart';
 import '../bloc/onboarding_event.dart';
 
@@ -14,7 +15,10 @@ class OnboardingHowHeader extends StatelessWidget {
     final textColor = isDark ? Colors.white : const Color(0xFF0F172A);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSize.spacingXl,
+        vertical: AppSize.spacingL,
+      ),
       child: Row(
         children: [
           IconButton(
@@ -33,7 +37,7 @@ class OnboardingHowHeader extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 48),
+          const SizedBox(width: AppSize.avatarLg),
         ],
       ),
     );

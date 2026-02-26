@@ -10,7 +10,12 @@ class HistoryHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      padding: const EdgeInsets.fromLTRB(
+        AppSize.spacingL,
+        AppSize.spacingL,
+        AppSize.spacingL,
+        AppSize.spacingM,
+      ),
       decoration: BoxDecoration(
         color: (isDark ? AppColors.bgDarkGray : AppColors.bgWarmLight)
             .withValues(alpha: 0.9),
@@ -33,13 +38,13 @@ class HistoryHeader extends StatelessWidget {
               ),
             )
           else
-            const SizedBox(width: 48),
+            const SizedBox(width: AppSize.avatarLg),
           Expanded(
             child: Text(
               'Presence History',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: AppSize.fontHeadlineSm,
                 fontWeight: FontWeight.bold,
                 color: isDark ? Colors.white : const Color(0xFF0F172A),
               ),

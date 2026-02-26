@@ -33,7 +33,10 @@ class _MapPageState extends State<MapPage> {
     final points = markers.map((m) => m.point).toList();
     final bounds = LatLngBounds.fromPoints(points);
     _mapController.fitCamera(
-      CameraFit.bounds(bounds: bounds, padding: const EdgeInsets.all(80)),
+      CameraFit.bounds(
+        bounds: bounds,
+        padding: const EdgeInsets.all(AppSize.mapPadding),
+      ),
     );
   }
 
@@ -92,24 +95,24 @@ class _MapPageState extends State<MapPage> {
           ),
           if (widget.onBack != null)
             Positioned(
-              top: MediaQuery.of(context).padding.top + 8,
-              left: 16,
+              top: MediaQuery.of(context).padding.top + AppSize.spacingM,
+              left: AppSize.spacingL,
               child: Material(
-                elevation: 2,
-                borderRadius: BorderRadius.circular(12),
+                elevation: AppSize.spacingXs,
+                borderRadius: BorderRadius.circular(AppSize.radiusL),
                 child: InkWell(
                   onTap: widget.onBack,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppSize.radiusL),
                   child: Container(
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(AppSize.spacingM2),
                     decoration: BoxDecoration(
                       color: (isDark ? AppColors.bgDarkGray : Colors.white)
                           .withValues(alpha: 0.95),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppSize.radiusL),
                     ),
                     child: const Icon(
                       Icons.chevron_left,
-                      size: 28,
+                      size: AppSize.iconL3,
                       color: AppColors.primary,
                     ),
                   ),
@@ -119,17 +122,17 @@ class _MapPageState extends State<MapPage> {
           if (widget.places.isEmpty)
             Center(
               child: Container(
-                margin: const EdgeInsets.all(24),
-                padding: const EdgeInsets.all(24),
+                margin: const EdgeInsets.all(AppSize.spacingXl),
+                padding: const EdgeInsets.all(AppSize.spacingXl),
                 decoration: BoxDecoration(
                   color: (isDark ? AppColors.bgDarkGray : Colors.white)
                       .withValues(alpha: 0.95),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(AppSize.radiusXl2),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.1),
-                      blurRadius: 16,
-                      offset: const Offset(0, 4),
+                      blurRadius: AppSize.spacingL,
+                      offset: const Offset(0, AppSize.spacingM),
                     ),
                   ],
                 ),
@@ -138,12 +141,12 @@ class _MapPageState extends State<MapPage> {
                   children: [
                     Icon(
                       Icons.place_outlined,
-                      size: 48,
+                      size: AppSize.iconXl2,
                       color: (isDark
                           ? const Color(0xFF94A3B8)
                           : const Color(0xFF64748B)),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSize.spacingL),
                     Text(
                       'No places to show',
                       style: theme.textTheme.titleMedium?.copyWith(
@@ -151,7 +154,7 @@ class _MapPageState extends State<MapPage> {
                         color: isDark ? Colors.white : const Color(0xFF0F172A),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSize.spacingM),
                     Text(
                       'Add tracked places from the dashboard to see them on the map.',
                       textAlign: TextAlign.center,

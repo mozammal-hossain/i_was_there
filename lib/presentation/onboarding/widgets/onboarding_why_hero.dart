@@ -11,19 +11,22 @@ class OnboardingWhyHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSize.spacingL,
+        vertical: AppSize.spacingXl,
+      ),
       child: Container(
-        constraints: const BoxConstraints(minHeight: 320),
+        constraints: const BoxConstraints(minHeight: AppSize.heroMinHeight),
         decoration: BoxDecoration(
           color: AppColors.primary.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppSize.radiusL),
           border: Border.all(
             color: AppColors.primary.withValues(alpha: 0.2),
           ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 4,
+              blurRadius: AppSize.spacingS,
               offset: const Offset(0, 2),
             ),
           ],
@@ -33,11 +36,11 @@ class OnboardingWhyHero extends StatelessWidget {
           _illustrationUrl,
           fit: BoxFit.cover,
           width: double.infinity,
-          height: 320,
+          height: AppSize.heroMinHeight,
           errorBuilder: (context, error, stackTrace) => Center(
             child: Icon(
               Icons.place,
-              size: 64,
+              size: AppSize.iconXl3,
               color: AppColors.primary.withValues(alpha: 0.5),
             ),
           ),

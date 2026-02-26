@@ -21,14 +21,14 @@ class SettingsConnectedAccountSection extends StatelessWidget {
           style: theme.textTheme.labelSmall?.copyWith(
             color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
             fontWeight: FontWeight.w600,
-            letterSpacing: 0.5,
+            letterSpacing: AppSize.letterSpacingLg,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSize.spacingM3),
         Container(
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppSize.radiusXl),
             border: Border.all(
               color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
             ),
@@ -36,11 +36,11 @@ class SettingsConnectedAccountSection extends StatelessWidget {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSize.spacingL),
                 child: Row(
                   children: [
                     CircleAvatar(
-                      radius: 24,
+                      radius: AppSize.radiusCard,
                       backgroundColor: isDark
                           ? const Color(0xFF334155)
                           : const Color(0xFFE2E8F0),
@@ -51,7 +51,7 @@ class SettingsConnectedAccountSection extends StatelessWidget {
                             : const Color(0xFF64748B),
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: AppSize.spacingL),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,7 +71,7 @@ class SettingsConnectedAccountSection extends StatelessWidget {
                               color: isDark
                                   ? const Color(0xFF94A3B8)
                                   : const Color(0xFF64748B),
-                              fontSize: 14,
+                              fontSize: AppSize.fontBodySm,
                             ),
                           ),
                         ],
@@ -98,15 +98,15 @@ class SettingsConnectedAccountSection extends StatelessWidget {
               ),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
+                  horizontal: AppSize.spacingL,
+                  vertical: AppSize.spacingM3,
                 ),
                 decoration: BoxDecoration(
                   color: isDark
                       ? Colors.white.withValues(alpha: 0.05)
                       : const Color(0xFFF8FAFC),
                   borderRadius: const BorderRadius.vertical(
-                    bottom: Radius.circular(16),
+                    bottom: Radius.circular(AppSize.radiusXl),
                   ),
                 ),
                 child: Row(
@@ -116,16 +116,16 @@ class SettingsConnectedAccountSection extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.history,
-                          size: 16,
+                          size: AppSize.iconS,
                           color: isDark
                               ? const Color(0xFF94A3B8)
                               : const Color(0xFF64748B),
                         ),
-                        const SizedBox(width: 6),
+                        const SizedBox(width: AppSize.spacingS2),
                         Text(
                           'Last synced 12m ago',
                           style: theme.textTheme.bodySmall?.copyWith(
-                            fontSize: 12,
+                            fontSize: AppSize.fontSmall,
                             color: isDark
                                 ? const Color(0xFF94A3B8)
                                 : const Color(0xFF64748B),
@@ -138,7 +138,7 @@ class SettingsConnectedAccountSection extends StatelessWidget {
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: const Color(0xFF10B981),
                         fontWeight: FontWeight.bold,
-                        letterSpacing: 0.5,
+                        letterSpacing: AppSize.letterSpacingLg,
                       ),
                     ),
                   ],

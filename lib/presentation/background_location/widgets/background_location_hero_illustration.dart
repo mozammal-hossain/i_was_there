@@ -13,24 +13,24 @@ class BackgroundLocationHeroIllustration extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      constraints: const BoxConstraints(maxHeight: 220),
-      padding: const EdgeInsets.all(24),
+      constraints: const BoxConstraints(maxHeight: AppSize.heroIllustrationMaxHeight),
+      padding: const EdgeInsets.all(AppSize.spacingXl),
       decoration: BoxDecoration(
         color: AppColors.primary.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppSize.radiusXl),
         border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
       ),
       child: Center(
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSize.spacingL),
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF334155) : Colors.white,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppSize.radiusL),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 16,
-                offset: const Offset(0, 4),
+                blurRadius: AppSize.spacingL,
+                offset: const Offset(0, AppSize.spacingS),
               ),
             ],
           ),
@@ -39,17 +39,17 @@ class BackgroundLocationHeroIllustration extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _HeroLocationBarRow(isDark: isDark),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSize.spacingM3),
               _HeroSkeletonBar(isDark: isDark, fullWidth: true),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSize.spacingM),
               _HeroSkeletonBar(isDark: isDark, fullWidth: false),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSize.spacingL),
               _HeroOptionRow(
                 isSelected: true,
                 label: 'Allow all the time',
                 isDark: isDark,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSize.spacingM),
               _HeroOptionRow(
                 isSelected: false,
                 label: null,
@@ -72,16 +72,16 @@ class _HeroLocationBarRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(Icons.location_on, size: 16, color: AppColors.primary),
-        const SizedBox(width: 8),
+        Icon(Icons.location_on, size: AppSize.iconS, color: AppColors.primary),
+        const SizedBox(width: AppSize.spacingM),
         Container(
-          height: 8,
-          width: 80,
+          height: AppSize.dotSm,
+          width: AppSize.spacingXl8,
           decoration: BoxDecoration(
             color: isDark
                 ? const Color(0xFF475569)
                 : const Color(0xFFE2E8F0),
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(AppSize.radiusM),
           ),
         ),
       ],
@@ -98,13 +98,13 @@ class _HeroSkeletonBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 12,
-      width: fullWidth ? double.infinity : 120,
+      height: AppSize.dotMd,
+      width: fullWidth ? double.infinity : AppSize.spacingHeroBottom,
       decoration: BoxDecoration(
         color: isDark
             ? const Color(0xFF475569)
             : const Color(0xFFE2E8F0),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(AppSize.radiusM),
       ),
     );
   }
@@ -126,23 +126,23 @@ class _HeroOptionRow extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 16,
-          height: 16,
+          width: AppSize.iconS,
+          height: AppSize.iconS,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
               color: isSelected
                   ? AppColors.primary
                   : (isDark ? const Color(0xFF475569) : const Color(0xFFCBD5E1)),
-              width: isSelected ? 2 : 1,
+              width: isSelected ? AppSize.spacingXs : 1,
             ),
             color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : null,
           ),
           child: isSelected
               ? Center(
                   child: Container(
-                    width: 6,
-                    height: 6,
+                    width: AppSize.spacingS2,
+                    height: AppSize.spacingS2,
                     decoration: const BoxDecoration(
                       color: AppColors.primary,
                       shape: BoxShape.circle,
@@ -151,25 +151,25 @@ class _HeroOptionRow extends StatelessWidget {
                 )
               : null,
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSize.spacingM3),
         if (label != null)
           Text(
             label!,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: AppSize.fontSmall,
               fontWeight: FontWeight.bold,
               color: isDark ? Colors.white : const Color(0xFF0F172A),
             ),
           )
         else
           Container(
-            height: 8,
-            width: 100,
+            height: AppSize.dotSm,
+            width: AppSize.spacingXl9,
             decoration: BoxDecoration(
               color: isDark
                   ? const Color(0xFF475569)
                   : const Color(0xFFE2E8F0),
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(AppSize.radiusM),
             ),
           ),
       ],

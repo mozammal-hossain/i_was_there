@@ -10,17 +10,21 @@ class AddEditPlaceGeofenceInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSize.spacingL),
       decoration: BoxDecoration(
         color: AppColors.primary.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppSize.radiusL),
         border: Border.all(color: AppColors.primary.withValues(alpha: 0.1)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.info_outline, color: AppColors.primary, size: 20),
-          const SizedBox(width: 12),
+          const Icon(
+            Icons.info_outline,
+            color: AppColors.primary,
+            size: AppSize.iconM,
+          ),
+          const SizedBox(width: AppSize.spacingM3),
           Expanded(
             child: Text(
               'A 20m geofence ensures accurate attendance tracking while maintaining privacy and battery efficiency.',
@@ -28,7 +32,7 @@ class AddEditPlaceGeofenceInfo extends StatelessWidget {
                 color: isDark
                     ? const Color(0xFF94A3B8)
                     : const Color(0xFF64748B),
-                height: 1.4,
+                height: AppSize.lineHeightRelaxed,
               ),
             ),
           ),

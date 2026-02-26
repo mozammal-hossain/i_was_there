@@ -24,24 +24,28 @@ class HistorySessionTile extends StatelessWidget {
       color: isDark
           ? const Color(0xFF334155).withValues(alpha: 0.4)
           : const Color(0xFFF1F5F9),
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: BorderRadius.circular(AppSize.radiusCard),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(AppSize.radiusCard),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSize.spacingL),
           child: Row(
             children: [
               Container(
-                width: 44,
-                height: 44,
+                width: AppSize.avatarMd,
+                height: AppSize.avatarMd,
                 decoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: AppColors.primary, size: 22),
+                child: Icon(
+                  icon,
+                  color: AppColors.primary,
+                  size: AppSize.iconM2,
+                ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSize.spacingL),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,7 +63,7 @@ class HistorySessionTile extends StatelessWidget {
                         color: isDark
                             ? const Color(0xFF94A3B8)
                             : const Color(0xFF64748B),
-                        fontSize: 12,
+                        fontSize: AppSize.fontSmall,
                       ),
                     ),
                   ],

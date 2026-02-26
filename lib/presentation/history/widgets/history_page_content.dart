@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:i_was_there/core/theme/app_theme.dart';
 import 'package:i_was_there/domain/places/entities/place.dart';
 import 'package:i_was_there/domain/presence/entities/presence.dart';
 import 'package:i_was_there/presentation/history/utils/history_utils.dart';
@@ -55,7 +56,10 @@ class HistoryPageContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSize.spacingL,
+        vertical: AppSize.spacingXl,
+      ),
       child: Column(
         children: [
           HistoryMonthNav(
@@ -71,15 +75,17 @@ class HistoryPageContent extends StatelessWidget {
               viewMonth.month + 1,
             )),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSize.spacingL),
           if (loadingPresence)
-            const Center(
+            Center(
               child: Padding(
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(AppSize.spacingXl),
                 child: SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                  width: AppSize.iconL,
+                  height: AppSize.iconL,
+                  child: CircularProgressIndicator(
+                    strokeWidth: AppSize.spacingXs,
+                  ),
                 ),
               ),
             )
@@ -95,7 +101,7 @@ class HistoryPageContent extends StatelessWidget {
               isDark: isDark,
               onDayTap: onDaySelected,
             ),
-          const SizedBox(height: 40),
+          const SizedBox(height: AppSize.spacingXl4),
           HistoryDayDetailsSection(
             viewMonth: viewMonth,
             selectedDay: _effectiveSelectedDay,

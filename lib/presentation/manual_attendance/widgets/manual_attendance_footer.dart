@@ -21,64 +21,69 @@ class ManualAttendanceFooter extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSize.spacingXl),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.cloud_sync,
-              size: 14,
+              size: AppSize.iconXs,
               color: isDark
                   ? const Color(0xFF64748B)
                   : const Color(0xFF94A3B8),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSize.spacingM),
             Text(
               'SYNCS WITH GOOGLE CALENDAR',
               style: theme.textTheme.labelSmall?.copyWith(
                 color: isDark
                     ? const Color(0xFF64748B)
                     : const Color(0xFF94A3B8),
-                letterSpacing: 0.5,
+                letterSpacing: AppSize.letterSpacingLg,
               ),
             ),
           ],
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(32, 16, 32, 48),
+          padding: const EdgeInsets.fromLTRB(
+            AppSize.spacingXl3,
+            AppSize.spacingL,
+            AppSize.spacingXl3,
+            AppSize.spacingXl5,
+          ),
           child: Column(
             children: [
               SizedBox(
                 width: double.infinity,
-                height: 56,
+                height: AppSize.buttonHeight,
                 child: FilledButton(
                   onPressed: onApply,
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(AppSize.radiusXl),
                     ),
                   ),
                   child: const Text(
                     'Apply Changes',
                     style: TextStyle(
-                      fontSize: 17,
+                      fontSize: AppSize.fontTitle,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSize.spacingM3),
               SizedBox(
                 width: double.infinity,
-                height: 48,
+                height: AppSize.buttonHeightSm,
                 child: TextButton(
                   onPressed: onCancel,
                   child: Text(
                     'Cancel',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: AppSize.fontBodyLg,
                       fontWeight: FontWeight.w500,
                       color: isDark
                           ? const Color(0xFF94A3B8)

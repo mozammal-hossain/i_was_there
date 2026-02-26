@@ -39,7 +39,7 @@ class HistoryCalendarGrid extends StatelessWidget {
                       d,
                       style: theme.textTheme.labelSmall?.copyWith(
                         fontWeight: FontWeight.bold,
-                        letterSpacing: 0.2,
+                        letterSpacing: AppSize.letterSpacingMd,
                         color: isDark
                             ? const Color(0xFF64748B)
                             : const Color(0xFF94A3B8),
@@ -50,13 +50,13 @@ class HistoryCalendarGrid extends StatelessWidget {
               )
               .toList(),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSize.spacingM),
         GridView.count(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           crossAxisCount: 7,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
+          mainAxisSpacing: AppSize.spacingM,
+          crossAxisSpacing: AppSize.spacingM,
           childAspectRatio: 1,
           children: [
             ...List.filled(firstWeekday, const SizedBox.shrink()),
@@ -70,7 +70,7 @@ class HistoryCalendarGrid extends StatelessWidget {
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () => onDayTap(day),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppSize.radiusL),
                   child: Container(
                     decoration: BoxDecoration(
                       color: highlight
@@ -80,9 +80,12 @@ class HistoryCalendarGrid extends StatelessWidget {
                           : (isDark
                                 ? const Color(0xFF334155).withValues(alpha: 0.4)
                                 : const Color(0xFFF1F5F9)),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppSize.radiusL),
                       border: highlight
-                          ? Border.all(color: AppColors.primary, width: 2)
+                          ? Border.all(
+                              color: AppColors.primary,
+                              width: AppSize.spacingXs,
+                            )
                           : null,
                     ),
                     child: Column(
@@ -101,10 +104,10 @@ class HistoryCalendarGrid extends StatelessWidget {
                                       : const Color(0xFF0F172A)),
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSize.spacingS),
                         Container(
-                          width: 6,
-                          height: 6,
+                          width: AppSize.spacingS2,
+                          height: AppSize.spacingS2,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: hasP

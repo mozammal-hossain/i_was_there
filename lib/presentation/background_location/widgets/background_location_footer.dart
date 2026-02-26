@@ -18,7 +18,12 @@ class BackgroundLocationFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+      padding: const EdgeInsets.fromLTRB(
+        AppSize.spacingL,
+        AppSize.spacingL,
+        AppSize.spacingL,
+        AppSize.spacingXl,
+      ),
       decoration: BoxDecoration(
         color: isDark ? AppColors.bgDarkGray : AppColors.bgWarmLight,
         border: Border(
@@ -33,7 +38,7 @@ class BackgroundLocationFooter extends StatelessWidget {
           children: [
             SizedBox(
               width: double.infinity,
-              height: 56,
+              height: AppSize.buttonHeight,
               child: FilledButton.icon(
                 onPressed: onOpenSettings ??
                     () {
@@ -43,21 +48,24 @@ class BackgroundLocationFooter extends StatelessWidget {
                         ),
                       );
                     },
-                icon: const Icon(Icons.open_in_new, size: 20),
-                label: const Text(
+                icon: const Icon(Icons.open_in_new, size: AppSize.iconM),
+                label: Text(
                   'Open Settings',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: AppSize.fontTitle,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(AppSize.radiusL),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSize.spacingM3),
             TextButton(
               onPressed: onLater ?? () => Navigator.of(context).pop(),
               child: Text(
@@ -70,7 +78,7 @@ class BackgroundLocationFooter extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSize.spacingL),
             Text(
               'Your data is only used for calendar synchronization and is fully encrypted. We never share your location with third parties.',
               textAlign: TextAlign.center,
@@ -78,7 +86,7 @@ class BackgroundLocationFooter extends StatelessWidget {
                 color: isDark
                     ? const Color(0xFF64748B)
                     : const Color(0xFF94A3B8),
-                fontSize: 11,
+                fontSize: AppSize.fontCaption2,
               ),
             ),
           ],

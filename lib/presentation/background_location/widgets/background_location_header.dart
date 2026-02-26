@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:i_was_there/core/theme/app_theme.dart';
 
 class BackgroundLocationHeader extends StatelessWidget {
   const BackgroundLocationHeader({
@@ -13,7 +14,12 @@ class BackgroundLocationHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      padding: const EdgeInsets.fromLTRB(
+        AppSize.spacingL,
+        AppSize.spacingL,
+        AppSize.spacingL,
+        AppSize.spacingM,
+      ),
       child: Row(
         children: [
           IconButton(
@@ -33,13 +39,13 @@ class BackgroundLocationHeader extends StatelessWidget {
               'Location Permission',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: AppSize.fontHeadlineSm,
                 fontWeight: FontWeight.bold,
                 color: isDark ? Colors.white : const Color(0xFF0F172A),
               ),
             ),
           ),
-          const SizedBox(width: 48),
+          const SizedBox(width: AppSize.avatarLg),
         ],
       ),
     );

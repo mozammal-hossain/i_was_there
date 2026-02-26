@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/theme/app_theme.dart';
 import '../bloc/onboarding_bloc.dart';
 import '../bloc/onboarding_state.dart';
 import 'onboarding_why_actions.dart';
@@ -19,7 +20,7 @@ class OnboardingWhyScreen extends StatelessWidget {
           body: SafeArea(
             child: SingleChildScrollView(
               child: Column(
-                spacing: 8,
+                spacing: AppSize.spacingM,
                 children: [
                   const OnboardingWhyHero(),
                   const OnboardingWhyContent(),

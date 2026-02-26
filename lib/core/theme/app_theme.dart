@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'app_size.dart';
+
+export 'app_size.dart';
+
 /// App color palette derived from the I Was There logo.
 ///
 /// Logo: terracotta circle (#753C2F) with black location pin.
@@ -65,18 +69,18 @@ ThemeData buildAppTheme({required bool isDark}) {
     fontFamily: GoogleFonts.inter().fontFamily,
     textTheme: GoogleFonts.interTextTheme(),
     appBarTheme: AppBarTheme(
-      scrolledUnderElevation: 0,
+      scrolledUnderElevation: AppSize.elevationNone,
       backgroundColor: Colors.transparent,
-      elevation: 0,
+      elevation: AppSize.elevationNone,
       titleTextStyle: GoogleFonts.inter(
-        fontSize: 17,
+        fontSize: AppSize.fontTitle,
         fontWeight: FontWeight.w600,
         color: isDark ? Colors.white : const Color(0xFF0F172A),
       ),
     ),
     cardTheme: CardThemeData(
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      elevation: AppSize.elevationNone,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.radiusCard)),
       color: isDark
           ? const Color(0xFF1E293B).withValues(alpha: 0.4)
           : Colors.white,
@@ -88,25 +92,31 @@ ThemeData buildAppTheme({required bool isDark}) {
       fillColor: isDark
           ? const Color(0xFF334155).withValues(alpha: 0.4)
           : const Color(0xFFF1F5F9).withValues(alpha: 0.5),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppSize.radiusL)),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppSize.radiusL),
         borderSide: BorderSide.none,
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.primary, width: 1),
+        borderRadius: BorderRadius.circular(AppSize.radiusL),
+        borderSide: const BorderSide(
+          color: AppColors.primary,
+          width: AppSize.borderWidth,
+        ),
       ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSize.spacingL,
+        vertical: AppSize.spacingInputVertical,
+      ),
       hintStyle: TextStyle(
         color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF94A3B8),
-        fontSize: 17,
+        fontSize: AppSize.fontTitle,
       ),
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       backgroundColor: AppColors.primary,
       foregroundColor: Colors.white,
-      elevation: 8,
+      elevation: AppSize.elevationFab,
     ),
   );
 }

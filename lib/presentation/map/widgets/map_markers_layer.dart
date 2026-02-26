@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:i_was_there/core/theme/app_theme.dart';
 import 'package:i_was_there/domain/places/entities/place.dart';
 
 /// Builds map markers from places. Widget class per CUSTOM_RULES (no _build* methods).
@@ -17,9 +18,13 @@ class MapMarkersLayer extends StatelessWidget {
         m.add(
           Marker(
             point: LatLng(place.latitude, place.longitude),
-            width: 40,
-            height: 40,
-            child: Icon(Icons.place, color: primary, size: 40),
+            width: AppSize.avatarSm,
+            height: AppSize.avatarSm,
+            child: Icon(
+              Icons.place,
+              color: primary,
+              size: AppSize.avatarSm,
+            ),
           ),
         );
       }

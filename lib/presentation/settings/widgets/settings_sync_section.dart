@@ -23,10 +23,10 @@ class SettingsSyncSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSize.spacingL2),
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppSize.radiusXl),
             border: Border.all(
               color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
             ),
@@ -44,14 +44,14 @@ class SettingsSyncSection extends StatelessWidget {
                         color: isDark ? Colors.white : const Color(0xFF0F172A),
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSize.spacingS),
                     Text(
                       'Automatic attendance logging',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: isDark
                             ? const Color(0xFF94A3B8)
                             : const Color(0xFF64748B),
-                        fontSize: 13,
+                        fontSize: AppSize.fontBody2,
                       ),
                     ),
                   ],
@@ -65,12 +65,16 @@ class SettingsSyncSection extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSize.spacingM3),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.security, size: 18, color: AppColors.primary),
-            const SizedBox(width: 8),
+            Icon(
+              Icons.security,
+              size: AppSize.iconS2,
+              color: AppColors.primary,
+            ),
+            const SizedBox(width: AppSize.spacingM),
             Expanded(
               child: Text(
                 'One-way sync: We only add events to your calendar. We never read or delete your existing data.',
@@ -79,7 +83,7 @@ class SettingsSyncSection extends StatelessWidget {
                   color: isDark
                       ? const Color(0xFFCBD5E1)
                       : const Color(0xFF475569),
-                  fontSize: 13,
+                  fontSize: AppSize.fontBody2,
                 ),
               ),
             ),

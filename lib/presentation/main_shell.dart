@@ -42,7 +42,10 @@ class _MainShellState extends State<MainShell> {
         child: SafeArea(
           top: false,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSize.spacingXl,
+              vertical: AppSize.spacingM3,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -95,26 +98,29 @@ class _TabItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: BorderRadius.circular(AppSize.radiusCard),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSize.spacingL,
+          vertical: AppSize.spacingM,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               icon,
-              size: 26,
+              size: AppSize.iconL2,
               color: selected
                   ? AppColors.primary
                   : (isDark
                         ? const Color(0xFF64748B)
                         : const Color(0xFF94A3B8)),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSize.spacingS),
             Text(
               label,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: AppSize.fontSmall,
                 fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
                 color: selected
                     ? AppColors.primary

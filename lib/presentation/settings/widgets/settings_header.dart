@@ -10,7 +10,10 @@ class SettingsHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSize.spacingL,
+        vertical: AppSize.spacingM3,
+      ),
       decoration: BoxDecoration(
         color: (isDark ? AppColors.bgDarkGray : AppColors.bgWarmLight)
             .withValues(alpha: 0.8),
@@ -27,12 +30,15 @@ class SettingsHeader extends StatelessWidget {
               onPressed: onBack,
               icon: Icon(
                 Icons.chevron_left,
-                size: 32,
+                size: AppSize.iconNav,
                 color: AppColors.primary,
               ),
               label: Text(
                 'Back',
-                style: TextStyle(color: AppColors.primary, fontSize: 17),
+                style: TextStyle(
+                  color: AppColors.primary,
+                  fontSize: AppSize.fontTitle,
+                ),
               ),
             ),
           Expanded(
@@ -40,16 +46,16 @@ class SettingsHeader extends StatelessWidget {
               'Calendar Sync',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 17,
+                fontSize: AppSize.fontTitle,
                 fontWeight: FontWeight.w600,
                 color: isDark ? Colors.white : const Color(0xFF0F172A),
               ),
             ),
           ),
           if (onBack != null)
-            const SizedBox(width: 80)
+            const SizedBox(width: AppSize.spacingXl8)
           else
-            const SizedBox(width: 48),
+            const SizedBox(width: AppSize.avatarLg),
         ],
       ),
     );

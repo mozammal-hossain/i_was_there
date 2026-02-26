@@ -17,7 +17,12 @@ class DashboardPageHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+      padding: const EdgeInsets.fromLTRB(
+        AppSize.spacingXl,
+        AppSize.spacingXl,
+        AppSize.spacingXl,
+        AppSize.spacingL,
+      ),
       child: Row(
         children: [
           Expanded(
@@ -33,7 +38,7 @@ class DashboardPageHeader extends StatelessWidget {
                         : const Color(0xFF0F172A),
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSize.spacingXs),
                 Row(
                   children: [
                     Text(
@@ -46,18 +51,20 @@ class DashboardPageHeader extends StatelessWidget {
                       ),
                     ),
                     if (onManualOverride != null) ...[
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSize.spacingM3),
                       TextButton(
                         onPressed: onManualOverride,
                         style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSize.spacingM,
+                          ),
                           minimumSize: Size.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                         child: Text(
                           'Override',
                           style: TextStyle(
-                            fontSize: 13,
+                            fontSize: AppSize.fontBody2,
                             fontWeight: FontWeight.w500,
                             color: AppColors.primary,
                           ),
@@ -70,7 +77,7 @@ class DashboardPageHeader extends StatelessWidget {
             ),
           ),
           CircleAvatar(
-            radius: 20,
+            radius: AppSize.radiusXl2,
             backgroundColor: isDark
                 ? const Color(0xFF334155)
                 : const Color(0xFFE2E8F0),

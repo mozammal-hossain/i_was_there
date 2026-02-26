@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:i_was_there/core/theme/app_theme.dart';
 import 'package:i_was_there/domain/places/entities/place.dart';
 import 'package:i_was_there/presentation/manual_attendance/widgets/manual_attendance_footer.dart';
 import 'package:i_was_there/presentation/manual_attendance/widgets/manual_attendance_header.dart';
@@ -36,12 +37,14 @@ class ManualAttendanceSheetContent extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF24303F) : Colors.white,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(AppSize.radiusSheet),
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.1),
-            blurRadius: 24,
-            offset: const Offset(0, -4),
+            blurRadius: AppSize.spacingXl,
+            offset: const Offset(0, -AppSize.spacingM),
           ),
         ],
       ),

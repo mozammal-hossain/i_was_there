@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:i_was_there/core/theme/app_theme.dart';
+
 /// User-facing message for uncaught errors when a generic message is shown.
 const String kGenericErrorMessage =
     'Something went wrong. Please try again.';
@@ -70,12 +72,15 @@ void setupGlobalErrorHandling([
     return Material(
       child: Container(
         color: Colors.grey.shade200,
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSize.spacingL),
         child: Center(
           child: Text(
             userMessage,
             textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.black87, fontSize: 14),
+            style: const TextStyle(
+              color: Colors.black87,
+              fontSize: AppSize.fontBodySm,
+            ),
           ),
         ),
       ),

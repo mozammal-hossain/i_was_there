@@ -25,20 +25,20 @@ class ManualAttendancePlaceRow extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: AppSize.spacingM),
+      padding: const EdgeInsets.all(AppSize.spacingL),
       decoration: BoxDecoration(
         color: isDark
             ? const Color(0xFF334155).withValues(alpha: 0.4)
             : const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppSize.radiusXl),
         border: Border.all(color: Colors.transparent),
       ),
       child: Row(
         children: [
           Container(
-            width: 48,
-            height: 48,
+            width: AppSize.avatarLg,
+            height: AppSize.avatarLg,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
@@ -49,11 +49,11 @@ class ManualAttendancePlaceRow extends StatelessWidget {
             ),
             child: Icon(
               icon,
-              size: 24,
+              size: AppSize.iconL,
               color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
             ),
           ),
-          const SizedBox(width: 20),
+          const SizedBox(width: AppSize.spacingL2),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,27 +65,27 @@ class ManualAttendancePlaceRow extends StatelessWidget {
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w500,
                         color: isDark ? Colors.white : const Color(0xFF0F172A),
-                        fontSize: 17,
+                        fontSize: AppSize.fontTitle,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSize.spacingM),
                     Icon(
                       Icons.sync,
-                      size: 16,
+                      size: AppSize.iconS,
                       color: isDark
                           ? const Color(0xFF64748B)
                           : const Color(0xFF94A3B8),
                     ),
                   ],
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSize.spacingXs),
                 Text(
                   place.address.isNotEmpty ? place.address : 'No address',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: isDark
                         ? const Color(0xFF64748B)
                         : const Color(0xFF64748B),
-                    fontSize: 12,
+                    fontSize: AppSize.fontSmall,
                   ),
                 ),
               ],

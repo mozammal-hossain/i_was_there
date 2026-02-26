@@ -20,9 +20,9 @@ class OnboardingProgressDots extends StatelessWidget {
       children: List.generate(total, (i) {
         final isActive = i == currentIndex;
         return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 4),
-          width: 8,
-          height: 8,
+          margin: const EdgeInsets.symmetric(horizontal: AppSize.spacingS),
+          width: AppSize.dotSm,
+          height: AppSize.dotSm,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: isActive

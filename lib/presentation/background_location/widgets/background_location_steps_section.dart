@@ -18,8 +18,8 @@ class BackgroundLocationStepsSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(Icons.info_outline, color: AppColors.primary, size: 22),
-            const SizedBox(width: 8),
+            Icon(Icons.info_outline, color: AppColors.primary, size: AppSize.iconM2),
+            const SizedBox(width: AppSize.spacingM),
             Text(
               'How to enable:',
               style: theme.textTheme.titleMedium?.copyWith(
@@ -29,7 +29,7 @@ class BackgroundLocationStepsSection extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: AppSize.spacingL2),
         _StepRow(
           number: 1,
           text: "Tap 'Open Settings' below",
@@ -72,19 +72,19 @@ class _StepRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: AppSize.spacingL),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _StepNumberCircle(number: number, highlight: highlight),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSize.spacingL),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(top: 4),
+              padding: const EdgeInsets.only(top: AppSize.spacingS),
               child: Text(
                 text,
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: AppSize.fontBodyLg,
                   fontWeight: FontWeight.w500,
                   color: isDark
                       ? const Color(0xFFE2E8F0)
@@ -108,8 +108,8 @@ class _StepNumberCircle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 32,
-      height: 32,
+      width: AppSize.iconNav,
+      height: AppSize.iconNav,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: highlight
@@ -119,13 +119,13 @@ class _StepNumberCircle extends StatelessWidget {
           color: highlight
               ? AppColors.primary
               : AppColors.primary.withValues(alpha: 0.2),
-          width: highlight ? 2 : 1,
+          width: highlight ? AppSize.spacingXs : AppSize.borderWidth,
         ),
         boxShadow: highlight
             ? [
                 BoxShadow(
                   color: AppColors.primary.withValues(alpha: 0.3),
-                  blurRadius: 15,
+                  blurRadius: AppSize.shadowBlurMd,
                 ),
               ]
             : null,
@@ -134,7 +134,7 @@ class _StepNumberCircle extends StatelessWidget {
         child: Text(
           '$number',
           style: const TextStyle(
-            fontSize: 14,
+            fontSize: AppSize.fontBodySm,
             fontWeight: FontWeight.bold,
             color: AppColors.primary,
           ),

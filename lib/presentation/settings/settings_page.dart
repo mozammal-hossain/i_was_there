@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:i_was_there/core/theme/app_theme.dart';
 import 'package:i_was_there/presentation/settings/widgets/settings_connected_account_section.dart';
 import 'package:i_was_there/presentation/settings/widgets/settings_footer.dart';
 import 'package:i_was_there/presentation/settings/widgets/settings_header.dart';
@@ -35,8 +36,8 @@ class SettingsPage extends StatelessWidget {
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 32,
+                  horizontal: AppSize.spacingL,
+                  vertical: AppSize.spacingXl3,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,19 +49,19 @@ class SettingsPage extends StatelessWidget {
                       isDark: isDark,
                       onChanged: onSyncEnabledChanged,
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSize.spacingXl3),
                     SettingsConnectedAccountSection(
                       theme: theme,
                       isDark: isDark,
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSize.spacingXl3),
                     SettingsSyncDetailsSection(
                       theme: theme,
                       isDark: isDark,
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSize.spacingXl),
                     const SettingsSyncNowButton(),
-                    const SizedBox(height: 48),
+                    const SizedBox(height: AppSize.spacingXl5),
                     SettingsFooter(theme: theme, isDark: isDark),
                   ],
                 ),

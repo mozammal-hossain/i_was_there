@@ -28,26 +28,29 @@ class OnboardingHowStepItem extends StatelessWidget {
         Column(
           children: [
             Container(
-              width: 40,
-              height: 40,
+              width: AppSize.stepIconSize,
+              height: AppSize.stepIconSize,
               decoration: BoxDecoration(
                 color: AppColors.primary.withValues(alpha: 0.2),
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: AppColors.primary, size: 24),
+              child: Icon(icon, color: AppColors.primary, size: AppSize.iconL),
             ),
             if (showLine)
               Container(
-                width: 2,
-                height: 48,
+                width: AppSize.spacingXs,
+                height: AppSize.buttonHeightSm,
                 color: AppColors.primary.withValues(alpha: 0.2),
               ),
           ],
         ),
-        const SizedBox(width: 24),
+        const SizedBox(width: AppSize.spacingXl),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.only(top: 8, bottom: 32),
+            padding: const EdgeInsets.only(
+              top: AppSize.spacingM,
+              bottom: AppSize.spacingXl3,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -56,16 +59,16 @@ class OnboardingHowStepItem extends StatelessWidget {
                   style: theme.textTheme.labelMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: AppColors.primary,
-                    letterSpacing: 1.2,
+                    letterSpacing: AppSize.letterSpacingXl,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSize.spacingS),
                 Text(
                   title,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w500,
                     color: textColor,
-                    height: 1.3,
+                    height: AppSize.lineHeightBody,
                   ),
                 ),
               ],

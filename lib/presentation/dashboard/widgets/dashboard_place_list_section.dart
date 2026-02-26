@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:i_was_there/core/theme/app_theme.dart';
 import 'package:i_was_there/domain/places/entities/place.dart';
 import 'package:i_was_there/presentation/dashboard/widgets/dashboard_place_card.dart';
 
@@ -18,7 +19,7 @@ class DashboardPlaceListSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.symmetric(horizontal: AppSize.spacingXl),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate((context, index) {
           final place = places[index];

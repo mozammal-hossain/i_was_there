@@ -12,7 +12,7 @@ class OnboardingWhyContent extends StatelessWidget {
     final bodyColor = isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.symmetric(horizontal: AppSize.spacingXl),
       child: Column(
         children: [
           Text(
@@ -20,16 +20,16 @@ class OnboardingWhyContent extends StatelessWidget {
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
               color: AppColors.primary,
-              height: 1.2,
+              height: AppSize.lineHeightTight,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSize.spacingM3),
           Text(
             'Define your important places and automatically record your presence each day. Focus on your fitness goals while we handle the tracking.',
             style: theme.textTheme.bodyLarge?.copyWith(
               color: bodyColor,
-              height: 1.5,
+              height: AppSize.lineHeightLoose,
             ),
             textAlign: TextAlign.center,
           ),

@@ -19,11 +19,11 @@ class OnboardingHowScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             const OnboardingHowHeader(),
-            SizedBox(height: 60),
+            SizedBox(height: AppSize.onboardingSpacer),
             Expanded(
               child: ListView(
                 shrinkWrap: true,
-                padding: const EdgeInsets.symmetric(horizontal: 32),
+                padding: const EdgeInsets.symmetric(horizontal: AppSize.spacingXl3),
                 children: const [
                   OnboardingHowStepItem(
                     stepNumber: 1,
@@ -59,14 +59,19 @@ class OnboardingHowScreen extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 24, 24, 40),
+              padding: const EdgeInsets.fromLTRB(
+                AppSize.spacingXl,
+                AppSize.spacingXl,
+                AppSize.spacingXl,
+                AppSize.spacingXl4,
+              ),
               child: Column(
                 children: [
                   const OnboardingProgressDots(currentIndex: 1, total: 2),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSize.spacingXl),
                   SizedBox(
                     width: double.infinity,
-                    height: 56,
+                    height: AppSize.buttonHeight,
                     child: FilledButton(
                       onPressed: () => context.read<OnboardingBloc>().add(
                         OnboardingComplete(),
@@ -75,7 +80,7 @@ class OnboardingHowScreen extends StatelessWidget {
                         backgroundColor: AppColors.primary,
                         foregroundColor: AppColors.onPrimary,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(AppSize.radiusL),
                         ),
                       ),
                       child: Text(

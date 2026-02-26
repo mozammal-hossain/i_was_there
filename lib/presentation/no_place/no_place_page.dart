@@ -15,17 +15,17 @@ class NoPlacePage extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: AppSize.spacingXl),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Spacer(flex: 2),
               Icon(
                 Icons.place_outlined,
-                size: 80,
+                size: AppSize.iconXl4,
                 color: AppColors.primary.withValues(alpha: 0.6),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSize.spacingXl),
               Text(
                 'No places yet',
                 style: theme.textTheme.headlineSmall?.copyWith(
@@ -33,7 +33,7 @@ class NoPlacePage extends StatelessWidget {
                   color: isDark ? Colors.white : const Color(0xFF0F172A),
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSize.spacingM),
               Text(
                 'Add a place to start tracking your weekly attendance.',
                 textAlign: TextAlign.center,
@@ -46,21 +46,21 @@ class NoPlacePage extends StatelessWidget {
               const Spacer(flex: 2),
               FilledButton.icon(
                 onPressed: onAddPlace,
-                icon: const Icon(Icons.add, size: 22),
+                icon: const Icon(Icons.add, size: AppSize.iconM2),
                 label: const Text('Add your first place'),
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 16,
+                    horizontal: AppSize.spacingXl,
+                    vertical: AppSize.spacingL,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(AppSize.radiusL),
                   ),
                 ),
               ),
-              const SizedBox(height: 48),
+              const SizedBox(height: AppSize.spacingXl5),
             ],
           ),
         ),

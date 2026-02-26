@@ -8,23 +8,26 @@ class SettingsSyncNowButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 56,
+      height: AppSize.buttonHeight,
       child: FilledButton.icon(
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Syncing…')),
           );
         },
-        icon: const Icon(Icons.sync, size: 20),
+        icon: const Icon(Icons.sync, size: AppSize.iconM),
         label: const Text(
           'Sync Now',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          style: TextStyle(
+            fontSize: AppSize.fontBodyLg,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         style: FilledButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppSize.radiusXl),
           ),
         ),
       ),

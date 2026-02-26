@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:i_was_there/core/theme/app_theme.dart';
 
 class SettingsSyncDetailsSection extends StatelessWidget {
   const SettingsSyncDetailsSection({
@@ -20,15 +21,15 @@ class SettingsSyncDetailsSection extends StatelessWidget {
           style: theme.textTheme.labelSmall?.copyWith(
             color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
             fontWeight: FontWeight.w600,
-            letterSpacing: 0.5,
+            letterSpacing: AppSize.letterSpacingLg,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSize.spacingM3),
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSize.spacingL2),
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppSize.radiusXl),
             border: Border.all(
               color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
             ),
@@ -42,7 +43,7 @@ class SettingsSyncDetailsSection extends StatelessWidget {
                     ? const Color(0xFF94A3B8)
                     : const Color(0xFF64748B),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSize.spacingL),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,14 +55,14 @@ class SettingsSyncDetailsSection extends StatelessWidget {
                         color: isDark ? Colors.white : const Color(0xFF0F172A),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSize.spacingM),
                     Text.rich(
                       TextSpan(
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: isDark
                               ? const Color(0xFF94A3B8)
                               : const Color(0xFF64748B),
-                          fontSize: 14,
+                          fontSize: AppSize.fontBodySm,
                         ),
                         children: [
                           const TextSpan(text: 'Visits are logged as '),

@@ -18,14 +18,19 @@ class OnboardingWhyActions extends StatelessWidget {
         : const Color(0xFF64748B);
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 40),
+      padding: const EdgeInsets.fromLTRB(
+        AppSize.spacingL,
+        AppSize.spacingXl,
+        AppSize.spacingL,
+        AppSize.spacingXl4,
+      ),
       child: Column(
         children: [
           const OnboardingProgressDots(currentIndex: 0),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSize.spacingM),
           SizedBox(
             width: double.infinity,
-            height: 56,
+            height: AppSize.buttonHeight,
             child: FilledButton(
               onPressed: () =>
                   context.read<OnboardingBloc>().add(OnboardingNextStep()),
@@ -33,7 +38,7 @@ class OnboardingWhyActions extends StatelessWidget {
                 backgroundColor: AppColors.primary,
                 foregroundColor: AppColors.onPrimary,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppSize.radiusL),
                 ),
               ),
               child: Text(
@@ -44,10 +49,10 @@ class OnboardingWhyActions extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSize.spacingM3),
           SizedBox(
             width: double.infinity,
-            height: 48,
+            height: AppSize.buttonHeightSm,
             child: TextButton(
               onPressed: () =>
                   context.read<OnboardingBloc>().add(OnboardingMaybeLater()),

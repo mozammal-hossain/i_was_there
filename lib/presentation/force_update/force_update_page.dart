@@ -45,13 +45,17 @@ class _ForceUpdateView extends StatelessWidget {
       child: Scaffold(
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.symmetric(horizontal: AppSize.spacingXl),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Spacer(flex: 2),
-                Icon(Icons.system_update, size: 80, color: AppColors.primary),
-                const SizedBox(height: 24),
+                Icon(
+                  Icons.system_update,
+                  size: AppSize.iconXl4,
+                  color: AppColors.primary,
+                ),
+                const SizedBox(height: AppSize.spacingXl),
                 Text(
                   'Update required',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -59,7 +63,7 @@ class _ForceUpdateView extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSize.spacingM3),
                 Text(
                   'A new version of I Was There is required. Please update to continue.',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -79,12 +83,14 @@ class _ForceUpdateView extends StatelessWidget {
                     style: FilledButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       foregroundColor: AppColors.onPrimary,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSize.spacingL,
+                      ),
                     ),
                     child: const Text('Update'),
                   ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSize.spacingXl3),
               ],
             ),
           ),

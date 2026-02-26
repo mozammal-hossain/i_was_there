@@ -23,21 +23,26 @@ class ManualAttendanceHeader extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSize.spacingM3),
         Center(
           child: Container(
-            width: 40,
-            height: 6,
+            width: AppSize.stepIconSize,
+            height: AppSize.progressHeight,
             decoration: BoxDecoration(
               color: isDark
                   ? const Color(0xFF475569)
                   : const Color(0xFFCBD5E1),
-              borderRadius: BorderRadius.circular(3),
+              borderRadius: BorderRadius.circular(AppSize.radiusS),
             ),
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(32, 16, 32, 16),
+          padding: const EdgeInsets.fromLTRB(
+            AppSize.spacingXl3,
+            AppSize.spacingL,
+            AppSize.spacingXl3,
+            AppSize.spacingL,
+          ),
           child: Row(
             children: [
               Expanded(
@@ -53,14 +58,14 @@ class ManualAttendanceHeader extends StatelessWidget {
                             : const Color(0xFF0F172A),
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSize.spacingS),
                     Text(
                       'Manual Presence Override',
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: isDark
                             ? const Color(0xFF94A3B8)
                             : const Color(0xFF64748B),
-                        fontSize: 15,
+                        fontSize: AppSize.fontBody,
                       ),
                     ),
                   ],
@@ -71,28 +76,28 @@ class ManualAttendanceHeader extends StatelessWidget {
                         ? const Color(0xFF334155)
                         : const Color(0xFFF1F5F9))
                     .withValues(alpha: 0.8),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(AppSize.radiusL),
                 child: InkWell(
                   onTap: onChangeDateTap,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppSize.radiusL),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
+                      horizontal: AppSize.spacingL,
+                      vertical: AppSize.spacingM3,
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
                           Icons.calendar_today,
-                          size: 20,
+                          size: AppSize.iconM,
                           color: AppColors.primary,
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSize.spacingM),
                         Text(
                           'Change date',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: AppSize.fontBodySm,
                             fontWeight: FontWeight.w500,
                             color: AppColors.primary,
                           ),

@@ -15,7 +15,10 @@ class OnboardingWhyHeader extends StatelessWidget {
     final textColor = isDark ? Colors.white : const Color(0xFF0F172A);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSize.spacingL,
+        vertical: AppSize.spacingM,
+      ),
       child: Row(
         children: [
           IconButton(
@@ -34,7 +37,7 @@ class OnboardingWhyHeader extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 48),
+          const SizedBox(width: AppSize.avatarLg),
         ],
       ),
     );

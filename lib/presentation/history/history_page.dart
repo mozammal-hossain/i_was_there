@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:i_was_there/core/theme/app_theme.dart';
 import 'package:i_was_there/domain/places/entities/place.dart';
 import 'package:i_was_there/domain/presence/entities/presence.dart';
 import 'package:i_was_there/presentation/history/widgets/history_filter_chips.dart';
@@ -99,10 +100,10 @@ class _HistoryPageState extends State<HistoryPage> {
       ),
       floatingActionButton: widget.onAddManual != null
           ? Padding(
-              padding: const EdgeInsets.only(bottom: 80),
+              padding: const EdgeInsets.only(bottom: AppSize.spacingXl8),
               child: FloatingActionButton(
                 onPressed: widget.onAddManual,
-                child: const Icon(Icons.add, size: 28),
+                child: const Icon(Icons.add, size: AppSize.iconL3),
               ),
             )
           : null,

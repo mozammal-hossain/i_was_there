@@ -53,18 +53,18 @@ class HistoryDayDetailsSection extends StatelessWidget {
             'DAY DETAILS',
             style: theme.textTheme.labelSmall?.copyWith(
               fontWeight: FontWeight.bold,
-              letterSpacing: 0.15,
+              letterSpacing: AppSize.letterSpacingSm,
               color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSize.spacingL),
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppSize.spacingL2),
             decoration: BoxDecoration(
               color: isDark
                   ? const Color(0xFF334155).withValues(alpha: 0.3)
                   : const Color(0xFFF1F5F9),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(AppSize.radiusCard),
             ),
             child: Center(
               child: Text(
@@ -92,7 +92,7 @@ class HistoryDayDetailsSection extends StatelessWidget {
               'DAY DETAILS • $monthName $day',
               style: theme.textTheme.labelSmall?.copyWith(
                 fontWeight: FontWeight.bold,
-                letterSpacing: 0.15,
+                letterSpacing: AppSize.letterSpacingSm,
                 color: isDark
                     ? const Color(0xFF64748B)
                     : const Color(0xFF94A3B8),
@@ -100,10 +100,13 @@ class HistoryDayDetailsSection extends StatelessWidget {
             ),
             if (hasPresence)
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSize.spacingM,
+                  vertical: AppSize.spacingS,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(999),
+                  borderRadius: BorderRadius.circular(AppSize.radiusPill),
                 ),
                 child: Text(
                   'PRESENT',
@@ -115,12 +118,15 @@ class HistoryDayDetailsSection extends StatelessWidget {
               )
             else if (!loadingDayDetails)
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSize.spacingM,
+                  vertical: AppSize.spacingS,
+                ),
                 decoration: BoxDecoration(
                   color: isDark
                       ? const Color(0xFF334155)
                       : const Color(0xFFE2E8F0),
-                  borderRadius: BorderRadius.circular(999),
+                  borderRadius: BorderRadius.circular(AppSize.radiusPill),
                 ),
                 child: Text(
                   'NO SESSIONS',
@@ -134,22 +140,24 @@ class HistoryDayDetailsSection extends StatelessWidget {
               ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSize.spacingL),
         if (loadingDayDetails)
-          const Center(
+          Center(
             child: Padding(
-              padding: EdgeInsets.all(24),
-              child: CircularProgressIndicator(strokeWidth: 2),
+              padding: const EdgeInsets.all(AppSize.spacingXl),
+              child: CircularProgressIndicator(
+                strokeWidth: AppSize.spacingXs,
+              ),
             ),
           )
         else if (dayPresences.isEmpty)
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppSize.spacingL2),
             decoration: BoxDecoration(
               color: isDark
                   ? const Color(0xFF334155).withValues(alpha: 0.3)
                   : const Color(0xFFF1F5F9),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(AppSize.radiusCard),
             ),
             child: Center(
               child: Text(

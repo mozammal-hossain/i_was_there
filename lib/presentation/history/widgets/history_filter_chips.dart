@@ -19,17 +19,22 @@ class HistoryFilterChips extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      padding: const EdgeInsets.fromLTRB(
+        AppSize.spacingL,
+        AppSize.spacingM,
+        AppSize.spacingL,
+        AppSize.spacingM,
+      ),
       child: Row(
         children: List.generate(labels.length, (i) {
           final selected = i == selectedIndex;
           return Padding(
-            padding: const EdgeInsets.only(right: 8),
+            padding: const EdgeInsets.only(right: AppSize.spacingM),
             child: FilterChip(
               label: Text(
                 labels[i],
                 style: const TextStyle(
-                  fontSize: 14,
+                  fontSize: AppSize.fontBodySm,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -46,9 +51,12 @@ class HistoryFilterChips extends StatelessWidget {
                           ? const Color(0xFF94A3B8)
                           : const Color(0xFF475569)),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSize.spacingL2,
+                vertical: AppSize.spacingM3,
+              ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(999),
+                borderRadius: BorderRadius.circular(AppSize.radiusPill),
               ),
             ),
           );

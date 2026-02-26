@@ -37,7 +37,12 @@ class DashboardBottomNav extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(40, 16, 40, 24),
+          padding: const EdgeInsets.fromLTRB(
+            AppSize.spacingXl4,
+            AppSize.spacingL,
+            AppSize.spacingXl4,
+            AppSize.spacingXl,
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: List.generate(items.length, (i) {
@@ -45,18 +50,18 @@ class DashboardBottomNav extends StatelessWidget {
               final selected = i == currentIndex;
               return InkWell(
                 onTap: () => onTap(i),
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(AppSize.radiusCard),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
+                    horizontal: AppSize.spacingM3,
+                    vertical: AppSize.spacingM,
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
                         item.icon,
-                        size: 28,
+                        size: AppSize.iconL3,
                         color: selected
                             ? AppColors.primary
                             : (isDark
@@ -64,11 +69,11 @@ class DashboardBottomNav extends StatelessWidget {
                                   : const Color(0xFF94A3B8)),
                         fill: selected ? 1.0 : 0.0,
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSize.spacingS),
                       Text(
                         item.label,
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: AppSize.fontCaption2,
                           color: selected
                               ? AppColors.primary
                               : (isDark
