@@ -18,7 +18,9 @@ class OnboardingWhyCalendarCard extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
-    final subtitleColor = isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final subtitleColor = isDark
+        ? const Color(0xFF94A3B8)
+        : const Color(0xFF64748B);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -29,9 +31,7 @@ class OnboardingWhyCalendarCard extends StatelessWidget {
               ? const Color(0xFF334155).withValues(alpha: 0.5)
               : Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: AppColors.primary.withValues(alpha: 0.2),
-          ),
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.06),
@@ -77,12 +77,6 @@ class OnboardingWhyCalendarCard extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
-            Switch(
-              value: calendarSyncEnabled,
-              onChanged: (value) => context
-                  .read<OnboardingBloc>()
-                  .add(OnboardingCalendarSyncToggled(value)),
             ),
           ],
         ),
