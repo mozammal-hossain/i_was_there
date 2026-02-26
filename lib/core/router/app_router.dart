@@ -14,6 +14,7 @@ import '../../presentation/main_shell.dart';
 import '../../presentation/onboarding_feature.dart';
 import '../../presentation/dashboard/bloc/dashboard_event.dart';
 import '../../presentation/add_edit_place/add_edit_place_page.dart';
+import '../../presentation/add_edit_place/add_place_permission_gate.dart';
 import '../../presentation/add_edit_place/bloc/add_edit_place_bloc.dart';
 
 const String _keyOnboardingCompleted = 'onboarding_completed';
@@ -74,20 +75,7 @@ GoRouter createAppRouter({
         builder: (context, state) {
           final args = state.extra as AddEditPlaceRouteArgs?;
           if (args == null) return const SizedBox.shrink();
-          return BlocProvider.value(
-            value: args.dashboardBloc,
-            child: BlocProvider(
-              create: (_) => AddEditPlaceBloc(
-                getIt<GetCurrentLocationWithAddressUseCase>(),
-                getIt<GetLocationFromAddressUseCase>(),
-                getIt<GetLocationFromCoordinatesUseCase>(),
-              ),
-              child: AddEditPlacePage(
-                onSave: (place) =>
-                    args.dashboardBloc.add(DashboardAddRequested(place)),
-              ),
-            ),
-          );
+          return AddPlacePermissionGate(args: args);
         },
       ),
       GoRoute(

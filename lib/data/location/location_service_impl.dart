@@ -6,6 +6,12 @@ import '../../domain/location/location_service.dart';
 @LazySingleton(as: LocationService)
 class LocationServiceImpl implements LocationService {
   @override
+  Future<bool> hasBackgroundLocationPermission() async {
+    final permission = await Geolocator.checkPermission();
+    return permission == LocationPermission.always;
+  }
+
+  @override
   Future<LocationResult> getCurrentPosition() async {
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {

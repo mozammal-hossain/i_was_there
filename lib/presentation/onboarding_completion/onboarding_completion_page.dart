@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/presentation/onboarding_completion/widgets/onboarding_completion_footer.dart';
 import 'package:i_was_there/presentation/onboarding_completion/widgets/onboarding_completion_header.dart';
-import 'package:i_was_there/presentation/onboarding_completion/widgets/onboarding_completion_status_card.dart';
+import 'package:i_was_there/presentation/onboarding_completion/widgets/onboarding_completion_how_section.dart';
 import 'package:i_was_there/presentation/onboarding_completion/widgets/onboarding_completion_success_visual.dart';
+import 'package:i_was_there/presentation/onboarding_completion/widgets/onboarding_completion_why_section.dart';
 
-/// Onboarding completion (HTML: on_boarding_completion.html). Success state, status cards, Get Started / Add First Place.
+/// Onboarding completion: why use this app, how to use it, Get Started / Add First Place.
 class OnboardingCompletionPage extends StatelessWidget {
   const OnboardingCompletionPage({
     super.key,
@@ -46,9 +47,9 @@ class OnboardingCompletionPage extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     Text(
-                      "Background tracking is now active. We'll automatically sync your visits to your Google Calendar.",
+                      "Add places and grant location when prompted — you'll see visits in Calendar and can sync to Google Calendar.",
                       style: theme.textTheme.bodyLarge?.copyWith(
                         color: isDark
                             ? const Color(0xFF94A3B8)
@@ -57,31 +58,17 @@ class OnboardingCompletionPage extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 40),
-                    OnboardingCompletionStatusCard(
-                      icon: Icons.location_on,
-                      label: 'Location Status',
-                      value: 'Active & Monitoring',
+                    const SizedBox(height: 32),
+                    OnboardingCompletionWhySection(
+                      theme: theme,
                       isDark: isDark,
                     ),
-                    const SizedBox(height: 16),
-                    OnboardingCompletionStatusCard(
-                      icon: Icons.calendar_today,
-                      label: 'Google Calendar',
-                      value: 'Connected',
+                    const SizedBox(height: 24),
+                    OnboardingCompletionHowSection(
+                      theme: theme,
                       isDark: isDark,
                     ),
                     const SizedBox(height: 32),
-                    Text(
-                      '"Tip: Add your office to start tracking your work hours."',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        fontStyle: FontStyle.italic,
-                        color: isDark
-                            ? const Color(0xFF94A3B8)
-                            : const Color(0xFF64748B),
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
                   ],
                 ),
               ),
