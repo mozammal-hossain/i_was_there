@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'onboarding_completion/onboarding_completion_page.dart';
+import '../core/di/injection.dart';
+import '../domain/settings/use_cases/get_calendar_sync_enabled_use_case.dart';
+import '../domain/settings/use_cases/set_calendar_sync_enabled_use_case.dart';
+import 'onboarding/bloc/onboarding_bloc.dart';
+import 'onboarding/bloc/onboarding_event.dart';
+import 'onboarding/bloc/onboarding_state.dart';
+import 'onboarding/onboarding_page.dart';
 
-/// Onboarding flow: completion only (why use app, how to use). Permission is asked when adding a place.
-/// Calls [onComplete] when the user finishes (Get Started or Add First Place).
+/// Onboarding flow: Screen 1 (Why) and Screen 2 (How). Calls [onComplete] when user finishes.
 class OnboardingFeature extends StatelessWidget {
   const OnboardingFeature({super.key, required this.onComplete});
 
@@ -11,10 +17,16 @@ class OnboardingFeature extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OnboardingCompletionPage(
-      onGetStarted: onComplete,
-      onAddFirstPlace: onComplete,
-      onClose: onComplete,
+    return BlocProvider(
+      create: (_) => OnboardingBloc(
+        getCalendarSyncEnabled: getIt<GetCalendarSyncEnabledUseCase>(),
+        setCalendarSyncEnabled: getIt<SetCalendarSyncEnabledUseCase>(),
+      )..add(OnboardingStarted()),
+      child: BlocListener<OnboardingBloc, OnboardingState>(
+        listenWhen: (prev, curr) => curr.completeRequested && !prev.completeRequested,
+        listener: (context, state) => onComplete(),
+        child: const OnboardingPage(),
+      ),
     );
   }
 }
