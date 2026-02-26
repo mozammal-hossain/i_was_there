@@ -39,7 +39,7 @@ Before finalizing any code output, mentally verify every item below. If any item
 - [ ] No data models imported outside `data/` layer
 - [ ] No Flutter or Drift imports inside any `domain/` file
 - [ ] No hardcoded route strings — `AppRoutes` is used everywhere
-- [ ] No dependencies passed via widget or class constructors — `getIt<T>()` used throughout
+- [ ] No dependencies passed via widget tree; Bloc deps from `getIt<T>()` (in Bloc or at composition root)
 - [ ] No Bloc passed through widget constructors across routes — router `extra` used
 - [ ] No widget class exceeds 90 lines — large widgets are extracted to `widgets/` folder
 - [ ] No `Widget _buildX()` methods — all sub-widgets are separate classes
@@ -159,9 +159,9 @@ class PlacesPage extends StatelessWidget {
   const PlacesPage({required this.getPlaces});
 }
 
-// ✅ GOOD — resolve from DI inside the class that needs it
+// ✅ GOOD — resolve from DI (inside Bloc or at composition root and inject)
 class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
-  PlacesBloc() : _getPlaces = getIt<GetPlaces>(), super(...);
+  PlacesBloc({GetPlaces? getPlaces}) : _getPlaces = getPlaces ?? getIt<GetPlaces>(), super(...);
   final GetPlaces _getPlaces;
 }
 ```
@@ -400,8 +400,8 @@ Widget dispatches event
 ## 6. Dependency Injection
 
 - Use **get_it + injectable** . Register repositories, use cases, `SyncClient`, `SyncScheduler`, location service, and WorkManager callback in `core/di/`.
-- **All dependencies resolved via `getIt<T>()`** . Never pass dependencies through constructors from parent to child classes or widgets.
-- Every class that needs a dependency obtains it from DI directly.
+- **All dependencies resolved via `getIt<T>()`** . Do not pass dependencies from parent widgets down the tree (e.g. page → child widget).
+- **Blocs:** Dependencies may be resolved at the composition root (e.g. in the route builder or feature file) via `getIt<T>()` and passed into the Bloc constructor, or the Bloc may resolve them internally. Both are acceptable.
 - Blocs registered as factories (scoped to their page) or provided via `BlocProvider` in feature files.
 
 ---

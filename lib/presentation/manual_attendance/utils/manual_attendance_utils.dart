@@ -15,6 +15,17 @@ String manualAttendanceFormatDate(DateTime d) {
   return '$weekday, ${months[d.month - 1]} ${d.day}';
 }
 
+/// Builds presence map for manual attendance: all places default false, then apply [source].
+Map<String, bool> buildPresenceMap(List<Place> places, Map<String, bool>? source) {
+  final map = {for (final p in places) p.id: false};
+  if (source != null) {
+    for (final e in source.entries) {
+      if (map.containsKey(e.key)) map[e.key] = e.value;
+    }
+  }
+  return map;
+}
+
 /// Icon for place based on name (office, gym, etc.).
 IconData manualAttendanceIconForPlace(Place place) {
   final n = place.name.toLowerCase();
