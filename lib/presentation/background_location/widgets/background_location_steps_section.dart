@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 
 class BackgroundLocationStepsSection extends StatelessWidget {
   const BackgroundLocationStepsSection({
@@ -21,7 +22,7 @@ class BackgroundLocationStepsSection extends StatelessWidget {
             Icon(Icons.info_outline, color: AppColors.primary, size: AppSize.iconM2),
             const SizedBox(width: AppSize.spacingM),
             Text(
-              'How to enable:',
+              AppLocalizations.of(context)!.howToEnable,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: isDark ? Colors.white : const Color(0xFF0F172A),
@@ -32,19 +33,19 @@ class BackgroundLocationStepsSection extends StatelessWidget {
         const SizedBox(height: AppSize.spacingL2),
         _StepRow(
           number: 1,
-          text: "Tap 'Open Settings' below",
+          text: AppLocalizations.of(context)!.tapOpenSettings,
           isDark: isDark,
           isLast: false,
         ),
         _StepRow(
           number: 2,
-          text: "Go to Permissions > Location",
+          text: AppLocalizations.of(context)!.goToPermissionsLocation,
           isDark: isDark,
           isLast: false,
         ),
         _StepRow(
           number: 3,
-          text: "Select 'Allow all the time'",
+          text: AppLocalizations.of(context)!.selectAllowAllTheTime,
           isDark: isDark,
           isLast: true,
           highlight: true,

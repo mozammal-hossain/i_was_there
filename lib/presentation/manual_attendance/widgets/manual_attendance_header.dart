@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 import 'package:i_was_there/presentation/manual_attendance/utils/manual_attendance_utils.dart';
 
 /// Manual attendance sheet header: drag handle, date text, "Change date" button.
@@ -60,7 +61,7 @@ class ManualAttendanceHeader extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSize.spacingS),
                     Text(
-                      'Manual Presence Override',
+                      AppLocalizations.of(context)!.manualPresenceOverride,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: isDark
                             ? const Color(0xFF94A3B8)
@@ -95,7 +96,7 @@ class ManualAttendanceHeader extends StatelessWidget {
                         ),
                         const SizedBox(width: AppSize.spacingM),
                         Text(
-                          'Change date',
+                          AppLocalizations.of(context)!.changeDate,
                           style: TextStyle(
                             fontSize: AppSize.fontBodySm,
                             fontWeight: FontWeight.w500,

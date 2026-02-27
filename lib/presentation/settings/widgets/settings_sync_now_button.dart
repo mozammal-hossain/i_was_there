@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 
 class SettingsSyncNowButton extends StatelessWidget {
   const SettingsSyncNowButton({super.key});
@@ -12,12 +13,13 @@ class SettingsSyncNowButton extends StatelessWidget {
       child: FilledButton.icon(
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Syncing…')),
+            SnackBar(
+                content: Text(AppLocalizations.of(context)!.syncing)),
           );
         },
         icon: const Icon(Icons.sync, size: AppSize.iconM),
-        label: const Text(
-          'Sync Now',
+        label: Text(
+          AppLocalizations.of(context)!.syncNow,
           style: TextStyle(
             fontSize: AppSize.fontBodyLg,
             fontWeight: FontWeight.w600,

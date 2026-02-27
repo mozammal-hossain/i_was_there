@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 
 class BackgroundLocationFooter extends StatelessWidget {
   const BackgroundLocationFooter({
@@ -43,14 +44,15 @@ class BackgroundLocationFooter extends StatelessWidget {
                 onPressed: onOpenSettings ??
                     () {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Opening system settings…'),
+                        SnackBar(
+                          content: Text(
+                              AppLocalizations.of(context)!.openingSystemSettings),
                         ),
                       );
                     },
                 icon: const Icon(Icons.open_in_new, size: AppSize.iconM),
                 label: Text(
-                  'Open Settings',
+                  AppLocalizations.of(context)!.openSettings,
                   style: TextStyle(
                     fontSize: AppSize.fontTitle,
                     fontWeight: FontWeight.bold,
@@ -69,7 +71,7 @@ class BackgroundLocationFooter extends StatelessWidget {
             TextButton(
               onPressed: onLater ?? () => Navigator.of(context).pop(),
               child: Text(
-                "I'll do this later",
+                AppLocalizations.of(context)!.illDoThisLater,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: isDark
                       ? const Color(0xFF94A3B8)
@@ -80,7 +82,7 @@ class BackgroundLocationFooter extends StatelessWidget {
             ),
             const SizedBox(height: AppSize.spacingL),
             Text(
-              'Your data is only used for calendar synchronization and is fully encrypted. We never share your location with third parties.',
+              AppLocalizations.of(context)!.backgroundLocationFooterPrivacy,
               textAlign: TextAlign.center,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: isDark

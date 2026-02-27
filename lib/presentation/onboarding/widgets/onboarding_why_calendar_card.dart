@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/app_localizations.dart';
 
 class OnboardingWhyCalendarCard extends StatelessWidget {
   const OnboardingWhyCalendarCard({
@@ -59,7 +60,7 @@ class OnboardingWhyCalendarCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Google Calendar Sync',
+                    AppLocalizations.of(context)!.googleCalendarSync,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: titleColor,
@@ -67,7 +68,7 @@ class OnboardingWhyCalendarCard extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSize.spacingS),
                   Text(
-                    'See all your activity and gym sessions in one place.',
+                    AppLocalizations.of(context)!.googleCalendarSyncSubtitle,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: subtitleColor,
                     ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
 import 'package:i_was_there/domain/places/entities/place.dart';
 import 'package:i_was_there/domain/presence/entities/presence.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 import 'package:i_was_there/presentation/history/widgets/history_session_tile.dart';
 
 class HistoryDayDetailsSection extends StatelessWidget {
@@ -50,7 +51,7 @@ class HistoryDayDetailsSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'DAY DETAILS',
+            AppLocalizations.of(context)!.dayDetails,
             style: theme.textTheme.labelSmall?.copyWith(
               fontWeight: FontWeight.bold,
               letterSpacing: AppSize.letterSpacingSm,
@@ -68,7 +69,7 @@ class HistoryDayDetailsSection extends StatelessWidget {
             ),
             child: Center(
               child: Text(
-                'Tap a day on the calendar to see sessions',
+                AppLocalizations.of(context)!.tapDayToSeeSessions,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: isDark
                       ? const Color(0xFF94A3B8)
@@ -89,7 +90,7 @@ class HistoryDayDetailsSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'DAY DETAILS • $monthName $day',
+              AppLocalizations.of(context)!.dayDetailsTitle(monthName, day),
               style: theme.textTheme.labelSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 letterSpacing: AppSize.letterSpacingSm,
@@ -109,7 +110,7 @@ class HistoryDayDetailsSection extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppSize.radiusPill),
                 ),
                 child: Text(
-                  'PRESENT',
+                  AppLocalizations.of(context)!.present,
                   style: theme.textTheme.labelSmall?.copyWith(
                     color: AppColors.primary,
                     fontWeight: FontWeight.bold,
@@ -129,7 +130,7 @@ class HistoryDayDetailsSection extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppSize.radiusPill),
                 ),
                 child: Text(
-                  'NO SESSIONS',
+                  AppLocalizations.of(context)!.noSessions,
                   style: theme.textTheme.labelSmall?.copyWith(
                     color: isDark
                         ? const Color(0xFF94A3B8)
@@ -161,7 +162,7 @@ class HistoryDayDetailsSection extends StatelessWidget {
             ),
             child: Center(
               child: Text(
-                'No recorded sessions for this day',
+                AppLocalizations.of(context)!.noRecordedSessionsForDay,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: isDark
                       ? const Color(0xFF94A3B8)
@@ -179,10 +180,11 @@ class HistoryDayDetailsSection extends StatelessWidget {
                 break;
               }
             }
-            final placeName = place?.name ?? 'Unknown place';
+            final l10n = AppLocalizations.of(context)!;
+            final placeName = place?.name ?? l10n.unknownPlace;
             final timeStr = p.firstDetectedAt != null
                 ? _formatTime(p.firstDetectedAt!)
-                : 'Recorded';
+                : l10n.recorded;
             return HistorySessionTile(
               title: placeName,
               subtitle: timeStr,

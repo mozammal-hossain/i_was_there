@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/di/injection.dart';
+import '../l10n/app_localizations.dart';
 import '../core/router/app_routes.dart';
 import '../core/router/route_args.dart';
 import '../domain/places/entities/place.dart';
@@ -120,7 +121,9 @@ class _PlacesShellState extends State<_PlacesShell> {
           if (context.mounted) {
             context.read<DashboardBloc>().add(DashboardLoadRequested());
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Manual presence updated')),
+              SnackBar(
+              content: Text(
+                  AppLocalizations.of(context)!.manualPresenceUpdated)),
             );
           }
         },

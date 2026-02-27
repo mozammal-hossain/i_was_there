@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Shown when the user has no tracked places (PRD R1). Encourages adding the first place.
 class NoPlacePage extends StatelessWidget {
@@ -27,7 +29,7 @@ class NoPlacePage extends StatelessWidget {
               ),
               const SizedBox(height: AppSize.spacingXl),
               Text(
-                'No places yet',
+                AppLocalizations.of(context)!.noPlacesYet,
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: isDark ? Colors.white : const Color(0xFF0F172A),
@@ -35,7 +37,7 @@ class NoPlacePage extends StatelessWidget {
               ),
               const SizedBox(height: AppSize.spacingM),
               Text(
-                'Add a place to start tracking your weekly attendance.',
+                AppLocalizations.of(context)!.addPlaceToStart,
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: isDark
@@ -47,7 +49,7 @@ class NoPlacePage extends StatelessWidget {
               FilledButton.icon(
                 onPressed: onAddPlace,
                 icon: const Icon(Icons.add, size: AppSize.iconM2),
-                label: const Text('Add your first place'),
+                label: Text(AppLocalizations.of(context)!.addYourFirstPlace),
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,

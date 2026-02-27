@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 
 import '../../core/di/injection.dart';
 import '../../core/force_update/force_update_service.dart';
@@ -57,7 +58,7 @@ class _ForceUpdateView extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSize.spacingXl),
                 Text(
-                  'Update required',
+                  AppLocalizations.of(context)!.updateRequired,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -65,7 +66,7 @@ class _ForceUpdateView extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSize.spacingM3),
                 Text(
-                  'A new version of I Was There is required. Please update to continue.',
+                  AppLocalizations.of(context)!.forceUpdateMessage,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: isDark
                         ? Theme.of(context).colorScheme.onSurfaceVariant
@@ -87,7 +88,7 @@ class _ForceUpdateView extends StatelessWidget {
                         vertical: AppSize.spacingL,
                       ),
                     ),
-                    child: const Text('Update'),
+                    child: Text(AppLocalizations.of(context)!.update),
                   ),
                 ),
                 const SizedBox(height: AppSize.spacingXl3),

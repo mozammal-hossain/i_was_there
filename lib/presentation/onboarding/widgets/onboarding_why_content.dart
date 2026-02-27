@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/app_localizations.dart';
 
 class OnboardingWhyContent extends StatelessWidget {
   const OnboardingWhyContent({super.key});
@@ -16,7 +17,7 @@ class OnboardingWhyContent extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            'Why I Was There',
+            AppLocalizations.of(context)!.whyIWasThere,
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
               color: AppColors.primary,
@@ -26,7 +27,7 @@ class OnboardingWhyContent extends StatelessWidget {
           ),
           const SizedBox(height: AppSize.spacingM3),
           Text(
-            'Define your important places and automatically record your presence each day. Focus on your fitness goals while we handle the tracking.',
+            AppLocalizations.of(context)!.whySubtitle,
             style: theme.textTheme.bodyLarge?.copyWith(
               color: bodyColor,
               height: AppSize.lineHeightLoose,

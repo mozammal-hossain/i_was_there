@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
 import 'package:i_was_there/domain/places/entities/place.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 import 'package:i_was_there/domain/presence/entities/presence.dart';
 import 'package:i_was_there/presentation/history/widgets/history_filter_chips.dart';
 import 'package:i_was_there/presentation/history/widgets/history_header.dart';
@@ -45,12 +46,12 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
-  List<String> get _filterLabels => [
-        'All Places',
+  List<String> _filterLabels(BuildContext context) => [
+        AppLocalizations.of(context)!.allPlaces,
         ...widget.places.map((p) => p.name),
       ];
 
-  int get _selectedFilterIndex {
+  int _selectedFilterIndex(List<String> labels) {
     final id = widget.selectedPlaceId;
     if (id == null) return 0;
     final i = widget.places.indexWhere((p) => p.id == id);
@@ -61,6 +62,7 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final filterLabels = _filterLabels(context);
 
     return Scaffold(
       body: SafeArea(
@@ -68,10 +70,10 @@ class _HistoryPageState extends State<HistoryPage> {
           children: [
             HistoryHeader(onBack: widget.onBack, isDark: isDark),
             HistoryFilterChips(
-              labels: _filterLabels,
-              selectedIndex: _selectedFilterIndex.clamp(
+              labels: filterLabels,
+              selectedIndex: _selectedFilterIndex(filterLabels).clamp(
                 0,
-                _filterLabels.length - 1,
+                filterLabels.length - 1,
               ),
               isDark: isDark,
               onSelected: (i) {

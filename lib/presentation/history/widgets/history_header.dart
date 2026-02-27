@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 
 class HistoryHeader extends StatelessWidget {
   const HistoryHeader({super.key, this.onBack, required this.isDark});
@@ -41,7 +42,7 @@ class HistoryHeader extends StatelessWidget {
             const SizedBox(width: AppSize.avatarLg),
           Expanded(
             child: Text(
-              'Presence History',
+              AppLocalizations.of(context)!.presenceHistory,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: AppSize.fontHeadlineSm,
@@ -53,7 +54,9 @@ class HistoryHeader extends StatelessWidget {
           IconButton(
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Sync – coming soon')),
+                SnackBar(
+                    content: Text(
+                        AppLocalizations.of(context)!.syncComingSoon)),
               );
             },
             icon: const Icon(Icons.sync, color: AppColors.primary),

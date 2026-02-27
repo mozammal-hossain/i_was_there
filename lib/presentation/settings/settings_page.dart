@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/core/util/relative_time.dart';
 import 'package:i_was_there/presentation/settings/widgets/settings_connected_account_section.dart';
 import 'package:i_was_there/presentation/settings/widgets/settings_footer.dart';
 import 'package:i_was_there/presentation/settings/widgets/settings_header.dart';
+import 'package:i_was_there/presentation/settings/widgets/settings_language_section.dart';
 import 'package:i_was_there/presentation/settings/widgets/settings_sync_details_section.dart';
 import 'package:i_was_there/presentation/settings/widgets/settings_sync_now_button.dart';
 import 'package:i_was_there/presentation/settings/widgets/settings_sync_section.dart';
@@ -15,12 +17,14 @@ class SettingsPage extends StatelessWidget {
     this.onBack,
     required this.syncEnabled,
     required this.loading,
+    this.lastSyncTime,
     required this.onSyncEnabledChanged,
   });
 
   final VoidCallback? onBack;
   final bool syncEnabled;
   final bool loading;
+  final DateTime? lastSyncTime;
   final void Function(bool) onSyncEnabledChanged;
 
   @override
@@ -42,6 +46,11 @@ class SettingsPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    SettingsLanguageSection(
+                      theme: theme,
+                      isDark: isDark,
+                    ),
+                    const SizedBox(height: AppSize.spacingXl3),
                     SettingsSyncSection(
                       syncEnabled: syncEnabled,
                       loading: loading,
@@ -53,6 +62,9 @@ class SettingsPage extends StatelessWidget {
                     SettingsConnectedAccountSection(
                       theme: theme,
                       isDark: isDark,
+                      lastSyncedText: lastSyncTime != null
+                          ? formatRelativeTime(lastSyncTime!)
+                          : null,
                     ),
                     const SizedBox(height: AppSize.spacingXl3),
                     SettingsSyncDetailsSection(

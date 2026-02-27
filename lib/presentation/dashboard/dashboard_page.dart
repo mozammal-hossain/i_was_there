@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
 import 'package:i_was_there/domain/places/entities/place.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 import 'package:i_was_there/presentation/dashboard/widgets/dashboard_bottom_nav.dart';
 import 'package:i_was_there/presentation/dashboard/widgets/dashboard_page_header.dart';
 import 'package:i_was_there/presentation/dashboard/widgets/dashboard_place_list_section.dart';
@@ -28,17 +29,17 @@ class DashboardPage extends StatelessWidget {
   /// When true, bottom nav is hidden (for use inside Places feature tab; main shell has its own nav).
   final bool placesOnlyNav;
 
-  static const List<DashboardNavItem> _navItems = [
-    DashboardNavItem(Icons.calendar_today, 'Calendar'),
-    DashboardNavItem(Icons.map_outlined, 'Map'),
-    DashboardNavItem(Icons.history, 'History'),
-    DashboardNavItem(Icons.settings_outlined, 'Settings'),
-  ];
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
+    final navItems = [
+      DashboardNavItem(Icons.calendar_today, l10n.calendar),
+      DashboardNavItem(Icons.map_outlined, l10n.map),
+      DashboardNavItem(Icons.history, l10n.history),
+      DashboardNavItem(Icons.settings_outlined, l10n.settings),
+    ];
 
     return Scaffold(
       body: SafeArea(
@@ -59,8 +60,8 @@ class DashboardPage extends StatelessWidget {
                   AppSize.spacingXl,
                   AppSize.spacingM3,
                 ),
-                child: const Text(
-                  'TRACKED STUDIOS',
+                child: Text(
+                  l10n.trackedStudios,
                   style: TextStyle(
                     fontSize: AppSize.fontCaption2,
                     fontWeight: FontWeight.bold,
@@ -86,8 +87,8 @@ class DashboardPage extends StatelessWidget {
           onPressed: onAddPlace,
           backgroundColor: AppColors.primary,
           icon: const Icon(Icons.add_location_alt, color: Colors.white),
-          label: const Text(
-            'Add Location',
+          label: Text(
+            l10n.addLocation,
             style: TextStyle(
               fontSize: AppSize.fontBodyLg,
               fontWeight: FontWeight.w500,
@@ -101,7 +102,7 @@ class DashboardPage extends StatelessWidget {
           ? null
           : DashboardBottomNav(
               currentIndex: currentNavIndex,
-              items: _navItems,
+              items: navItems,
               onTap: onNavTap ?? (_) {},
               isDark: isDark,
             ),

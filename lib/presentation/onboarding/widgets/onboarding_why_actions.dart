@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 import 'package:i_was_there/presentation/onboarding/widgets/onboarding_progress_dots.dart';
 
 import '../../../core/theme/app_theme.dart';
@@ -42,7 +43,7 @@ class OnboardingWhyActions extends StatelessWidget {
                 ),
               ),
               child: Text(
-                'Continue',
+                AppLocalizations.of(context)!.continueButton,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -57,7 +58,7 @@ class OnboardingWhyActions extends StatelessWidget {
               onPressed: () =>
                   context.read<OnboardingBloc>().add(OnboardingMaybeLater()),
               child: Text(
-                'Maybe Later',
+                AppLocalizations.of(context)!.maybeLater,
                 style: theme.textTheme.bodyLarge?.copyWith(
                   color: secondaryColor,
                   fontWeight: FontWeight.w500,

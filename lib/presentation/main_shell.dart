@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/theme/app_theme.dart';
+import '../l10n/app_localizations.dart';
 import 'calendar_feature.dart';
 import 'places_feature.dart';
 import 'settings_feature.dart';
@@ -51,21 +52,21 @@ class _MainShellState extends State<MainShell> {
               children: [
                 _TabItem(
                   icon: Icons.place_outlined,
-                  label: 'Places',
+                  label: AppLocalizations.of(context)!.places,
                   selected: _tabIndex == 0,
                   isDark: isDark,
                   onTap: () => setState(() => _tabIndex = 0),
                 ),
                 _TabItem(
                   icon: Icons.calendar_today_outlined,
-                  label: 'Calendar',
+                  label: AppLocalizations.of(context)!.calendar,
                   selected: _tabIndex == 1,
                   isDark: isDark,
                   onTap: () => setState(() => _tabIndex = 1),
                 ),
                 _TabItem(
                   icon: Icons.settings_outlined,
-                  label: 'Settings',
+                  label: AppLocalizations.of(context)!.settings,
                   selected: _tabIndex == 2,
                   isDark: isDark,
                   onTap: () => setState(() => _tabIndex = 2),

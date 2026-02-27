@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 
 class SettingsConnectedAccountSection extends StatelessWidget {
   const SettingsConnectedAccountSection({
     super.key,
     required this.theme,
     required this.isDark,
+    this.displayName,
+    this.email,
+    this.lastSyncedText,
   });
 
   final ThemeData theme;
   final bool isDark;
+  /// Signed-in user display name. When null (with [email] null), "Not signed in" is shown.
+  final String? displayName;
+  final String? email;
+  /// Pre-formatted relative time (e.g. "12m ago"). When null, "Never synced" is shown.
+  final String? lastSyncedText;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +26,7 @@ class SettingsConnectedAccountSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'CONNECTED ACCOUNT',
+          AppLocalizations.of(context)!.connectedAccount,
           style: theme.textTheme.labelSmall?.copyWith(
             color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
             fontWeight: FontWeight.w600,
@@ -57,7 +66,8 @@ class SettingsConnectedAccountSection extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Alex Johnson',
+                            displayName ??
+                                AppLocalizations.of(context)!.notSignedIn,
                             style: theme.textTheme.titleSmall?.copyWith(
                               fontWeight: FontWeight.w500,
                               color: isDark
@@ -65,28 +75,30 @@ class SettingsConnectedAccountSection extends StatelessWidget {
                                   : const Color(0xFF0F172A),
                             ),
                           ),
-                          Text(
-                            'alex.j@gmail.com',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: isDark
-                                  ? const Color(0xFF94A3B8)
-                                  : const Color(0xFF64748B),
-                              fontSize: AppSize.fontBodySm,
+                          if (email != null)
+                            Text(
+                              email!,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: isDark
+                                    ? const Color(0xFF94A3B8)
+                                    : const Color(0xFF64748B),
+                                fontSize: AppSize.fontBodySm,
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ),
                     TextButton(
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Change account – coming soon'),
+                          SnackBar(
+                            content: Text(
+                                AppLocalizations.of(context)!.changeAccountComingSoon),
                           ),
                         );
                       },
-                      child: const Text(
-                        'Change',
+                      child: Text(
+                        AppLocalizations.of(context)!.change,
                         style: TextStyle(
                           color: AppColors.primary,
                           fontWeight: FontWeight.w600,
@@ -123,7 +135,10 @@ class SettingsConnectedAccountSection extends StatelessWidget {
                         ),
                         const SizedBox(width: AppSize.spacingS2),
                         Text(
-                          'Last synced 12m ago',
+                          lastSyncedText != null
+                              ? AppLocalizations.of(context)!
+                                  .lastSyncedAt(lastSyncedText!)
+                              : AppLocalizations.of(context)!.neverSynced,
                           style: theme.textTheme.bodySmall?.copyWith(
                             fontSize: AppSize.fontSmall,
                             color: isDark
@@ -134,7 +149,7 @@ class SettingsConnectedAccountSection extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      'CONNECTED',
+                      AppLocalizations.of(context)!.connected,
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: const Color(0xFF10B981),
                         fontWeight: FontWeight.bold,

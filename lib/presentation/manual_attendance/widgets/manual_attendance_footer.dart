@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 
 /// Manual attendance sheet footer: sync label and Apply / Cancel buttons.
 class ManualAttendanceFooter extends StatelessWidget {
@@ -34,7 +35,7 @@ class ManualAttendanceFooter extends StatelessWidget {
             ),
             const SizedBox(width: AppSize.spacingM),
             Text(
-              'SYNCS WITH GOOGLE CALENDAR',
+              AppLocalizations.of(context)!.syncsWithGoogleCalendar,
               style: theme.textTheme.labelSmall?.copyWith(
                 color: isDark
                     ? const Color(0xFF64748B)
@@ -65,8 +66,8 @@ class ManualAttendanceFooter extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppSize.radiusXl),
                     ),
                   ),
-                  child: const Text(
-                    'Apply Changes',
+                  child: Text(
+                    AppLocalizations.of(context)!.applyChanges,
                     style: TextStyle(
                       fontSize: AppSize.fontTitle,
                       fontWeight: FontWeight.w600,
@@ -81,7 +82,7 @@ class ManualAttendanceFooter extends StatelessWidget {
                 child: TextButton(
                   onPressed: onCancel,
                   child: Text(
-                    'Cancel',
+                    AppLocalizations.of(context)!.cancel,
                     style: TextStyle(
                       fontSize: AppSize.fontBodyLg,
                       fontWeight: FontWeight.w500,

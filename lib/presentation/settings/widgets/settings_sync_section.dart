@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 
 class SettingsSyncSection extends StatelessWidget {
   const SettingsSyncSection({
@@ -38,7 +39,7 @@ class SettingsSyncSection extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Sync with Google Calendar',
+                      AppLocalizations.of(context)!.syncWithGoogleCalendar,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: isDark ? Colors.white : const Color(0xFF0F172A),
@@ -46,7 +47,7 @@ class SettingsSyncSection extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSize.spacingS),
                     Text(
-                      'Automatic attendance logging',
+                      AppLocalizations.of(context)!.automaticAttendanceLogging,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: isDark
                             ? const Color(0xFF94A3B8)
@@ -77,7 +78,7 @@ class SettingsSyncSection extends StatelessWidget {
             const SizedBox(width: AppSize.spacingM),
             Expanded(
               child: Text(
-                'One-way sync: We only add events to your calendar. We never read or delete your existing data.',
+                AppLocalizations.of(context)!.oneWaySyncNote,
                 style: theme.textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w500,
                   color: isDark

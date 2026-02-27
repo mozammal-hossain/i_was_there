@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 
 class BackgroundLocationHeader extends StatelessWidget {
   const BackgroundLocationHeader({
@@ -36,7 +37,7 @@ class BackgroundLocationHeader extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              'Location Permission',
+              AppLocalizations.of(context)!.locationPermission,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: AppSize.fontHeadlineSm,

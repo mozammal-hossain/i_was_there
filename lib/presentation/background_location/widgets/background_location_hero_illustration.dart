@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 
 class BackgroundLocationHeroIllustration extends StatelessWidget {
   const BackgroundLocationHeroIllustration({
@@ -46,7 +47,7 @@ class BackgroundLocationHeroIllustration extends StatelessWidget {
               const SizedBox(height: AppSize.spacingL),
               _HeroOptionRow(
                 isSelected: true,
-                label: 'Allow all the time',
+                label: AppLocalizations.of(context)!.allowAllTheTime,
                 isDark: isDark,
               ),
               const SizedBox(height: AppSize.spacingM),

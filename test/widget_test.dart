@@ -21,7 +21,11 @@ void main() {
       ],
     );
 
-    await tester.pumpWidget(MyApp(router: router));
+    final localeNotifier = ValueNotifier<Locale>(const Locale('en'));
+    await tester.pumpWidget(MyApp(
+      router: router,
+      localeNotifier: localeNotifier,
+    ));
     await tester.pumpAndSettle();
 
     expect(find.text('I Was There'), findsOneWidget);

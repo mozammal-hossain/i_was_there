@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/app_localizations.dart';
 
 class OnboardingHowStepItem extends StatelessWidget {
   const OnboardingHowStepItem({
@@ -55,7 +56,7 @@ class OnboardingHowStepItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'STEP $stepNumber',
+                  AppLocalizations.of(context)!.stepNumber(stepNumber),
                   style: theme.textTheme.labelMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: AppColors.primary,

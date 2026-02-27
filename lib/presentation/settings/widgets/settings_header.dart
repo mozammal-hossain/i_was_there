@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 
 class SettingsHeader extends StatelessWidget {
   const SettingsHeader({super.key, this.onBack, required this.isDark});
@@ -34,7 +35,7 @@ class SettingsHeader extends StatelessWidget {
                 color: AppColors.primary,
               ),
               label: Text(
-                'Back',
+                AppLocalizations.of(context)!.back,
                 style: TextStyle(
                   color: AppColors.primary,
                   fontSize: AppSize.fontTitle,
@@ -43,7 +44,7 @@ class SettingsHeader extends StatelessWidget {
             ),
           Expanded(
             child: Text(
-              'Calendar Sync',
+              AppLocalizations.of(context)!.calendarSync,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: AppSize.fontTitle,

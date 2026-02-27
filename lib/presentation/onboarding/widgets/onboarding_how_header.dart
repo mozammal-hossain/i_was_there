@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/app_localizations.dart';
 import '../bloc/onboarding_bloc.dart';
 import '../bloc/onboarding_event.dart';
 
@@ -29,7 +30,7 @@ class OnboardingHowHeader extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              'How it Works',
+              AppLocalizations.of(context)!.howItWorks,
               textAlign: TextAlign.center,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,

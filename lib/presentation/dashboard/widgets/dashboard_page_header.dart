@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 
 /// Dashboard header: "Places" title, "Weekly Attendance" subtitle, optional Override button, avatar.
 class DashboardPageHeader extends StatelessWidget {
@@ -30,7 +31,7 @@ class DashboardPageHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Places',
+                  AppLocalizations.of(context)!.places,
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: isDark
@@ -42,7 +43,7 @@ class DashboardPageHeader extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      'Weekly Attendance',
+                      AppLocalizations.of(context)!.weeklyAttendance,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: isDark
                             ? const Color(0xFF94A3B8)
@@ -62,7 +63,7 @@ class DashboardPageHeader extends StatelessWidget {
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                         child: Text(
-                          'Override',
+                          AppLocalizations.of(context)!.overrideLabel,
                           style: TextStyle(
                             fontSize: AppSize.fontBody2,
                             fontWeight: FontWeight.w500,

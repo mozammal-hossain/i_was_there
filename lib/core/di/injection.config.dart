@@ -44,9 +44,12 @@ import '../../domain/presence/use_cases/set_presence_use_case.dart' as _i792;
 import '../../domain/settings/repositories/settings_repository.dart' as _i647;
 import '../../domain/settings/use_cases/get_calendar_sync_enabled_use_case.dart'
     as _i41;
+import '../../domain/settings/use_cases/get_last_sync_time_use_case.dart'
+    as _i411;
 import '../../domain/settings/use_cases/set_calendar_sync_enabled_use_case.dart'
     as _i410;
 import '../force_update/force_update_service.dart' as _i378;
+import '../locale/app_locale_service.dart' as _i700;
 import '../url_launcher/url_launcher_service.dart' as _i491;
 import 'app_module.dart' as _i460;
 
@@ -97,11 +100,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i792.SetPresenceUseCase>(
       () => _i792.SetPresenceUseCase(gh<_i313.PresenceRepository>()),
     );
+    gh.lazySingleton<_i700.AppLocaleService>(
+      () => _i700.AppLocaleService(gh<_i647.SettingsRepository>()),
+    );
     gh.factory<_i41.GetCalendarSyncEnabledUseCase>(
       () => _i41.GetCalendarSyncEnabledUseCase(gh<_i647.SettingsRepository>()),
     );
     gh.factory<_i410.SetCalendarSyncEnabledUseCase>(
       () => _i410.SetCalendarSyncEnabledUseCase(gh<_i647.SettingsRepository>()),
+    );
+    gh.factory<_i411.GetLastSyncTimeUseCase>(
+      () => _i411.GetLastSyncTimeUseCase(gh<_i647.SettingsRepository>()),
     );
     gh.factory<_i687.GetCurrentLocationWithAddressUseCase>(
       () => _i687.GetCurrentLocationWithAddressUseCase(

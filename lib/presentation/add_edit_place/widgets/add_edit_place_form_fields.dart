@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 
 class AddEditPlaceFormFields extends StatelessWidget {
   const AddEditPlaceFormFields({
@@ -26,7 +27,7 @@ class AddEditPlaceFormFields extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'NAME',
+          AppLocalizations.of(context)!.name,
           style: theme.textTheme.labelMedium?.copyWith(
             color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
             fontWeight: FontWeight.w500,
@@ -35,7 +36,8 @@ class AddEditPlaceFormFields extends StatelessWidget {
         const SizedBox(height: AppSize.spacingM),
         TextField(
           controller: nameController,
-          decoration: const InputDecoration(hintText: 'Enter place name'),
+          decoration: InputDecoration(
+              hintText: AppLocalizations.of(context)!.enterPlaceName),
           style: TextStyle(
             fontSize: AppSize.fontTitle,
             color: isDark ? Colors.white : const Color(0xFF0F172A),
@@ -43,7 +45,7 @@ class AddEditPlaceFormFields extends StatelessWidget {
         ),
         const SizedBox(height: AppSize.spacingL2),
         Text(
-          'ADDRESS',
+          AppLocalizations.of(context)!.address,
           style: theme.textTheme.labelMedium?.copyWith(
             color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
             fontWeight: FontWeight.w500,
@@ -53,7 +55,7 @@ class AddEditPlaceFormFields extends StatelessWidget {
         TextField(
           controller: addressController,
           decoration: InputDecoration(
-            hintText: 'Search address...',
+            hintText: AppLocalizations.of(context)!.searchAddress,
             prefixIcon: const Icon(
               Icons.search,
               color: AppColors.primary,
@@ -78,7 +80,7 @@ class AddEditPlaceFormFields extends StatelessWidget {
                       size: AppSize.iconM2,
                     ),
                     onPressed: onSearchAddress,
-                    tooltip: 'Search address',
+                    tooltip: AppLocalizations.of(context)!.searchAddressTooltip,
                   ),
           ),
           style: TextStyle(
@@ -105,8 +107,8 @@ class AddEditPlaceFormFields extends StatelessWidget {
                   size: AppSize.iconS2,
                   color: AppColors.primary,
                 ),
-          label: const Text(
-            'Use my current location',
+          label: Text(
+            AppLocalizations.of(context)!.useMyCurrentLocation,
             style: TextStyle(
               color: AppColors.primary,
               fontSize: AppSize.fontBody,

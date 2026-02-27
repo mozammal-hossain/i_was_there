@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 
 class SettingsSyncDetailsSection extends StatelessWidget {
   const SettingsSyncDetailsSection({
@@ -17,7 +18,7 @@ class SettingsSyncDetailsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'SYNC DETAILS',
+          AppLocalizations.of(context)!.syncDetails,
           style: theme.textTheme.labelSmall?.copyWith(
             color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
             fontWeight: FontWeight.w600,
@@ -49,7 +50,7 @@ class SettingsSyncDetailsSection extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Automated Events',
+                      AppLocalizations.of(context)!.automatedEvents,
                       style: theme.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w500,
                         color: isDark ? Colors.white : const Color(0xFF0F172A),
@@ -65,9 +66,10 @@ class SettingsSyncDetailsSection extends StatelessWidget {
                           fontSize: AppSize.fontBodySm,
                         ),
                         children: [
-                          const TextSpan(text: 'Visits are logged as '),
                           TextSpan(
-                            text: 'Present at [Location]',
+                              text: AppLocalizations.of(context)!.visitsLoggedAs),
+                          TextSpan(
+                            text: AppLocalizations.of(context)!.presentAtLocation,
                             style: TextStyle(
                               backgroundColor: isDark
                                   ? const Color(0xFF334155)
@@ -78,7 +80,8 @@ class SettingsSyncDetailsSection extends StatelessWidget {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          const TextSpan(text: ' in your primary calendar.'),
+                          TextSpan(
+                              text: AppLocalizations.of(context)!.inPrimaryCalendar),
                         ],
                       ),
                     ),

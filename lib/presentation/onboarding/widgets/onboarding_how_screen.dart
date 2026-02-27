@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../l10n/app_localizations.dart';
 import '../bloc/onboarding_bloc.dart';
 import '../bloc/onboarding_event.dart';
 import 'onboarding_how_header.dart';
@@ -13,6 +14,7 @@ class OnboardingHowScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -24,34 +26,34 @@ class OnboardingHowScreen extends StatelessWidget {
               child: ListView(
                 shrinkWrap: true,
                 padding: const EdgeInsets.symmetric(horizontal: AppSize.spacingXl3),
-                children: const [
+                children: [
                   OnboardingHowStepItem(
                     stepNumber: 1,
-                    title: 'Add your places on the map',
+                    title: l10n.howAddPlaces,
                     icon: Icons.map,
                     showLine: true,
                   ),
                   OnboardingHowStepItem(
                     stepNumber: 2,
-                    title: 'Grant location permission for background checks',
+                    title: l10n.howLocationPermission,
                     icon: Icons.near_me,
                     showLine: true,
                   ),
                   OnboardingHowStepItem(
                     stepNumber: 3,
-                    title: 'The app marks your presence automatically',
+                    title: l10n.howMarksPresence,
                     icon: Icons.verified_user,
                     showLine: true,
                   ),
                   OnboardingHowStepItem(
                     stepNumber: 4,
-                    title: 'Optionally sync with Google Calendar',
+                    title: l10n.howSyncCalendar,
                     icon: Icons.event_repeat,
                     showLine: true,
                   ),
                   OnboardingHowStepItem(
                     stepNumber: 5,
-                    title: 'View and adjust your history in the Calendar tab',
+                    title: l10n.howViewHistory,
                     icon: Icons.calendar_month,
                     showLine: false,
                   ),
@@ -84,7 +86,7 @@ class OnboardingHowScreen extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        'Get Started',
+                        l10n.getStarted,
                         style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(fontWeight: FontWeight.bold),
                       ),

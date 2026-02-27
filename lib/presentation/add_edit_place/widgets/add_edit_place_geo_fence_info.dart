@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 
 class AddEditPlaceGeofenceInfo extends StatelessWidget {
   const AddEditPlaceGeofenceInfo({super.key, required this.isDark});
@@ -27,7 +28,7 @@ class AddEditPlaceGeofenceInfo extends StatelessWidget {
           const SizedBox(width: AppSize.spacingM3),
           Expanded(
             child: Text(
-              'A 20m geofence ensures accurate attendance tracking while maintaining privacy and battery efficiency.',
+              AppLocalizations.of(context)!.geoFenceDescription,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: isDark
                     ? const Color(0xFF94A3B8)

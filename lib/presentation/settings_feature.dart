@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../core/di/injection.dart';
 import '../domain/settings/use_cases/get_calendar_sync_enabled_use_case.dart';
+import '../domain/settings/use_cases/get_last_sync_time_use_case.dart';
 import '../domain/settings/use_cases/set_calendar_sync_enabled_use_case.dart';
 import 'settings/bloc/settings_bloc.dart';
 import 'settings/bloc/settings_event.dart';
@@ -17,6 +18,7 @@ class SettingsFeature extends StatelessWidget {
     return SettingsBloc(
       getCalendarSyncEnabled: getIt<GetCalendarSyncEnabledUseCase>(),
       setCalendarSyncEnabled: getIt<SetCalendarSyncEnabledUseCase>(),
+      getLastSyncTime: getIt<GetLastSyncTimeUseCase>(),
     );
   }
 
@@ -40,6 +42,7 @@ class SettingsFeature extends StatelessWidget {
           return SettingsPage(
             syncEnabled: state.syncEnabled,
             loading: state.loading,
+            lastSyncTime: state.lastSyncTime,
             onSyncEnabledChanged: (value) => context
                 .read<SettingsBloc>()
                 .add(SettingsSyncEnabledChanged(value)),

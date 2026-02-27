@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/background/background_task.dart';
 import 'core/di/injection.dart';
+import 'core/locale/app_locale_service.dart';
 import 'core/router/app_router.dart';
 import 'main.dart' as app;
 
@@ -11,6 +12,8 @@ import 'main.dart' as app;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureDependencies();
+  final localeService = getIt<AppLocaleService>();
+  await localeService.init();
   await registerBackgroundTask();
   final prefs = await SharedPreferences.getInstance();
   await setOnboardingCompleted(prefs);
@@ -21,5 +24,8 @@ Future<void> main() async {
     onboardingCompleteNotifier: onboardingCompleteNotifier,
     updateRequiredNotifier: updateRequiredNotifier,
   );
-  runApp(app.MyApp(router: router));
+  runApp(app.MyApp(
+    router: router,
+    localeNotifier: localeService.localeNotifier,
+  ));
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 import 'package:i_was_there/presentation/background_location/widgets/background_location_footer.dart';
 import 'package:i_was_there/presentation/background_location/widgets/background_location_header.dart';
 import 'package:i_was_there/presentation/background_location/widgets/background_location_hero_illustration.dart';
@@ -45,7 +46,7 @@ class BackgroundLocationPage extends StatelessWidget {
                     BackgroundLocationHeroIllustration(isDark: isDark),
                     const SizedBox(height: AppSize.spacingXl),
                     Text(
-                      "Enable 'Allow all the time'",
+                      AppLocalizations.of(context)!.enableAllowAllTheTime,
                       style: theme.textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: isDark ? Colors.white : const Color(0xFF0F172A),
@@ -53,7 +54,7 @@ class BackgroundLocationPage extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSize.spacingM3),
                     Text(
-                      'To automatically sync your physical presence with Google Calendar every 10 minutes, we need background location access even when the app is closed.',
+                      AppLocalizations.of(context)!.backgroundLocationBody,
                       style: theme.textTheme.bodyLarge?.copyWith(
                         color: isDark
                             ? const Color(0xFF94A3B8)

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:i_was_there/domain/places/entities/place.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 import 'package:i_was_there/presentation/add_edit_place/widgets/add_edit_place_form_section.dart';
 import 'package:i_was_there/presentation/add_edit_place/widgets/add_edit_place_header.dart';
 import 'package:i_was_there/presentation/add_edit_place/widgets/add_edit_place_map_section.dart';
@@ -47,7 +48,8 @@ class _AddEditPlacePageState extends State<AddEditPlacePage> {
     final address = _addressController.text.trim();
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a place name')),
+        SnackBar(
+            content: Text(AppLocalizations.of(context)!.pleaseEnterPlaceName)),
       );
       return;
     }
@@ -86,13 +88,15 @@ class _AddEditPlacePageState extends State<AddEditPlacePage> {
           _addressController.text =
               state.locationResult!.address ?? _addressController.text;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Location set.')),
+            SnackBar(
+                content: Text(AppLocalizations.of(context)!.locationSet)),
           );
         }
         if (state.locationError != null && mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Could not get location: ${state.locationError}'),
+              content: Text(AppLocalizations.of(context)!
+                  .couldNotGetLocation(state.locationError!)),
             ),
           );
         }
@@ -107,7 +111,8 @@ class _AddEditPlacePageState extends State<AddEditPlacePage> {
           if (state.errorMessage != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Could not save: ${state.errorMessage}'),
+                content: Text(AppLocalizations.of(context)!
+                    .couldNotSave(state.errorMessage!)),
                 backgroundColor: Colors.red,
               ),
             );

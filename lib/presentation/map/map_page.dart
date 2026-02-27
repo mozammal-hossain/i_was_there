@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 import 'package:i_was_there/domain/places/entities/place.dart';
 import 'package:i_was_there/presentation/map/widgets/map_markers_layer.dart';
 
@@ -148,7 +149,7 @@ class _MapPageState extends State<MapPage> {
                     ),
                     const SizedBox(height: AppSize.spacingL),
                     Text(
-                      'No places to show',
+                      AppLocalizations.of(context)!.noPlacesToShow,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: isDark ? Colors.white : const Color(0xFF0F172A),
@@ -156,7 +157,7 @@ class _MapPageState extends State<MapPage> {
                     ),
                     const SizedBox(height: AppSize.spacingM),
                     Text(
-                      'Add tracked places from the dashboard to see them on the map.',
+                      AppLocalizations.of(context)!.addTrackedPlacesFromDashboard,
                       textAlign: TextAlign.center,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: isDark

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_theme.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../core/theme/app_theme.dart';
+import '../../../l10n/app_localizations.dart';
 
 class AddEditPlaceHeader extends StatelessWidget {
   const AddEditPlaceHeader({super.key, required this.isDark});
@@ -35,8 +37,8 @@ class AddEditPlaceHeader extends StatelessWidget {
               size: AppSize.iconL,
               color: AppColors.primary,
             ),
-            label: const Text(
-              'Back',
+            label: Text(
+              AppLocalizations.of(context)!.back,
               style: TextStyle(
                 color: AppColors.primary,
                 fontSize: AppSize.fontTitle,
@@ -44,7 +46,7 @@ class AddEditPlaceHeader extends StatelessWidget {
             ),
           ),
           Text(
-            'Tracked Place',
+            AppLocalizations.of(context)!.trackedPlace,
             style: TextStyle(
               fontSize: AppSize.fontTitle,
               fontWeight: FontWeight.w600,
@@ -53,8 +55,8 @@ class AddEditPlaceHeader extends StatelessWidget {
           ),
           TextButton(
             onPressed: () => context.pop(),
-            child: const Text(
-              'Cancel',
+            child: Text(
+              AppLocalizations.of(context)!.cancel,
               style: TextStyle(
                 color: AppColors.primary,
                 fontSize: AppSize.fontTitle,

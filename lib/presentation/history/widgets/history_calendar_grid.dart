@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 
 class HistoryCalendarGrid extends StatelessWidget {
   const HistoryCalendarGrid({
@@ -27,7 +28,16 @@ class HistoryCalendarGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    final l10n = AppLocalizations.of(context)!;
+    final weekdays = [
+      l10n.sun,
+      l10n.mon,
+      l10n.tue,
+      l10n.wed,
+      l10n.thu,
+      l10n.fri,
+      l10n.sat,
+    ];
     return Column(
       children: [
         Row(

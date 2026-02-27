@@ -9,9 +9,11 @@ import 'core/background/background_task.dart';
 import 'core/di/injection.dart';
 import 'core/error/app_error_handler.dart';
 import 'core/force_update/force_update_service.dart';
+import 'core/locale/app_locale_service.dart';
 import 'core/remote_config/remote_config_init.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +24,8 @@ void main() async {
     await Firebase.initializeApp();
     await initializeRemoteConfig();
     configureDependencies();
+    final localeService = getIt<AppLocaleService>();
+    await localeService.init();
     final forceUpdateResult = await getIt<ForceUpdateService>().checkUpdateRequired();
     final updateRequiredNotifier = ValueNotifier<bool>(forceUpdateResult.forceUpdateRequired);
     await registerBackgroundTask();
@@ -34,7 +38,11 @@ void main() async {
       onboardingCompleteNotifier: onboardingCompleteNotifier,
       updateRequiredNotifier: updateRequiredNotifier,
     );
-    runApp(MyApp(router: router, scaffoldMessengerKey: scaffoldMessengerKey));
+    runApp(MyApp(
+      router: router,
+      scaffoldMessengerKey: scaffoldMessengerKey,
+      localeNotifier: localeService.localeNotifier,
+    ));
   }, (error, stackTrace) {
     FlutterError.reportError(FlutterErrorDetails(
       exception: error,
@@ -45,25 +53,36 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({
+  MyApp({
     super.key,
     required this.router,
     this.scaffoldMessengerKey,
+    required this.localeNotifier,
   });
 
   final GoRouter router;
   final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
+  final ValueNotifier<Locale> localeNotifier;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'I Was There',
-      debugShowCheckedModeBanner: false,
-      scaffoldMessengerKey: scaffoldMessengerKey,
-      theme: buildAppTheme(isDark: false),
-      darkTheme: buildAppTheme(isDark: true),
-      themeMode: ThemeMode.system,
-      routerConfig: router,
+    return ValueListenableBuilder<Locale>(
+      valueListenable: localeNotifier,
+      builder: (context, locale, _) {
+        final title = lookupAppLocalizations(locale).appTitle;
+        return MaterialApp.router(
+          title: title,
+          debugShowCheckedModeBanner: false,
+          scaffoldMessengerKey: scaffoldMessengerKey,
+          theme: buildAppTheme(isDark: false),
+          darkTheme: buildAppTheme(isDark: true),
+          themeMode: ThemeMode.system,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: locale,
+          routerConfig: router,
+        );
+      },
     );
   }
 }

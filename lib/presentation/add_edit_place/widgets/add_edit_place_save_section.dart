@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
 
 class AddEditPlaceSaveSection extends StatelessWidget {
   const AddEditPlaceSaveSection({
@@ -28,8 +29,8 @@ class AddEditPlaceSaveSection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppSize.radiusL),
               ),
             ),
-            child: const Text(
-              'Save Changes',
+            child: Text(
+              AppLocalizations.of(context)!.saveChanges,
               style: TextStyle(
                 fontSize: AppSize.fontTitle,
                 fontWeight: FontWeight.w600,
@@ -48,7 +49,7 @@ class AddEditPlaceSaveSection extends StatelessWidget {
             ),
             const SizedBox(width: AppSize.spacingS2),
             Text(
-              'Updates sync with Google Calendar',
+              AppLocalizations.of(context)!.updatesSyncWithGoogleCalendar,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: isDark
                     ? const Color(0xFF64748B)

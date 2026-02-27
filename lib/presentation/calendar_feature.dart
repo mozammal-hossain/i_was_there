@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../core/di/injection.dart';
+import '../l10n/app_localizations.dart';
 import '../domain/places/use_cases/get_places_use_case.dart';
 import '../domain/presence/use_cases/get_aggregated_presence_use_case.dart';
 import '../domain/presence/use_cases/get_presence_for_month_use_case.dart';
@@ -116,7 +117,9 @@ class CalendarFeature extends StatelessWidget {
               );
           if (ctx.mounted) {
             ScaffoldMessenger.of(ctx).showSnackBar(
-              const SnackBar(content: Text('Manual presence updated')),
+              SnackBar(
+              content: Text(
+                  AppLocalizations.of(context)!.manualPresenceUpdated)),
             );
           }
         },
