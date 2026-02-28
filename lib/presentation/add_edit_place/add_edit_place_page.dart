@@ -49,7 +49,8 @@ class _AddEditPlacePageState extends State<AddEditPlacePage> {
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(AppLocalizations.of(context)!.pleaseEnterPlaceName)),
+          content: Text(AppLocalizations.of(context)!.pleaseEnterPlaceName),
+        ),
       );
       return;
     }
@@ -88,15 +89,17 @@ class _AddEditPlacePageState extends State<AddEditPlacePage> {
           _addressController.text =
               state.locationResult!.address ?? _addressController.text;
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: Text(AppLocalizations.of(context)!.locationSet)),
+            SnackBar(content: Text(AppLocalizations.of(context)!.locationSet)),
           );
         }
         if (state.locationError != null && mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(AppLocalizations.of(context)!
-                  .couldNotGetLocation(state.locationError!)),
+              content: Text(
+                AppLocalizations.of(
+                  context,
+                )!.couldNotGetLocation(state.locationError!),
+              ),
             ),
           );
         }
@@ -111,8 +114,11 @@ class _AddEditPlacePageState extends State<AddEditPlacePage> {
           if (state.errorMessage != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(AppLocalizations.of(context)!
-                    .couldNotSave(state.errorMessage!)),
+                content: Text(
+                  AppLocalizations.of(
+                    context,
+                  )!.couldNotSave(state.errorMessage!),
+                ),
                 backgroundColor: Colors.red,
               ),
             );
@@ -125,6 +131,7 @@ class _AddEditPlacePageState extends State<AddEditPlacePage> {
           }
         },
         child: Scaffold(
+          resizeToAvoidBottomInset: true,
           body: Column(
             children: [
               AddEditPlaceHeader(isDark: isDark),

@@ -49,11 +49,11 @@ class AddEditPlaceFormSheet extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(
+          padding: EdgeInsets.fromLTRB(
             AppSize.spacingXl,
             AppSize.spacingM3,
             AppSize.spacingXl,
-            AppSize.spacingXl,
+            AppSize.spacingXl + MediaQuery.of(context).viewInsets.bottom,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

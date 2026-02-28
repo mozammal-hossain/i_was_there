@@ -37,7 +37,8 @@ class AddEditPlaceFormFields extends StatelessWidget {
         TextField(
           controller: nameController,
           decoration: InputDecoration(
-              hintText: AppLocalizations.of(context)!.enterPlaceName),
+            hintText: AppLocalizations.of(context)!.enterPlaceName,
+          ),
           style: TextStyle(
             fontSize: AppSize.fontTitle,
             color: isDark ? Colors.white : const Color(0xFF0F172A),
@@ -63,10 +64,12 @@ class AddEditPlaceFormFields extends StatelessWidget {
             ),
             suffixIcon: locationLoading
                 ? Padding(
-                    padding: const EdgeInsets.all(AppSize.spacingM3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSize.spacingM3,
+                    ),
                     child: SizedBox(
-                      width: AppSize.iconM,
-                      height: AppSize.iconM,
+                      width: AppSize.iconS2,
+                      height: AppSize.iconS2,
                       child: const CircularProgressIndicator(
                         strokeWidth: AppSize.spacingXs,
                         color: AppColors.primary,

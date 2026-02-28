@@ -48,13 +48,16 @@ class AddEditPlaceSaveSection extends StatelessWidget {
               color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
             ),
             const SizedBox(width: AppSize.spacingS2),
-            Text(
-              AppLocalizations.of(context)!.updatesSyncWithGoogleCalendar,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: isDark
-                    ? const Color(0xFF64748B)
-                    : const Color(0xFF94A3B8),
-                fontSize: AppSize.fontSmall,
+            Flexible(
+              child: Text(
+                AppLocalizations.of(context)!.updatesSyncWithGoogleCalendar,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: isDark
+                      ? const Color(0xFF64748B)
+                      : const Color(0xFF94A3B8),
+                  fontSize: AppSize.fontSmall,
+                ),
               ),
             ),
           ],

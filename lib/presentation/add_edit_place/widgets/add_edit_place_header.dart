@@ -45,12 +45,15 @@ class AddEditPlaceHeader extends StatelessWidget {
               ),
             ),
           ),
-          Text(
-            AppLocalizations.of(context)!.trackedPlace,
-            style: TextStyle(
-              fontSize: AppSize.fontTitle,
-              fontWeight: FontWeight.w600,
-              color: isDark ? Colors.white : const Color(0xFF0F172A),
+          Flexible(
+            child: Text(
+              AppLocalizations.of(context)!.trackedPlace,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: AppSize.fontTitle,
+                fontWeight: FontWeight.w600,
+                color: isDark ? Colors.white : const Color(0xFF0F172A),
+              ),
             ),
           ),
           TextButton(
