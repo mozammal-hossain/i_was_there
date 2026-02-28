@@ -21,14 +21,7 @@ class _MainShellState extends State<MainShell> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      body: IndexedStack(
-        index: _tabIndex,
-        children: [
-          const PlacesFeature(),
-          const CalendarFeature(),
-          const SettingsFeature(),
-        ],
-      ),
+      body: _tabForIndex(_tabIndex),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: (isDark ? AppColors.bgDarkGray : Colors.white).withValues(
@@ -77,6 +70,19 @@ class _MainShellState extends State<MainShell> {
         ),
       ),
     );
+  }
+
+  Widget _tabForIndex(int index) {
+    switch (index) {
+      case 0:
+        return const PlacesFeature();
+      case 1:
+        return const CalendarFeature();
+      case 2:
+        return const SettingsFeature();
+      default:
+        return const SizedBox.shrink();
+    }
   }
 }
 
