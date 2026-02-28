@@ -16,40 +16,52 @@ import 'core/theme/app_theme.dart';
 import 'l10n/app_localizations.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   setupGlobalErrorHandling(scaffoldMessengerKey);
 
-  await runZonedGuarded<Future<void>>(() async {
-    await Firebase.initializeApp();
-    await initializeRemoteConfig();
-    configureDependencies();
-    final localeService = getIt<AppLocaleService>();
-    await localeService.init();
-    final forceUpdateResult = await getIt<ForceUpdateService>().checkUpdateRequired();
-    final updateRequiredNotifier = ValueNotifier<bool>(forceUpdateResult.forceUpdateRequired);
-    await registerBackgroundTask();
-    final prefs = await SharedPreferences.getInstance();
-    final onboardingCompleteNotifier = ValueNotifier<bool>(
-      await isOnboardingCompleted(prefs),
-    );
-    final router = createAppRouter(
-      prefs: prefs,
-      onboardingCompleteNotifier: onboardingCompleteNotifier,
-      updateRequiredNotifier: updateRequiredNotifier,
-    );
-    runApp(MyApp(
-      router: router,
-      scaffoldMessengerKey: scaffoldMessengerKey,
-      localeNotifier: localeService.localeNotifier,
-    ));
-  }, (error, stackTrace) {
-    FlutterError.reportError(FlutterErrorDetails(
-      exception: error,
-      stack: stackTrace,
-      library: 'runZonedGuarded',
-    ));
-  });
+  await runZonedGuarded<Future<void>>(
+    () async {
+      // ensureInitialized must run in the same zone as runApp
+      WidgetsFlutterBinding.ensureInitialized();
+
+      await Firebase.initializeApp();
+      await initializeRemoteConfig();
+      configureDependencies();
+      final localeService = getIt<AppLocaleService>();
+      await localeService.init();
+      final forceUpdateResult = await getIt<ForceUpdateService>()
+          .checkUpdateRequired();
+      final updateRequiredNotifier = ValueNotifier<bool>(
+        forceUpdateResult.forceUpdateRequired,
+      );
+      await registerBackgroundTask();
+      final prefs = await SharedPreferences.getInstance();
+      final onboardingCompleteNotifier = ValueNotifier<bool>(
+        await isOnboardingCompleted(prefs),
+      );
+      final router = createAppRouter(
+        prefs: prefs,
+        onboardingCompleteNotifier: onboardingCompleteNotifier,
+        updateRequiredNotifier: updateRequiredNotifier,
+      );
+      runApp(
+        MyApp(
+          router: router,
+          scaffoldMessengerKey: scaffoldMessengerKey,
+          localeNotifier: localeService.localeNotifier,
+        ),
+      );
+    },
+    (error, stackTrace) {
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: error,
+          stack: stackTrace,
+          library: 'runZonedGuarded',
+        ),
+      );
+    },
+  );
 }
 
 class MyApp extends StatelessWidget {

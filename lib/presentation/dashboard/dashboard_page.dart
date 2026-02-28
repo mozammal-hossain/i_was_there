@@ -76,13 +76,16 @@ class DashboardPage extends StatelessWidget {
               isDark: isDark,
               onPlaceTap: onPlaceTap,
             ),
-            const SliverToBoxAdapter(child: SizedBox(height: AppSize.spacingHeroBottom)),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: AppSize.spacingHeroBottom),
+            ),
           ],
         ),
       ),
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: AppSize.spacingL2),
         child: FloatingActionButton.extended(
+          heroTag: 'dashboard_fab',
           elevation: AppSize.elevationFabExtended,
           onPressed: onAddPlace,
           backgroundColor: AppColors.primary,

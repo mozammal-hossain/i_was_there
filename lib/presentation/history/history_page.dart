@@ -47,9 +47,9 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   List<String> _filterLabels(BuildContext context) => [
-        AppLocalizations.of(context)!.allPlaces,
-        ...widget.places.map((p) => p.name),
-      ];
+    AppLocalizations.of(context)!.allPlaces,
+    ...widget.places.map((p) => p.name),
+  ];
 
   int _selectedFilterIndex(List<String> labels) {
     final id = widget.selectedPlaceId;
@@ -71,14 +71,12 @@ class _HistoryPageState extends State<HistoryPage> {
             HistoryHeader(onBack: widget.onBack, isDark: isDark),
             HistoryFilterChips(
               labels: filterLabels,
-              selectedIndex: _selectedFilterIndex(filterLabels).clamp(
-                0,
-                filterLabels.length - 1,
-              ),
+              selectedIndex: _selectedFilterIndex(
+                filterLabels,
+              ).clamp(0, filterLabels.length - 1),
               isDark: isDark,
               onSelected: (i) {
-                final placeId =
-                    i == 0 ? null : widget.places[i - 1].id;
+                final placeId = i == 0 ? null : widget.places[i - 1].id;
                 widget.onFilterChanged?.call(placeId);
               },
             ),
@@ -104,6 +102,7 @@ class _HistoryPageState extends State<HistoryPage> {
           ? Padding(
               padding: const EdgeInsets.only(bottom: AppSize.spacingXl8),
               child: FloatingActionButton(
+                heroTag: 'history_fab',
                 onPressed: widget.onAddManual,
                 child: const Icon(Icons.add, size: AppSize.iconL3),
               ),
