@@ -15,6 +15,7 @@ class HistoryPage extends StatefulWidget {
     this.places = const [],
     required this.viewMonth,
     this.presenceByDay = const {},
+    this.presenceByDayPerPlace = const {},
     this.loadingPresence = false,
     this.selectedDay,
     this.dayPresences = const [],
@@ -24,12 +25,14 @@ class HistoryPage extends StatefulWidget {
     this.onMonthChanged,
     this.onDaySelected,
     this.onFilterChanged,
+    this.onDayEdit,
     this.onAddManual,
   });
 
   final List<Place> places;
   final DateTime viewMonth;
   final Map<DateTime, bool> presenceByDay;
+  final Map<DateTime, Map<String, bool>> presenceByDayPerPlace;
   final bool loadingPresence;
   final int? selectedDay;
   final List<Presence> dayPresences;
@@ -39,6 +42,7 @@ class HistoryPage extends StatefulWidget {
   final void Function(DateTime month)? onMonthChanged;
   final void Function(int? day)? onDaySelected;
   final void Function(String? placeId)? onFilterChanged;
+  final void Function(DateTime date)? onDayEdit;
   final VoidCallback? onAddManual;
 
   @override
@@ -56,6 +60,22 @@ class _HistoryPageState extends State<HistoryPage> {
     if (id == null) return 0;
     final i = widget.places.indexWhere((p) => p.id == id);
     return i < 0 ? 0 : i + 1;
+  }
+
+  Map<String, Color> get _placeColors {
+    const palette = [
+      AppColors.primary,
+      AppColors.success,
+      AppColors.error,
+      AppColors.primaryLight,
+      AppColors.primaryTint,
+    ];
+    final map = <String, Color>{};
+    for (var i = 0; i < widget.places.length; i++) {
+      map[widget.places[i].id] =
+          palette[i % palette.length]; // deterministic by index
+    }
+    return map;
   }
 
   @override
@@ -80,10 +100,35 @@ class _HistoryPageState extends State<HistoryPage> {
                 widget.onFilterChanged?.call(placeId);
               },
             ),
+            if (widget.places.isNotEmpty) ...[
+              const SizedBox(height: AppSize.spacingS),
+              Wrap(
+                spacing: AppSize.spacingS,
+                runSpacing: AppSize.spacingXs,
+                children: widget.places.map((p) {
+                  return Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: AppSize.spacingS2,
+                        height: AppSize.spacingS2,
+                        decoration: BoxDecoration(
+                          color: _placeColors[p.id],
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: AppSize.spacingXs),
+                      Text(p.name, style: theme.textTheme.labelSmall),
+                    ],
+                  );
+                }).toList(),
+              ),
+            ],
             Expanded(
               child: HistoryPageContent(
                 viewMonth: widget.viewMonth,
                 presenceByDay: widget.presenceByDay,
+                presenceByDayPerPlace: widget.presenceByDayPerPlace,
                 loadingPresence: widget.loadingPresence,
                 selectedDay: widget.selectedDay,
                 dayPresences: widget.dayPresences,
@@ -91,8 +136,11 @@ class _HistoryPageState extends State<HistoryPage> {
                 places: widget.places,
                 theme: theme,
                 isDark: isDark,
+                selectedPlaceId: widget.selectedPlaceId,
+                placeColors: _placeColors,
                 onMonthChanged: widget.onMonthChanged ?? (_) {},
                 onDaySelected: widget.onDaySelected ?? (_) {},
+                onDayEdit: widget.onDayEdit,
               ),
             ),
           ],

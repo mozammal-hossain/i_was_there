@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../domain/places/use_cases/get_places_use_case.dart';
-import '../../../../domain/presence/use_cases/get_aggregated_presence_use_case.dart';
 import '../../../../domain/presence/use_cases/get_presence_for_month_use_case.dart';
 import '../../../../domain/presence/use_cases/get_presences_for_day_use_case.dart';
 import '../../../../domain/presence/use_cases/set_presence_use_case.dart';
@@ -12,16 +11,14 @@ import 'history_state.dart';
 class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   HistoryBloc({
     required GetPlacesUseCase getPlaces,
-    required GetAggregatedPresenceUseCase getAggregatedPresence,
     required GetPresenceForMonthUseCase getPresenceForMonth,
     required GetPresencesForDayUseCase getPresencesForDay,
     required SetPresenceUseCase setPresence,
-  })  : _getPlaces = getPlaces,
-        _getAggregatedPresence = getAggregatedPresence,
-        _getPresenceForMonth = getPresenceForMonth,
-        _getPresencesForDay = getPresencesForDay,
-        _setPresence = setPresence,
-        super(const HistoryState()) {
+  }) : _getPlaces = getPlaces,
+       _getPresenceForMonth = getPresenceForMonth,
+       _getPresencesForDay = getPresencesForDay,
+       _setPresence = setPresence,
+       super(const HistoryState()) {
     on<HistoryLoadRequested>(_onLoad);
     on<HistoryMonthChanged>(_onMonthChanged);
     on<HistoryDaySelected>(_onDaySelected);
@@ -30,38 +27,57 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   }
 
   final GetPlacesUseCase _getPlaces;
-  final GetAggregatedPresenceUseCase _getAggregatedPresence;
   final GetPresenceForMonthUseCase _getPresenceForMonth;
   final GetPresencesForDayUseCase _getPresencesForDay;
   final SetPresenceUseCase _setPresence;
 
-  /// Loads presence for the given month. If [placeId] is null, returns aggregated
-  /// (any place); otherwise returns presence for that place only.
-  Future<Map<DateTime, bool>> _loadPresenceForMonth(
+  /// Returns a detailed per-place presence map for every day in [month].
+  /// Outer key is the date at midnight; inner map maps placeId -> isPresent.
+  /// Days with no data default to `{}` so callers can treat missing entries as
+  /// `false` when necessary.
+  Future<Map<DateTime, Map<String, bool>>> _loadPresenceByPlaceForMonth(
     DateTime month,
-    String? placeId,
   ) async {
     final start = DateTime(month.year, month.month, 1);
     final end = DateTime(month.year, month.month + 1, 0);
-    if (placeId == null) {
-      return _getAggregatedPresence.call(start, end);
-    }
-    final list = await _getPresenceForMonth.call(
-      placeId,
-      month.year,
-      month.month,
-    );
-    final map = <DateTime, bool>{};
+    final map = <DateTime, Map<String, bool>>{};
     for (var d = start; !d.isAfter(end); d = d.add(const Duration(days: 1))) {
-      map[d] = false;
+      map[d] = {};
     }
-    for (final p in list) {
-      if (p.isPresent) {
+    // load presence for each tracked place
+    final places = await _getPlaces.call();
+    for (final place in places) {
+      final list = await _getPresenceForMonth.call(
+        place.id,
+        month.year,
+        month.month,
+      );
+      for (final p in list) {
         final day = DateTime(p.date.year, p.date.month, p.date.day);
-        if (map.containsKey(day)) map[day] = true;
+        if (map.containsKey(day)) {
+          map[day]![place.id] = p.isPresent;
+        }
       }
     }
     return map;
+  }
+
+  /// Aggregate a per-place map into the boolean presence indication used by
+  /// the UI. When [filterPlaceId] is provided, only that place contributes to
+  /// the result; otherwise any true value counts.
+  Map<DateTime, bool> _aggregatePresence(
+    Map<DateTime, Map<String, bool>> byPlace,
+    String? filterPlaceId,
+  ) {
+    final out = <DateTime, bool>{};
+    byPlace.forEach((date, inner) {
+      if (filterPlaceId == null) {
+        out[date] = inner.values.any((b) => b);
+      } else {
+        out[date] = inner[filterPlaceId] ?? false;
+      }
+    });
+    return out;
   }
 
   Future<void> _onLoad(
@@ -72,16 +88,15 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     try {
       final places = await _getPlaces.call();
       final month = state.effectiveViewMonth;
-      final presenceByDay = await _loadPresenceForMonth(
-        month,
-        state.selectedPlaceId,
-      );
+      final byPlace = await _loadPresenceByPlaceForMonth(month);
+      final aggregated = _aggregatePresence(byPlace, state.selectedPlaceId);
       emit(
         state.copyWith(
           places: places,
           loadingPlaces: false,
           viewMonth: month,
-          presenceByDay: presenceByDay,
+          presenceByDay: aggregated,
+          presenceByDayPerPlace: byPlace,
           loadingPresence: false,
           errorMessage: null,
         ),
@@ -104,12 +119,14 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       ),
     );
     try {
-      final presenceByDay = await _loadPresenceForMonth(
-        event.month,
-        state.selectedPlaceId,
-      );
+      final byPlace = await _loadPresenceByPlaceForMonth(event.month);
+      final aggregated = _aggregatePresence(byPlace, state.selectedPlaceId);
       emit(
-        state.copyWith(presenceByDay: presenceByDay, loadingPresence: false),
+        state.copyWith(
+          presenceByDay: aggregated,
+          presenceByDayPerPlace: byPlace,
+          loadingPresence: false,
+        ),
       );
     } catch (e, _) {
       emit(state.copyWith(loadingPresence: false, errorMessage: e.toString()));
@@ -124,10 +141,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       emit(state.copyWith(selectedDay: null, dayPresences: []));
       return;
     }
-    emit(state.copyWith(
-      selectedDay: event.day,
-      loadingDayDetails: true,
-    ));
+    emit(state.copyWith(selectedDay: event.day, loadingDayDetails: true));
     try {
       final date = DateTime(
         state.effectiveViewMonth.year,
@@ -135,11 +149,13 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
         event.day!,
       );
       final list = await _getPresencesForDay.call(date);
-      emit(state.copyWith(
-        selectedDay: event.day,
-        dayPresences: list,
-        loadingDayDetails: false,
-      ));
+      emit(
+        state.copyWith(
+          selectedDay: event.day,
+          dayPresences: list,
+          loadingDayDetails: false,
+        ),
+      );
     } catch (e, _) {
       emit(
         state.copyWith(
@@ -155,25 +171,19 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     HistoryFilterChanged event,
     Emitter<HistoryState> emit,
   ) async {
+    // just update filter and recompute using cached per-place map
+    emit(state.copyWith(selectedPlaceId: event.placeId, loadingPresence: true));
+    final aggregated = _aggregatePresence(
+      state.presenceByDayPerPlace,
+      event.placeId,
+    );
     emit(
       state.copyWith(
-        selectedPlaceId: event.placeId,
-        loadingPresence: true,
+        presenceByDay: aggregated,
+        loadingPresence: false,
+        errorMessage: null,
       ),
     );
-    try {
-      final month = state.effectiveViewMonth;
-      final presenceByDay = await _loadPresenceForMonth(month, event.placeId);
-      emit(
-        state.copyWith(
-          presenceByDay: presenceByDay,
-          loadingPresence: false,
-          errorMessage: null,
-        ),
-      );
-    } catch (e, _) {
-      emit(state.copyWith(loadingPresence: false, errorMessage: e.toString()));
-    }
   }
 
   Future<void> _onManualPresenceApplied(
@@ -190,10 +200,8 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
         );
       }
       final month = state.effectiveViewMonth;
-      final presenceByDay = await _loadPresenceForMonth(
-        month,
-        state.selectedPlaceId,
-      );
+      final byPlace = await _loadPresenceByPlaceForMonth(month);
+      final aggregated = _aggregatePresence(byPlace, state.selectedPlaceId);
       final selectedDay = state.selectedDay;
       List<Presence> dayPresences = state.dayPresences;
       if (selectedDay != null) {
@@ -202,7 +210,8 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       }
       emit(
         state.copyWith(
-          presenceByDay: presenceByDay,
+          presenceByDay: aggregated,
+          presenceByDayPerPlace: byPlace,
           dayPresences: dayPresences,
           errorMessage: null,
         ),

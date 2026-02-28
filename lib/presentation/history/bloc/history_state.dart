@@ -10,6 +10,7 @@ class HistoryState {
     this.loadingPlaces = true,
     this.viewMonth,
     this.presenceByDay = const {},
+    this.presenceByDayPerPlace = const {},
     this.loadingPresence = false,
     this.selectedDay,
     this.dayPresences = const [],
@@ -21,7 +22,15 @@ class HistoryState {
   final List<Place> places;
   final bool loadingPlaces;
   final DateTime? viewMonth;
+
+  /// Aggregated presence bool (any place) for each date. Computed from
+  /// [presenceByDayPerPlace] so callers can still consume the old API.
   final Map<DateTime, bool> presenceByDay;
+
+  /// Detailed per-place presence for each date. Outer key is date at
+  /// midnight, inner map maps placeId -> isPresent. This drives the
+  /// multi-colored calendar cells and supports filtering.
+  final Map<DateTime, Map<String, bool>> presenceByDayPerPlace;
   final bool loadingPresence;
   final int? selectedDay;
   final List<Presence> dayPresences;
@@ -37,6 +46,7 @@ class HistoryState {
     bool? loadingPlaces,
     DateTime? viewMonth,
     Map<DateTime, bool>? presenceByDay,
+    Map<DateTime, Map<String, bool>>? presenceByDayPerPlace,
     bool? loadingPresence,
     int? selectedDay,
     List<Presence>? dayPresences,
@@ -49,6 +59,8 @@ class HistoryState {
       loadingPlaces: loadingPlaces ?? this.loadingPlaces,
       viewMonth: viewMonth ?? this.viewMonth,
       presenceByDay: presenceByDay ?? this.presenceByDay,
+      presenceByDayPerPlace:
+          presenceByDayPerPlace ?? this.presenceByDayPerPlace,
       loadingPresence: loadingPresence ?? this.loadingPresence,
       selectedDay: selectedDay,
       dayPresences: dayPresences ?? this.dayPresences,

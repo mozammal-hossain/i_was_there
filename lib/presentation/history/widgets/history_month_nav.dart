@@ -9,6 +9,7 @@ class HistoryMonthNav extends StatelessWidget {
     required this.isDark,
     required this.onPrev,
     required this.onNext,
+    this.totalPresent,
   });
 
   final DateTime viewMonth;
@@ -17,9 +18,13 @@ class HistoryMonthNav extends StatelessWidget {
   final VoidCallback onPrev;
   final VoidCallback onNext;
 
+  /// optional count of present days in the month (respecting filter)
+  final int? totalPresent;
+
   @override
   Widget build(BuildContext context) {
-    final monthLabel = '${historyMonthName(viewMonth.month)} ${viewMonth.year}';
+    final monthLabel =
+        '${historyMonthName(viewMonth, context)} ${viewMonth.year}';
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -35,12 +40,23 @@ class HistoryMonthNav extends StatelessWidget {
           ),
           icon: const Icon(Icons.chevron_left),
         ),
-        Text(
-          monthLabel,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : const Color(0xFF0F172A),
-          ),
+        Column(
+          children: [
+            Text(
+              monthLabel,
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : const Color(0xFF0F172A),
+              ),
+            ),
+            if (totalPresent != null)
+              Text(
+                '$totalPresent days',
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: isDark ? Colors.white70 : const Color(0xFF64748B),
+                ),
+              ),
+          ],
         ),
         IconButton(
           onPressed: onNext,

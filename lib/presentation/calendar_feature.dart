@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../core/di/injection.dart';
 import '../l10n/app_localizations.dart';
 import '../domain/places/use_cases/get_places_use_case.dart';
-import '../domain/presence/use_cases/get_aggregated_presence_use_case.dart';
 import '../domain/presence/use_cases/get_presence_for_month_use_case.dart';
 import '../domain/presence/use_cases/get_presences_for_day_use_case.dart';
 import '../domain/presence/use_cases/set_presence_use_case.dart';
@@ -21,7 +20,6 @@ class CalendarFeature extends StatelessWidget {
   HistoryBloc _createHistoryBloc() {
     return HistoryBloc(
       getPlaces: getIt<GetPlacesUseCase>(),
-      getAggregatedPresence: getIt<GetAggregatedPresenceUseCase>(),
       getPresenceForMonth: getIt<GetPresenceForMonthUseCase>(),
       getPresencesForDay: getIt<GetPresencesForDayUseCase>(),
       setPresence: getIt<SetPresenceUseCase>(),
@@ -47,6 +45,7 @@ class CalendarFeature extends StatelessWidget {
         buildWhen: (prev, curr) =>
             prev.loadingPlaces != curr.loadingPlaces ||
             prev.places != curr.places ||
+            prev.presenceByDayPerPlace != curr.presenceByDayPerPlace ||
             prev.presenceByDay != curr.presenceByDay ||
             prev.loadingPresence != curr.loadingPresence ||
             prev.selectedDay != curr.selectedDay ||
@@ -63,6 +62,7 @@ class CalendarFeature extends StatelessWidget {
             places: state.places,
             viewMonth: state.effectiveViewMonth,
             presenceByDay: state.presenceByDay,
+            presenceByDayPerPlace: state.presenceByDayPerPlace,
             loadingPresence: state.loadingPresence,
             selectedDay: state.selectedDay,
             dayPresences: state.dayPresences,
@@ -74,6 +74,7 @@ class CalendarFeature extends StatelessWidget {
                 context.read<HistoryBloc>().add(HistoryMonthChanged(month)),
             onDaySelected: (day) =>
                 context.read<HistoryBloc>().add(HistoryDaySelected(day)),
+            onDayEdit: (date) => _openManualAttendance(context, date),
             onAddManual: () => _openManualAttendance(context),
           );
         },
@@ -81,17 +82,25 @@ class CalendarFeature extends StatelessWidget {
     );
   }
 
-  void _openManualAttendance(BuildContext context) {
+  void _openManualAttendance(BuildContext context, [DateTime? forcedDate]) {
     final state = context.read<HistoryBloc>().state;
     final effectiveMonth = state.effectiveViewMonth;
-    final initialDate = state.selectedDay != null
-        ? DateTime(effectiveMonth.year, effectiveMonth.month, state.selectedDay!)
-        : DateTime.now();
-    final initialPresenceByPlaceId = state.selectedDay != null
+    final initialDate =
+        forcedDate ??
+        (state.selectedDay != null
+            ? DateTime(
+                effectiveMonth.year,
+                effectiveMonth.month,
+                state.selectedDay!,
+              )
+            : DateTime.now());
+    final initialPresenceByPlaceId =
+        state.selectedDay != null || forcedDate != null
         ? {
             for (final p in state.places)
-              p.id: state.dayPresences
-                  .any((d) => d.placeId == p.id && d.isPresent),
+              p.id: state.dayPresences.any(
+                (d) => d.placeId == p.id && d.isPresent,
+              ),
           }
         : null;
     final getPresencesForDay = getIt<GetPresencesForDayUseCase>();
@@ -113,13 +122,15 @@ class CalendarFeature extends StatelessWidget {
         },
         onApply: (date, presence) async {
           context.read<HistoryBloc>().add(
-                HistoryManualPresenceApplied(date, presence),
-              );
+            HistoryManualPresenceApplied(date, presence),
+          );
           if (ctx.mounted) {
             ScaffoldMessenger.of(ctx).showSnackBar(
               SnackBar(
-              content: Text(
-                  AppLocalizations.of(context)!.manualPresenceUpdated)),
+                content: Text(
+                  AppLocalizations.of(context)!.manualPresenceUpdated,
+                ),
+              ),
             );
           }
         },
