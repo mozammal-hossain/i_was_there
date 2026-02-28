@@ -1,0 +1,14 @@
+import 'package:injectable/injectable.dart';
+
+import '../entities/presence.dart';
+import '../repositories/presence_repository.dart';
+
+@injectable
+class GetPresencesForDayUseCase {
+  GetPresencesForDayUseCase(this._repository);
+
+  final PresenceRepository _repository;
+
+  Future<List<Presence>> call(DateTime date) =>
+      _repository.getPresencesForDay(date);
+}

@@ -44,7 +44,9 @@ lib/
 
 ## Getting started
 
-1. **Prerequisites:** Flutter SDK (e.g. via [FVM](https://fvm.app)), Android SDK, Android 12+ device/emulator.
+**Use FVM** (Flutter Version Management) for all Flutter/Dart commands. The project pins its Flutter version via `.fvmrc`; run everything through `fvm` (e.g. `fvm flutter run`, `fvm dart run build_runner build`).
+
+1. **Prerequisites:** Flutter SDK via [FVM](https://fvm.app), Android SDK, Android 12+ device/emulator.
 2. **Install:** `fvm flutter pub get`
 3. **Code gen (if needed):** `fvm dart run build_runner build --delete-conflicting-outputs`
 4. **Run:** `fvm flutter run`

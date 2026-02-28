@@ -1,0 +1,97 @@
+import 'package:flutter/material.dart';
+import 'package:i_was_there/core/theme/app_theme.dart';
+import 'package:i_was_there/l10n/app_localizations.dart';
+
+class SettingsSyncDetailsSection extends StatelessWidget {
+  const SettingsSyncDetailsSection({
+    super.key,
+    required this.theme,
+    required this.isDark,
+  });
+
+  final ThemeData theme;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          AppLocalizations.of(context)!.syncDetails,
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+            fontWeight: FontWeight.w600,
+            letterSpacing: AppSize.letterSpacingLg,
+          ),
+        ),
+        const SizedBox(height: AppSize.spacingM3),
+        Container(
+          padding: const EdgeInsets.all(AppSize.spacingL2),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+            borderRadius: BorderRadius.circular(AppSize.radiusXl),
+            border: Border.all(
+              color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+            ),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                Icons.event_note,
+                color: isDark
+                    ? const Color(0xFF94A3B8)
+                    : const Color(0xFF64748B),
+              ),
+              const SizedBox(width: AppSize.spacingL),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.automatedEvents,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: isDark ? Colors.white : const Color(0xFF0F172A),
+                      ),
+                    ),
+                    const SizedBox(height: AppSize.spacingM),
+                    Text.rich(
+                      TextSpan(
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: isDark
+                              ? const Color(0xFF94A3B8)
+                              : const Color(0xFF64748B),
+                          fontSize: AppSize.fontBodySm,
+                        ),
+                        children: [
+                          TextSpan(
+                              text: AppLocalizations.of(context)!.visitsLoggedAs),
+                          TextSpan(
+                            text: AppLocalizations.of(context)!.presentAtLocation,
+                            style: TextStyle(
+                              backgroundColor: isDark
+                                  ? const Color(0xFF334155)
+                                  : const Color(0xFFE2E8F0),
+                              color: isDark
+                                  ? const Color(0xFFE2E8F0)
+                                  : const Color(0xFF0F172A),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          TextSpan(
+                              text: AppLocalizations.of(context)!.inPrimaryCalendar),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}

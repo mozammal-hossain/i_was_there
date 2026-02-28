@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../core/theme/app_theme.dart';
-import 'calendar/calendar_feature.dart';
-import 'places/places_feature.dart';
-import 'settings/settings_feature.dart';
+import '../l10n/app_localizations.dart';
+import 'calendar_feature.dart';
+import 'places_feature.dart';
+import 'settings_feature.dart';
 
 /// Main shell after onboarding: bottom nav with Places | Calendar | Settings.
 class MainShell extends StatefulWidget {
@@ -20,14 +21,7 @@ class _MainShellState extends State<MainShell> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      body: IndexedStack(
-        index: _tabIndex,
-        children: [
-          const PlacesFeature(),
-          const CalendarFeature(),
-          const SettingsFeature(),
-        ],
-      ),
+      body: _tabForIndex(_tabIndex),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: (isDark ? AppColors.bgDarkGray : Colors.white).withValues(
@@ -42,27 +36,30 @@ class _MainShellState extends State<MainShell> {
         child: SafeArea(
           top: false,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSize.spacingXl,
+              vertical: AppSize.spacingM3,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _TabItem(
                   icon: Icons.place_outlined,
-                  label: 'Places',
+                  label: AppLocalizations.of(context)!.places,
                   selected: _tabIndex == 0,
                   isDark: isDark,
                   onTap: () => setState(() => _tabIndex = 0),
                 ),
                 _TabItem(
                   icon: Icons.calendar_today_outlined,
-                  label: 'Calendar',
+                  label: AppLocalizations.of(context)!.calendar,
                   selected: _tabIndex == 1,
                   isDark: isDark,
                   onTap: () => setState(() => _tabIndex = 1),
                 ),
                 _TabItem(
                   icon: Icons.settings_outlined,
-                  label: 'Settings',
+                  label: AppLocalizations.of(context)!.settings,
                   selected: _tabIndex == 2,
                   isDark: isDark,
                   onTap: () => setState(() => _tabIndex = 2),
@@ -73,6 +70,19 @@ class _MainShellState extends State<MainShell> {
         ),
       ),
     );
+  }
+
+  Widget _tabForIndex(int index) {
+    switch (index) {
+      case 0:
+        return const PlacesFeature();
+      case 1:
+        return const CalendarFeature();
+      case 2:
+        return const SettingsFeature();
+      default:
+        return const SizedBox.shrink();
+    }
   }
 }
 
@@ -95,26 +105,29 @@ class _TabItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: BorderRadius.circular(AppSize.radiusCard),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSize.spacingL,
+          vertical: AppSize.spacingM,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               icon,
-              size: 26,
+              size: AppSize.iconL2,
               color: selected
                   ? AppColors.primary
                   : (isDark
                         ? const Color(0xFF64748B)
                         : const Color(0xFF94A3B8)),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSize.spacingS),
             Text(
               label,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: AppSize.fontSmall,
                 fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
                 color: selected
                     ? AppColors.primary

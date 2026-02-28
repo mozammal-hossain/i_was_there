@@ -1,0 +1,94 @@
+import 'package:flutter/material.dart';
+import 'package:i_was_there/core/theme/app_theme.dart';
+
+class DashboardNavItem {
+  const DashboardNavItem(this.icon, this.label);
+  final IconData icon;
+  final String label;
+}
+
+class DashboardBottomNav extends StatelessWidget {
+  const DashboardBottomNav({
+    super.key,
+    required this.currentIndex,
+    required this.items,
+    required this.onTap,
+    required this.isDark,
+  });
+
+  final int currentIndex;
+  final List<DashboardNavItem> items;
+  final void Function(int) onTap;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: (isDark ? AppColors.bgDarkGray : Colors.white).withValues(
+          alpha: 0.9,
+        ),
+        border: Border(
+          top: BorderSide(
+            color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+          ),
+        ),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSize.spacingXl4,
+            AppSize.spacingL,
+            AppSize.spacingXl4,
+            AppSize.spacingXl,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: List.generate(items.length, (i) {
+              final item = items[i];
+              final selected = i == currentIndex;
+              return InkWell(
+                onTap: () => onTap(i),
+                borderRadius: BorderRadius.circular(AppSize.radiusCard),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSize.spacingM3,
+                    vertical: AppSize.spacingM,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        item.icon,
+                        size: AppSize.iconL3,
+                        color: selected
+                            ? AppColors.primary
+                            : (isDark
+                                  ? const Color(0xFF475569)
+                                  : const Color(0xFF94A3B8)),
+                        fill: selected ? 1.0 : 0.0,
+                      ),
+                      const SizedBox(height: AppSize.spacingS),
+                      Text(
+                        item.label,
+                        style: TextStyle(
+                          fontSize: AppSize.fontCaption2,
+                          color: selected
+                              ? AppColors.primary
+                              : (isDark
+                                    ? const Color(0xFF475569)
+                                    : const Color(0xFF94A3B8)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+          ),
+        ),
+      ),
+    );
+  }
+}

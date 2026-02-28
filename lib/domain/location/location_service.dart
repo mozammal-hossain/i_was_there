@@ -9,4 +9,7 @@ class LocationResult {
 abstract class LocationService {
   /// Returns current position or throws if permission/location unavailable.
   Future<LocationResult> getCurrentPosition();
+
+  /// True if app has background (always) location permission; false otherwise.
+  Future<bool> hasBackgroundLocationPermission();
 }
