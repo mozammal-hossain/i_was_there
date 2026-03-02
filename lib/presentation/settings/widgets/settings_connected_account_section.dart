@@ -105,8 +105,9 @@ class SettingsConnectedAccountSection extends StatelessWidget {
                           onChangeAccount ??
                           () {
                             if (isSignedIn) {
+                              // signed in already, let user sign out first
                               context.read<SettingsBloc>().add(
-                                SettingsGoogleSignInRequested(),
+                                SettingsGoogleSignOutRequested(),
                               );
                             } else {
                               context.read<SettingsBloc>().add(
@@ -115,6 +116,7 @@ class SettingsConnectedAccountSection extends StatelessWidget {
                             }
                           },
                       child: Text(
+                        // keep "change" label for simplicity; sign-in/out is implied
                         AppLocalizations.of(context)!.change,
                         style: TextStyle(
                           color: AppColors.primary,

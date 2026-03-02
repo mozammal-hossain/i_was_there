@@ -12,6 +12,8 @@ class GoogleAuthServiceImpl implements GoogleAuthService {
   GoogleSignInAccount? _currentAccount;
 
   GoogleAuthServiceImpl() {
+    // Use the singleton instance; scopes are supplied when performing
+    // authentication so that we can request calendar access lazily.
     _googleSignIn = GoogleSignIn.instance;
     // Subscribe to auth events to track current account
     _googleSignIn.authenticationEvents.listen((event) {
@@ -24,18 +26,16 @@ class GoogleAuthServiceImpl implements GoogleAuthService {
 
   @override
   Future<GoogleAccountInfo?> signIn() async {
-    try {
-      final account = await _googleSignIn.authenticate();
+    // allow exceptions to bubble up so callers can display an error
+    // supply calendar scope hint to the authentication flow
+    final account = await _googleSignIn.authenticate(scopeHint: _scopes);
 
-      _currentAccount = account;
+    _currentAccount = account;
 
-      return GoogleAccountInfo(
-        displayName: account.displayName,
-        email: account.email,
-      );
-    } catch (e) {
-      return null;
-    }
+    return GoogleAccountInfo(
+      displayName: account.displayName,
+      email: account.email,
+    );
   }
 
   @override

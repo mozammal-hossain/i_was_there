@@ -53,6 +53,7 @@ void main() {
     });
 
     Widget buildTestWidget({required SettingsBloc bloc}) {
+      // mimic SettingsFeature consumer so snackbars for errors are shown
       return MaterialApp(
         theme: buildAppTheme(isDark: false),
         locale: const Locale('en'),
@@ -60,7 +61,28 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         home: BlocProvider<SettingsBloc>.value(
           value: bloc,
-          child: BlocBuilder<SettingsBloc, SettingsState>(
+          child: BlocConsumer<SettingsBloc, SettingsState>(
+            listenWhen: (prev, curr) =>
+                curr.errorMessage != prev.errorMessage ||
+                curr.signInError != prev.signInError,
+            listener: (context, state) {
+              if (state.errorMessage != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.errorMessage!),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+              if (state.signInError != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.signInError!),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
             builder: (context, state) {
               return SettingsPage(
                 syncEnabled: state.syncEnabled,
@@ -136,6 +158,107 @@ void main() {
 
       expect(find.text('Language'), findsOneWidget);
     });
+
+    testWidgets('enabling sync triggers sign-in and succeeds', (
+      WidgetTester tester,
+    ) async {
+      fakeRepo.syncEnabled = false;
+      fakeAuthService.nextAccount = GoogleAccountInfo(
+        displayName: 'Bob',
+        email: 'bob@example.com',
+      );
+
+      final bloc = SettingsBloc(
+        getCalendarSyncEnabled: getSyncUseCase,
+        setCalendarSyncEnabled: setSyncUseCase,
+        getLastSyncTime: getLastSyncTimeUseCase,
+        setLastSyncTime: setLastSyncTimeUseCase,
+        signInWithGoogle: signInUseCase,
+        signOutGoogle: signOutUseCase,
+        getGoogleAccount: getAccountUseCase,
+        syncPendingToGoogle: syncUseCase,
+      )..add(SettingsLoadRequested());
+
+      await tester.pumpWidget(buildTestWidget(bloc: bloc));
+      await tester.pumpAndSettle();
+
+      final toggle = find.byType(Switch);
+      expect(toggle, findsOneWidget);
+
+      await tester.tap(toggle);
+      await tester.pumpAndSettle();
+
+      // repo should have been updated
+      expect(fakeRepo.syncEnabled, isTrue);
+      // account info should appear in UI
+      expect(find.text('Bob'), findsOneWidget);
+    });
+
+    testWidgets('sync toggle reverts and shows error when sign-in fails', (
+      WidgetTester tester,
+    ) async {
+      fakeRepo.syncEnabled = false;
+      fakeAuthService.exception = Exception('oops');
+
+      final bloc = SettingsBloc(
+        getCalendarSyncEnabled: getSyncUseCase,
+        setCalendarSyncEnabled: setSyncUseCase,
+        getLastSyncTime: getLastSyncTimeUseCase,
+        setLastSyncTime: setLastSyncTimeUseCase,
+        signInWithGoogle: signInUseCase,
+        signOutGoogle: signOutUseCase,
+        getGoogleAccount: getAccountUseCase,
+        syncPendingToGoogle: syncUseCase,
+      )..add(SettingsLoadRequested());
+
+      await tester.pumpWidget(buildTestWidget(bloc: bloc));
+      await tester.pumpAndSettle();
+
+      final toggle = find.byType(Switch);
+      await tester.tap(toggle);
+      await tester.pumpAndSettle();
+
+      expect(fakeRepo.syncEnabled, isFalse);
+      // the snackbar will include the full exception string
+      expect(find.textContaining('oops'), findsOneWidget);
+    });
+
+    testWidgets('Change button signs user out when already signed in', (
+      WidgetTester tester,
+    ) async {
+      fakeRepo.syncEnabled = true;
+      fakeAuthService.nextAccount = GoogleAccountInfo(
+        displayName: 'Alice',
+        email: 'alice@example.com',
+      );
+
+      final bloc = SettingsBloc(
+        getCalendarSyncEnabled: getSyncUseCase,
+        setCalendarSyncEnabled: setSyncUseCase,
+        getLastSyncTime: getLastSyncTimeUseCase,
+        setLastSyncTime: setLastSyncTimeUseCase,
+        signInWithGoogle: signInUseCase,
+        signOutGoogle: signOutUseCase,
+        getGoogleAccount: getAccountUseCase,
+        syncPendingToGoogle: syncUseCase,
+      )..add(SettingsLoadRequested());
+
+      await tester.pumpWidget(buildTestWidget(bloc: bloc));
+      await tester.pumpAndSettle();
+
+      // verify display name shown
+      expect(find.text('Alice'), findsOneWidget);
+
+      final changeButton = find.widgetWithText(TextButton, 'Change');
+      expect(changeButton, findsOneWidget);
+
+      await tester.tap(changeButton);
+      await tester.pumpAndSettle();
+
+      // state should clear name/email and disable sync
+      expect(find.text('Alice'), findsNothing);
+      expect(fakeRepo.syncEnabled, isFalse);
+    });
   });
 }
 
@@ -171,14 +294,25 @@ class FakeSettingsRepository implements SettingsRepository {
 }
 
 class FakeGoogleAuthService implements GoogleAuthService {
-  @override
-  Future<GoogleAccountInfo?> signIn() async => null;
+  /// next value that will be returned from signIn(); if [exception] is non-null
+  /// it will be thrown instead.
+  GoogleAccountInfo? nextAccount;
+  Exception? exception;
 
   @override
-  Future<void> signOut() async {}
+  Future<GoogleAccountInfo?> signIn() async {
+    if (exception != null) throw exception!;
+    return nextAccount;
+  }
 
   @override
-  Future<GoogleAccountInfo?> getCurrentAccount() async => null;
+  Future<void> signOut() async {
+    // mimic real behaviour by clearing the current account
+    nextAccount = null;
+  }
+
+  @override
+  Future<GoogleAccountInfo?> getCurrentAccount() async => nextAccount;
 
   @override
   Future<Map<String, String>> getAuthHeaders() async => {};

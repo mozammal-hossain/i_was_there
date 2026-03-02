@@ -73,6 +73,35 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     SettingsSyncEnabledChanged event,
     Emitter<SettingsState> emit,
   ) async {
+    // if the user is turning sync on and we have no signed‑in account,
+    // attempt to sign them in first.  if the sign‑in fails we revert the toggle
+    if (event.enabled && state.googleEmail == null) {
+      emit(state.copyWith(signInError: null));
+      try {
+        final account = await _signInWithGoogle.call();
+        if (account == null) {
+          // user cancelled or auth service returned null
+          emit(
+            state.copyWith(syncEnabled: false, signInError: 'Sign in required'),
+          );
+          return;
+        }
+        emit(
+          state.copyWith(
+            googleDisplayName: account.displayName,
+            googleEmail: account.email,
+          ),
+        );
+        // new account means we can turn sync on
+        await _setCalendarSyncEnabled.call(true);
+        emit(state.copyWith(syncEnabled: true, errorMessage: null));
+      } catch (e, _) {
+        emit(state.copyWith(syncEnabled: false, signInError: e.toString()));
+      }
+      return;
+    }
+
+    // default behaviour for toggling
     emit(state.copyWith(syncEnabled: event.enabled));
     try {
       await _setCalendarSyncEnabled.call(event.enabled);
@@ -91,17 +120,21 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     emit(state.copyWith(signInError: null));
     try {
       final account = await _signInWithGoogle.call();
-      if (account != null) {
-        emit(
-          state.copyWith(
-            googleDisplayName: account.displayName,
-            googleEmail: account.email,
-          ),
-        );
-        // Enable sync after successful sign-in
-        await _setCalendarSyncEnabled.call(true);
-        emit(state.copyWith(syncEnabled: true));
+      if (account == null) {
+        // user cancelled or sign-in failed silently
+        emit(state.copyWith(signInError: 'Sign in cancelled or failed'));
+        return;
       }
+
+      emit(
+        state.copyWith(
+          googleDisplayName: account.displayName,
+          googleEmail: account.email,
+        ),
+      );
+      // Enable sync after successful sign-in
+      await _setCalendarSyncEnabled.call(true);
+      emit(state.copyWith(syncEnabled: true));
     } catch (e, _) {
       emit(state.copyWith(signInError: e.toString()));
     }
@@ -113,7 +146,15 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   ) async {
     try {
       await _signOutGoogle.call();
-      emit(state.copyWith(googleDisplayName: null, googleEmail: null));
+      // disable calendar sync when there's no account and clear account info
+      await _setCalendarSyncEnabled.call(false);
+      emit(
+        state.copyWith(
+          googleDisplayName: null,
+          googleEmail: null,
+          syncEnabled: false,
+        ),
+      );
     } catch (e, _) {
       emit(state.copyWith(signInError: e.toString()));
     }
