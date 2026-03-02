@@ -7,6 +7,9 @@ import '../../data/settings/repositories/settings_repository_impl.dart';
 import '../../data/sync/google_auth_service_impl.dart';
 import '../../data/sync/repositories/sync_repository_impl.dart';
 import '../../data/sync/sync_client.dart';
+import 'package:dio/dio.dart';
+import '../di/network_module.dart';
+import '../logging.dart';
 import '../../domain/presence/entities/presence.dart';
 import '../../domain/sync/repositories/sync_repository.dart';
 import '../../domain/sync/use_cases/sync_pending_to_google_use_case.dart';
@@ -31,6 +34,7 @@ Future<bool> runBackgroundLocationCheck() async {
     final places = await placeRepo.getPlaces();
     if (places.isEmpty) return true;
 
+    appLogger.d('Background location check starting');
     final location = await getCurrentPositionInBackground();
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -54,6 +58,7 @@ Future<bool> runBackgroundLocationCheck() async {
     }
 
     // Sync pending presences to Google Calendar if enabled
+    appLogger.d('Background task: invoking _syncIfNeeded');
     await _syncIfNeeded(db);
 
     return true;
@@ -74,10 +79,15 @@ Future<void> _syncIfNeeded(AppDatabase db) async {
     if (account == null) return;
 
     final syncRepo = SyncRepositoryImpl(db) as SyncRepository;
-    final syncClient = SyncClient(authService);
+    // Construct a Dio instance identical to the one provided via DI in
+    // the main isolate.  We can't use getIt here because the background
+    // isolate is started separately, so we replicate the configuration.
+    final Dio dio = NetworkModuleImpl().provideDio(authService);
+    final syncClient = SyncClient(dio);
     final syncUseCase = SyncPendingToGoogleUseCase(syncRepo, syncClient);
     await syncUseCase.call();
-  } catch (_) {
+  } catch (e, st) {
+    appLogger.w('Background sync failed', error: e, stackTrace: st);
     // Silently fail; sync errors shouldn't break location check
   }
 }

@@ -1,20 +1,15 @@
-import 'package:googleapis/calendar/v3.dart' as calendar;
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../core/logging.dart';
+
 import '../../domain/sync/calendar_sync_service.dart';
-import '../../domain/sync/google_auth_service.dart';
 
 @LazySingleton(as: CalendarSyncService)
 class SyncClient implements CalendarSyncService {
-  SyncClient(this._googleAuthService);
+  SyncClient(this._dio);
 
-  final GoogleAuthService _googleAuthService;
-
-  Future<http.Client> _getAuthenticatedClient() async {
-    final headers = await _googleAuthService.getAuthHeaders();
-    return _AuthenticatedHttpClient(headers);
-  }
+  final Dio _dio;
 
   @override
   Future<String> createEvent({
@@ -22,46 +17,56 @@ class SyncClient implements CalendarSyncService {
     required DateTime date,
     DateTime? firstDetectedAt,
   }) async {
-    final client = await _getAuthenticatedClient();
-    final calendarApi = calendar.CalendarApi(client);
-
     // Determine event start time: use firstDetectedAt if available, otherwise noon on the date
     final eventStart =
         firstDetectedAt ?? DateTime(date.year, date.month, date.day, 12, 0);
     final eventEnd = eventStart.add(const Duration(hours: 1));
 
-    final event = calendar.Event(
-      summary: 'Present at $placeName',
-      start: calendar.EventDateTime(dateTime: eventStart),
-      end: calendar.EventDateTime(dateTime: eventEnd),
+    // Build request payload according to Google Calendar API v3.
+    final body = {
+      'summary': 'Present at $placeName',
+      'start': {'dateTime': eventStart.toUtc().toIso8601String()},
+      'end': {'dateTime': eventEnd.toUtc().toIso8601String()},
+    };
+
+    appLogger.i('Creating calendar event: $body');
+    final response = await _dio.post(
+      'https://www.googleapis.com/calendar/v3/calendars/primary/events',
+      data: body,
     );
+    appLogger.d('Calendar API returned ${response.statusCode}');
 
-    final createdEvent = await calendarApi.events.insert(event, 'primary');
-
-    if (createdEvent.id == null) {
-      throw Exception('Failed to create calendar event');
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      appLogger.e(
+        'Create event failed: ${response.statusCode} ${response.data}',
+      );
+      throw Exception(
+        'Failed to create calendar event: ${response.statusCode} ${response.data}',
+      );
     }
 
-    return createdEvent.id!;
+    final eventId = response.data['id'] as String?;
+    if (eventId == null) {
+      appLogger.e('Response did not contain event id: ${response.data}');
+      throw Exception('Failed to parse event id from response');
+    }
+
+    return eventId;
   }
 
   @override
   Future<void> deleteEvent(String eventId) async {
-    final client = await _getAuthenticatedClient();
-    final calendarApi = calendar.CalendarApi(client);
+    appLogger.i('Deleting calendar event $eventId');
+    final response = await _dio.delete(
+      'https://www.googleapis.com/calendar/v3/calendars/primary/events/$eventId',
+    );
+    appLogger.d('Delete response status: ${response.statusCode}');
 
-    await calendarApi.events.delete('primary', eventId);
-  }
-}
-
-class _AuthenticatedHttpClient extends http.BaseClient {
-  _AuthenticatedHttpClient(this._headers);
-
-  final Map<String, String> _headers;
-
-  @override
-  Future<http.StreamedResponse> send(http.BaseRequest request) {
-    request.headers.addAll(_headers);
-    return http.Client().send(request);
+    if (response.statusCode != 204 && response.statusCode != 200) {
+      appLogger.e('Delete failed: ${response.statusCode} ${response.data}');
+      throw Exception(
+        'Failed to delete calendar event: ${response.statusCode} ${response.data}',
+      );
+    }
   }
 }

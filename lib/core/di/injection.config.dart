@@ -9,6 +9,7 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -67,6 +68,7 @@ import '../force_update/force_update_service.dart' as _i378;
 import '../locale/app_locale_service.dart' as _i700;
 import '../url_launcher/url_launcher_service.dart' as _i491;
 import 'app_module.dart' as _i460;
+import 'network_module.dart' as _i567;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -76,6 +78,7 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final appModule = _$AppModule();
+    final networkModule = _$NetworkModule();
     gh.lazySingleton<_i160.AppDatabase>(() => appModule.appDatabase);
     gh.lazySingleton<_i378.ForceUpdateService>(
       () => _i378.ForceUpdateService(),
@@ -86,8 +89,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i110.GoogleAuthService>(
       () => _i980.GoogleAuthServiceImpl(),
     );
-    gh.lazySingleton<_i576.CalendarSyncService>(
-      () => _i6.SyncClient(gh<_i110.GoogleAuthService>()),
+    gh.lazySingleton<_i361.Dio>(
+      () => networkModule.provideDio(gh<_i110.GoogleAuthService>()),
     );
     gh.factory<_i784.GetGoogleAccountUseCase>(
       () => _i784.GetGoogleAccountUseCase(gh<_i110.GoogleAuthService>()),
@@ -102,6 +105,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i362.GeocodingServiceImpl(),
     );
     gh.lazySingleton<_i192.LocationService>(() => _i420.LocationServiceImpl());
+    gh.lazySingleton<_i576.CalendarSyncService>(
+      () => _i6.SyncClient(gh<_i361.Dio>()),
+    );
     gh.factory<_i1035.GetLocationFromAddressUseCase>(
       () => _i1035.GetLocationFromAddressUseCase(gh<_i139.GeocodingService>()),
     );
@@ -190,3 +196,5 @@ extension GetItInjectableX on _i174.GetIt {
 }
 
 class _$AppModule extends _i460.AppModule {}
+
+class _$NetworkModule extends _i567.NetworkModule {}

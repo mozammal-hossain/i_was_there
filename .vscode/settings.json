@@ -1,4 +1,15 @@
 {
   "dart.flutterSdkPath": ".fvm/versions/3.41.2",
-  "java.configuration.updateBuildConfiguration": "interactive"
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "chat.tools.terminal.autoApprove": {
+    "/^flutter pub get && flutter pub run build_runner build --delete-conflicting-outputs$/": {
+      "approve": true,
+      "matchCommandLine": true
+    },
+    "/^flutter pub get$/": {
+      "approve": true,
+      "matchCommandLine": true
+    },
+    "flutter": true
+  }
 }

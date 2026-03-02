@@ -1,5 +1,6 @@
 import 'package:injectable/injectable.dart';
 
+import '../../core/logging.dart';
 import '../../domain/settings/repositories/settings_repository.dart';
 import '../../domain/sync/google_auth_service.dart';
 import '../../domain/sync/use_cases/sync_pending_to_google_use_case.dart';
@@ -18,12 +19,21 @@ class SyncScheduler {
 
   /// Syncs if enabled and user is signed in.
   Future<void> syncIfNeeded() async {
+    appLogger.d('SyncScheduler: checking if sync is needed');
     final enabled = await _settingsRepository.getCalendarSyncEnabled();
-    if (!enabled) return;
+    if (!enabled) {
+      appLogger.d('Calendar sync disabled');
+      return;
+    }
 
     final account = await _googleAuthService.getCurrentAccount();
-    if (account == null) return;
+    if (account == null) {
+      appLogger.d('No signed-in Google account');
+      return;
+    }
 
+    appLogger.i('Starting pending sync for account ${account.email}');
     await _syncPendingToGoogle.call();
+    appLogger.i('Pending sync completed');
   }
 }

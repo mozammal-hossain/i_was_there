@@ -2,6 +2,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/calendar/v3.dart' as calendar;
 import 'package:injectable/injectable.dart';
 
+import '../../core/logging.dart';
+
 import '../../domain/sync/entities/google_account_info.dart';
 import '../../domain/sync/google_auth_service.dart';
 
@@ -28,9 +30,11 @@ class GoogleAuthServiceImpl implements GoogleAuthService {
   Future<GoogleAccountInfo?> signIn() async {
     // allow exceptions to bubble up so callers can display an error
     // supply calendar scope hint to the authentication flow
+    appLogger.d('Attempting Google sign-in with scopes: $_scopes');
     final account = await _googleSignIn.authenticate(scopeHint: _scopes);
 
     _currentAccount = account;
+    appLogger.i('Signed in as ${account.email}');
 
     return GoogleAccountInfo(
       displayName: account.displayName,
@@ -60,12 +64,14 @@ class GoogleAuthServiceImpl implements GoogleAuthService {
       if (account == null) return null;
 
       _currentAccount = account;
+      appLogger.d('Lightweight auth returned ${account.email}');
 
       return GoogleAccountInfo(
         displayName: account.displayName,
         email: account.email,
       );
     } catch (e) {
+      appLogger.w('Error getting current Google account', error: e);
       return null;
     }
   }
@@ -84,8 +90,10 @@ class GoogleAuthServiceImpl implements GoogleAuthService {
         throw Exception('Could not get auth headers');
       }
 
+      appLogger.d('Obtained auth headers');
       return headers;
     } catch (e) {
+      appLogger.e('Failed to get auth headers', error: e);
       throw Exception('Failed to get auth headers: $e');
     }
   }
