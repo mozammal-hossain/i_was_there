@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:i_was_there/core/theme/app_theme.dart';
 import 'package:i_was_there/l10n/app_localizations.dart';
+
+import '../bloc/settings_bloc.dart';
+import '../bloc/settings_event.dart';
 
 class SettingsConnectedAccountSection extends StatelessWidget {
   const SettingsConnectedAccountSection({
@@ -10,18 +14,26 @@ class SettingsConnectedAccountSection extends StatelessWidget {
     this.displayName,
     this.email,
     this.lastSyncedText,
+    this.onChangeAccount,
   });
 
   final ThemeData theme;
   final bool isDark;
+
   /// Signed-in user display name. When null (with [email] null), "Not signed in" is shown.
   final String? displayName;
   final String? email;
+
   /// Pre-formatted relative time (e.g. "12m ago"). When null, "Never synced" is shown.
   final String? lastSyncedText;
 
+  /// Callback when user taps "Change" button.
+  final VoidCallback? onChangeAccount;
+
   @override
   Widget build(BuildContext context) {
+    final isSignedIn = displayName != null && email != null;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -89,14 +101,19 @@ class SettingsConnectedAccountSection extends StatelessWidget {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                                AppLocalizations.of(context)!.changeAccountComingSoon),
-                          ),
-                        );
-                      },
+                      onPressed:
+                          onChangeAccount ??
+                          () {
+                            if (isSignedIn) {
+                              context.read<SettingsBloc>().add(
+                                SettingsGoogleSignInRequested(),
+                              );
+                            } else {
+                              context.read<SettingsBloc>().add(
+                                SettingsGoogleSignInRequested(),
+                              );
+                            }
+                          },
                       child: Text(
                         AppLocalizations.of(context)!.change,
                         style: TextStyle(
@@ -136,8 +153,9 @@ class SettingsConnectedAccountSection extends StatelessWidget {
                         const SizedBox(width: AppSize.spacingS2),
                         Text(
                           lastSyncedText != null
-                              ? AppLocalizations.of(context)!
-                                  .lastSyncedAt(lastSyncedText!)
+                              ? AppLocalizations.of(
+                                  context,
+                                )!.lastSyncedAt(lastSyncedText!)
                               : AppLocalizations.of(context)!.neverSynced,
                           style: theme.textTheme.bodySmall?.copyWith(
                             fontSize: AppSize.fontSmall,
@@ -148,14 +166,26 @@ class SettingsConnectedAccountSection extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Text(
-                      AppLocalizations.of(context)!.connected,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: const Color(0xFF10B981),
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: AppSize.letterSpacingLg,
+                    if (isSignedIn)
+                      Text(
+                        AppLocalizations.of(context)!.connected,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: const Color(0xFF10B981),
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: AppSize.letterSpacingLg,
+                        ),
+                      )
+                    else
+                      Text(
+                        AppLocalizations.of(context)!.notSignedIn,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: isDark
+                              ? const Color(0xFF94A3B8)
+                              : const Color(0xFF64748B),
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: AppSize.letterSpacingLg,
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),

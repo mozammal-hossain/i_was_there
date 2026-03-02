@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +14,7 @@ import 'core/locale/app_locale_service.dart';
 import 'core/remote_config/remote_config_init.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'data/sync/sync_scheduler.dart';
 import 'l10n/app_localizations.dart';
 
 void main() async {
@@ -39,6 +41,13 @@ void main() async {
       final onboardingCompleteNotifier = ValueNotifier<bool>(
         await isOnboardingCompleted(prefs),
       );
+
+      // Initialize sync on app startup
+      await getIt<SyncScheduler>().syncIfNeeded();
+
+      // Listen to connectivity changes and trigger sync when connectivity resumes
+      _setupConnectivityListener();
+
       final router = createAppRouter(
         prefs: prefs,
         onboardingCompleteNotifier: onboardingCompleteNotifier,
@@ -62,6 +71,15 @@ void main() async {
       );
     },
   );
+}
+
+void _setupConnectivityListener() {
+  Connectivity().onConnectivityChanged.listen((result) {
+    if (result != ConnectivityResult.none) {
+      // Connectivity resumed; trigger sync
+      getIt<SyncScheduler>().syncIfNeeded();
+    }
+  });
 }
 
 class MyApp extends StatelessWidget {

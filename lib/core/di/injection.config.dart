@@ -20,6 +20,9 @@ import '../../data/presence/repositories/presence_repository_impl.dart'
     as _i738;
 import '../../data/settings/repositories/settings_repository_impl.dart'
     as _i527;
+import '../../data/sync/google_auth_service_impl.dart' as _i980;
+import '../../data/sync/sync_client.dart' as _i6;
+import '../../data/sync/sync_scheduler.dart' as _i583;
 import '../../domain/location/geocoding_service.dart' as _i139;
 import '../../domain/location/location_service.dart' as _i192;
 import '../../domain/location/use_cases/get_current_location_with_address_use_case.dart'
@@ -45,9 +48,21 @@ import '../../domain/settings/repositories/settings_repository.dart' as _i647;
 import '../../domain/settings/use_cases/get_calendar_sync_enabled_use_case.dart'
     as _i41;
 import '../../domain/settings/use_cases/get_last_sync_time_use_case.dart'
-    as _i411;
+    as _i619;
 import '../../domain/settings/use_cases/set_calendar_sync_enabled_use_case.dart'
     as _i410;
+import '../../domain/settings/use_cases/set_last_sync_time_use_case.dart'
+    as _i109;
+import '../../domain/sync/calendar_sync_service.dart' as _i576;
+import '../../domain/sync/google_auth_service.dart' as _i110;
+import '../../domain/sync/repositories/sync_repository.dart' as _i669;
+import '../../domain/sync/use_cases/delete_calendar_event_use_case.dart'
+    as _i846;
+import '../../domain/sync/use_cases/get_google_account_use_case.dart' as _i784;
+import '../../domain/sync/use_cases/sign_in_with_google_use_case.dart' as _i807;
+import '../../domain/sync/use_cases/sign_out_google_use_case.dart' as _i194;
+import '../../domain/sync/use_cases/sync_pending_to_google_use_case.dart'
+    as _i910;
 import '../force_update/force_update_service.dart' as _i378;
 import '../locale/app_locale_service.dart' as _i700;
 import '../url_launcher/url_launcher_service.dart' as _i491;
@@ -68,6 +83,21 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i491.UrlLauncherService>(
       () => _i491.UrlLauncherService(),
     );
+    gh.lazySingleton<_i110.GoogleAuthService>(
+      () => _i980.GoogleAuthServiceImpl(),
+    );
+    gh.lazySingleton<_i576.CalendarSyncService>(
+      () => _i6.SyncClient(gh<_i110.GoogleAuthService>()),
+    );
+    gh.factory<_i784.GetGoogleAccountUseCase>(
+      () => _i784.GetGoogleAccountUseCase(gh<_i110.GoogleAuthService>()),
+    );
+    gh.factory<_i807.SignInWithGoogleUseCase>(
+      () => _i807.SignInWithGoogleUseCase(gh<_i110.GoogleAuthService>()),
+    );
+    gh.factory<_i194.SignOutGoogleUseCase>(
+      () => _i194.SignOutGoogleUseCase(gh<_i110.GoogleAuthService>()),
+    );
     gh.lazySingleton<_i139.GeocodingService>(
       () => _i362.GeocodingServiceImpl(),
     );
@@ -79,8 +109,23 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i648.GetLocationFromCoordinatesUseCase(gh<_i139.GeocodingService>()),
     );
+    gh.lazySingleton<_i669.SyncRepository>(
+      () => appModule.provideSyncRepository(gh<_i160.AppDatabase>()),
+    );
     gh.lazySingleton<_i647.SettingsRepository>(
       () => _i527.SettingsRepositoryImpl(gh<_i160.AppDatabase>()),
+    );
+    gh.factory<_i846.DeleteCalendarEventUseCase>(
+      () => _i846.DeleteCalendarEventUseCase(
+        gh<_i669.SyncRepository>(),
+        gh<_i576.CalendarSyncService>(),
+      ),
+    );
+    gh.factory<_i910.SyncPendingToGoogleUseCase>(
+      () => _i910.SyncPendingToGoogleUseCase(
+        gh<_i669.SyncRepository>(),
+        gh<_i576.CalendarSyncService>(),
+      ),
     );
     gh.lazySingleton<_i267.PlaceRepository>(
       () => _i587.PlaceRepositoryImpl(gh<_i160.AppDatabase>()),
@@ -106,16 +151,26 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i41.GetCalendarSyncEnabledUseCase>(
       () => _i41.GetCalendarSyncEnabledUseCase(gh<_i647.SettingsRepository>()),
     );
+    gh.factory<_i619.GetLastSyncTimeUseCase>(
+      () => _i619.GetLastSyncTimeUseCase(gh<_i647.SettingsRepository>()),
+    );
     gh.factory<_i410.SetCalendarSyncEnabledUseCase>(
       () => _i410.SetCalendarSyncEnabledUseCase(gh<_i647.SettingsRepository>()),
     );
-    gh.factory<_i411.GetLastSyncTimeUseCase>(
-      () => _i411.GetLastSyncTimeUseCase(gh<_i647.SettingsRepository>()),
+    gh.factory<_i109.SetLastSyncTimeUseCase>(
+      () => _i109.SetLastSyncTimeUseCase(gh<_i647.SettingsRepository>()),
     );
     gh.factory<_i687.GetCurrentLocationWithAddressUseCase>(
       () => _i687.GetCurrentLocationWithAddressUseCase(
         gh<_i192.LocationService>(),
         gh<_i139.GeocodingService>(),
+      ),
+    );
+    gh.lazySingleton<_i583.SyncScheduler>(
+      () => _i583.SyncScheduler(
+        gh<_i647.SettingsRepository>(),
+        gh<_i110.GoogleAuthService>(),
+        gh<_i910.SyncPendingToGoogleUseCase>(),
       ),
     );
     gh.factory<_i662.AddPlaceUseCase>(

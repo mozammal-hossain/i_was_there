@@ -18,6 +18,8 @@ class SettingsPage extends StatelessWidget {
     required this.syncEnabled,
     required this.loading,
     this.lastSyncTime,
+    this.googleDisplayName,
+    this.googleEmail,
     required this.onSyncEnabledChanged,
   });
 
@@ -25,6 +27,8 @@ class SettingsPage extends StatelessWidget {
   final bool syncEnabled;
   final bool loading;
   final DateTime? lastSyncTime;
+  final String? googleDisplayName;
+  final String? googleEmail;
   final void Function(bool) onSyncEnabledChanged;
 
   @override
@@ -46,10 +50,7 @@ class SettingsPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SettingsLanguageSection(
-                      theme: theme,
-                      isDark: isDark,
-                    ),
+                    SettingsLanguageSection(theme: theme, isDark: isDark),
                     const SizedBox(height: AppSize.spacingXl3),
                     SettingsSyncSection(
                       syncEnabled: syncEnabled,
@@ -62,15 +63,14 @@ class SettingsPage extends StatelessWidget {
                     SettingsConnectedAccountSection(
                       theme: theme,
                       isDark: isDark,
+                      displayName: googleDisplayName,
+                      email: googleEmail,
                       lastSyncedText: lastSyncTime != null
                           ? formatRelativeTime(lastSyncTime!)
                           : null,
                     ),
                     const SizedBox(height: AppSize.spacingXl3),
-                    SettingsSyncDetailsSection(
-                      theme: theme,
-                      isDark: isDark,
-                    ),
+                    SettingsSyncDetailsSection(theme: theme, isDark: isDark),
                     const SizedBox(height: AppSize.spacingXl),
                     const SettingsSyncNowButton(),
                     const SizedBox(height: AppSize.spacingXl5),
