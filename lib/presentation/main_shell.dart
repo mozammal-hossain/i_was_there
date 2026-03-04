@@ -20,6 +20,8 @@ class _MainShellState extends State<MainShell> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final loc = AppLocalizations.of(context);
+
     return Scaffold(
       body: _tabForIndex(_tabIndex),
       bottomNavigationBar: Container(
@@ -45,21 +47,21 @@ class _MainShellState extends State<MainShell> {
               children: [
                 _TabItem(
                   icon: Icons.place_outlined,
-                  label: AppLocalizations.of(context)!.places,
+                  label: loc?.places ?? 'Places',
                   selected: _tabIndex == 0,
                   isDark: isDark,
                   onTap: () => setState(() => _tabIndex = 0),
                 ),
                 _TabItem(
                   icon: Icons.calendar_today_outlined,
-                  label: AppLocalizations.of(context)!.calendar,
+                  label: loc?.calendar ?? 'Calendar',
                   selected: _tabIndex == 1,
                   isDark: isDark,
                   onTap: () => setState(() => _tabIndex = 1),
                 ),
                 _TabItem(
                   icon: Icons.settings_outlined,
-                  label: AppLocalizations.of(context)!.settings,
+                  label: loc?.settings ?? 'Settings',
                   selected: _tabIndex == 2,
                   isDark: isDark,
                   onTap: () => setState(() => _tabIndex = 2),
