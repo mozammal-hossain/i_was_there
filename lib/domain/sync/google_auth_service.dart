@@ -8,6 +8,9 @@ abstract class GoogleAuthService {
   /// Signs out and revokes Calendar access.
   Future<void> signOut();
 
+  /// Revokes Google access and signs out.
+  Future<void> disconnect();
+
   /// Returns the currently signed-in account (silent/cached check).
   /// Returns null if not signed in.
   Future<GoogleAccountInfo?> getCurrentAccount();

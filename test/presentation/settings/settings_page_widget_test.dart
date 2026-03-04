@@ -20,6 +20,7 @@ import 'package:i_was_there/domain/sync/use_cases/sync_pending_to_google_use_cas
 import 'package:i_was_there/l10n/app_localizations.dart';
 import 'package:i_was_there/presentation/settings/bloc/settings_bloc.dart';
 import 'package:i_was_there/presentation/settings/bloc/settings_event.dart';
+import 'package:i_was_there/presentation/settings/bloc/settings_failure.dart';
 import 'package:i_was_there/presentation/settings/bloc/settings_state.dart';
 import 'package:i_was_there/presentation/settings/settings_page.dart';
 
@@ -63,21 +64,13 @@ void main() {
           value: bloc,
           child: BlocConsumer<SettingsBloc, SettingsState>(
             listenWhen: (prev, curr) =>
-                curr.errorMessage != prev.errorMessage ||
-                curr.signInError != prev.signInError,
+                curr.failure != prev.failure && curr.failure != null,
             listener: (context, state) {
-              if (state.errorMessage != null) {
+              final failure = state.failure;
+              if (failure != null) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(state.errorMessage!),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-              }
-              if (state.signInError != null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.signInError!),
+                    content: Text(failure.message),
                     backgroundColor: Colors.red,
                   ),
                 );
@@ -308,6 +301,11 @@ class FakeGoogleAuthService implements GoogleAuthService {
   @override
   Future<void> signOut() async {
     // mimic real behaviour by clearing the current account
+    nextAccount = null;
+  }
+
+  @override
+  Future<void> disconnect() async {
     nextAccount = null;
   }
 

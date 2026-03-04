@@ -11,13 +11,21 @@ import '../../domain/sync/google_auth_service.dart';
 class GoogleAuthServiceImpl implements GoogleAuthService {
   final List<String> _scopes = [calendar.CalendarApi.calendarScope];
   late final GoogleSignIn _googleSignIn;
+  late final Future<void> _initFuture;
   GoogleSignInAccount? _currentAccount;
+
+  static const _reauthErrorSubtitle = 'reauth';
 
   GoogleAuthServiceImpl() {
     // Use the singleton instance; scopes are supplied when performing
     // authentication so that we can request calendar access lazily.
     _googleSignIn = GoogleSignIn.instance;
-    // Subscribe to auth events to track current account
+    _initFuture = _googleSignIn.initialize();
+  }
+
+  Future<void> _ensureInitialized() async {
+    await _initFuture;
+    // Subscribe to auth events after initialize() completes (stream is set up there)
     _googleSignIn.authenticationEvents.listen((event) {
       _currentAccount = switch (event) {
         GoogleSignInAuthenticationEventSignIn(:final user) => user,
@@ -28,28 +36,84 @@ class GoogleAuthServiceImpl implements GoogleAuthService {
 
   @override
   Future<GoogleAccountInfo?> signIn() async {
+    await _ensureInitialized();
     // allow exceptions to bubble up so callers can display an error
     // supply calendar scope hint to the authentication flow
     appLogger.d('Attempting Google sign-in with scopes: $_scopes');
-    final account = await _googleSignIn.authenticate(scopeHint: _scopes);
-
-    _currentAccount = account;
-    appLogger.i('Signed in as ${account.email}');
-
-    return GoogleAccountInfo(
-      displayName: account.displayName,
-      email: account.email,
-    );
+    try {
+      final account = await _googleSignIn.authenticate(scopeHint: _scopes);
+      _currentAccount = account;
+      appLogger.i('Signed in as ${account.email}');
+      return GoogleAccountInfo(
+        displayName: account.displayName,
+        email: account.email,
+      );
+    } on GoogleSignInException catch (e, st) {
+      appLogger.w('Google sign-in failed', error: e, stackTrace: st);
+      if (e.code == GoogleSignInExceptionCode.canceled) {
+        // Error code [16] "Account reauth failed" is surfaced as `canceled`
+        // by the plugin, but it is NOT a real user cancellation — it means
+        // the Credential Manager couldn't silently re-authenticate and the
+        // user must sign in again interactively.
+        final isReauthFailure =
+            e.description?.toLowerCase().contains(_reauthErrorSubtitle) ??
+            false;
+        if (isReauthFailure) {
+          appLogger.w('Reauth failed — clearing credentials and retrying');
+          // Clear stale credential so the next authenticate() shows the
+          // full account picker (sign-up / add-account flow).
+          await _googleSignIn.signOut();
+          try {
+            final retryAccount = await _googleSignIn.authenticate(
+              scopeHint: _scopes,
+            );
+            _currentAccount = retryAccount;
+            appLogger.i('Signed in (retry) as ${retryAccount.email}');
+            return GoogleAccountInfo(
+              displayName: retryAccount.displayName,
+              email: retryAccount.email,
+            );
+          } catch (retryError, retrySt) {
+            appLogger.e(
+              'Retry sign-in also failed',
+              error: retryError,
+              stackTrace: retrySt,
+            );
+            rethrow;
+          }
+        }
+        // Genuine user cancellation — treat as null result
+        return null;
+      }
+      // For other errors, rethrow
+      rethrow;
+    } catch (e, st) {
+      appLogger.e(
+        'Unexpected error during Google sign-in',
+        error: e,
+        stackTrace: st,
+      );
+      rethrow;
+    }
   }
 
   @override
   Future<void> signOut() async {
+    await _ensureInitialized();
     await _googleSignIn.signOut();
     _currentAccount = null;
   }
 
   @override
+  Future<void> disconnect() async {
+    await _ensureInitialized();
+    await _googleSignIn.disconnect();
+    _currentAccount = null;
+  }
+
+  @override
   Future<GoogleAccountInfo?> getCurrentAccount() async {
+    await _ensureInitialized();
     try {
       if (_currentAccount != null) {
         return GoogleAccountInfo(
@@ -78,6 +142,7 @@ class GoogleAuthServiceImpl implements GoogleAuthService {
 
   @override
   Future<Map<String, String>> getAuthHeaders() async {
+    await _ensureInitialized();
     try {
       if (_currentAccount == null) {
         throw Exception('Not signed in');

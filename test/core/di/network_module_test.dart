@@ -20,6 +20,9 @@ class FakeAuthService implements GoogleAuthService {
 
   @override
   Future<void> signOut() => throw UnimplementedError();
+
+  @override
+  Future<void> disconnect() => throw UnimplementedError();
 }
 
 void main() {

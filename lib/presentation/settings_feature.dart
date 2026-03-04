@@ -37,23 +37,15 @@ class SettingsFeature extends StatelessWidget {
     return BlocProvider(
       create: (_) => _createSettingsBloc()..add(SettingsLoadRequested()),
       child: BlocConsumer<SettingsBloc, SettingsState>(
-        // listen to both generic errors and sign‑in errors
+        // listen to when failure changes and is non-null
         listenWhen: (prev, curr) =>
-            curr.errorMessage != prev.errorMessage ||
-            curr.signInError != prev.signInError,
+            curr.failure != prev.failure && curr.failure != null,
         listener: (context, state) {
-          if (state.errorMessage != null) {
+          final failure = state.failure;
+          if (failure != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.errorMessage!),
-                backgroundColor: Colors.red,
-              ),
-            );
-          }
-          if (state.signInError != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.signInError!),
+                content: Text(failure.message),
                 backgroundColor: Colors.red,
               ),
             );

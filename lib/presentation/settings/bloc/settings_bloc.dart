@@ -9,6 +9,7 @@ import '../../../../domain/sync/use_cases/sign_in_with_google_use_case.dart';
 import '../../../../domain/sync/use_cases/sign_out_google_use_case.dart';
 import '../../../../domain/sync/use_cases/sync_pending_to_google_use_case.dart';
 import 'settings_event.dart';
+import 'settings_failure.dart';
 import 'settings_state.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
@@ -51,7 +52,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     SettingsLoadRequested event,
     Emitter<SettingsState> emit,
   ) async {
-    emit(state.copyWith(loading: true, errorMessage: null));
+    emit(state.copyWith(loading: true, failure: null));
     try {
       final enabled = await _getCalendarSyncEnabled.call();
       final lastSyncTime = await _getLastSyncTime.call();
@@ -65,7 +66,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       // Load account info after loading settings
       add(SettingsAccountLoadRequested());
     } catch (e, _) {
-      emit(state.copyWith(loading: false, errorMessage: e.toString()));
+      emit(
+        state.copyWith(loading: false, failure: GeneralFailure(e.toString())),
+      );
     }
   }
 
@@ -76,13 +79,15 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     // if the user is turning sync on and we have no signed‑in account,
     // attempt to sign them in first.  if the sign‑in fails we revert the toggle
     if (event.enabled && state.googleEmail == null) {
-      emit(state.copyWith(signInError: null));
+      emit(state.copyWith(failure: null));
       try {
         final account = await _signInWithGoogle.call();
         if (account == null) {
-          // user cancelled or auth service returned null
           emit(
-            state.copyWith(syncEnabled: false, signInError: 'Sign in required'),
+            state.copyWith(
+              syncEnabled: false,
+              failure: const SignInFailure('Sign in required'),
+            ),
           );
           return;
         }
@@ -94,9 +99,14 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         );
         // new account means we can turn sync on
         await _setCalendarSyncEnabled.call(true);
-        emit(state.copyWith(syncEnabled: true, errorMessage: null));
+        emit(state.copyWith(syncEnabled: true, failure: null));
       } catch (e, _) {
-        emit(state.copyWith(syncEnabled: false, signInError: e.toString()));
+        emit(
+          state.copyWith(
+            syncEnabled: false,
+            failure: SignInFailure(e.toString()),
+          ),
+        );
       }
       return;
     }
@@ -105,10 +115,13 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     emit(state.copyWith(syncEnabled: event.enabled));
     try {
       await _setCalendarSyncEnabled.call(event.enabled);
-      emit(state.copyWith(errorMessage: null));
+      emit(state.copyWith(failure: null));
     } catch (e, _) {
       emit(
-        state.copyWith(syncEnabled: !event.enabled, errorMessage: e.toString()),
+        state.copyWith(
+          syncEnabled: !event.enabled,
+          failure: GeneralFailure(e.toString()),
+        ),
       );
     }
   }
@@ -117,12 +130,16 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     SettingsGoogleSignInRequested event,
     Emitter<SettingsState> emit,
   ) async {
-    emit(state.copyWith(signInError: null));
+    emit(state.copyWith(failure: null));
     try {
       final account = await _signInWithGoogle.call();
       if (account == null) {
         // user cancelled or sign-in failed silently
-        emit(state.copyWith(signInError: 'Sign in cancelled or failed'));
+        emit(
+          state.copyWith(
+            failure: const SignInFailure('Sign in cancelled or failed'),
+          ),
+        );
         return;
       }
 
@@ -136,7 +153,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       await _setCalendarSyncEnabled.call(true);
       emit(state.copyWith(syncEnabled: true));
     } catch (e, _) {
-      emit(state.copyWith(signInError: e.toString()));
+      emit(state.copyWith(failure: SignInFailure(e.toString())));
     }
   }
 
@@ -156,7 +173,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         ),
       );
     } catch (e, _) {
-      emit(state.copyWith(signInError: e.toString()));
+      emit(state.copyWith(failure: SignInFailure(e.toString())));
     }
   }
 
@@ -164,14 +181,16 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     SettingsSyncNowRequested event,
     Emitter<SettingsState> emit,
   ) async {
-    emit(state.copyWith(isSyncing: true, errorMessage: null));
+    emit(state.copyWith(isSyncing: true, failure: null));
     try {
       await _syncPendingToGoogle.call();
       final now = DateTime.now();
       await _setLastSyncTime.call(now);
       emit(state.copyWith(isSyncing: false, lastSyncTime: now));
     } catch (e, _) {
-      emit(state.copyWith(isSyncing: false, errorMessage: e.toString()));
+      emit(
+        state.copyWith(isSyncing: false, failure: SyncFailure(e.toString())),
+      );
     }
   }
 
