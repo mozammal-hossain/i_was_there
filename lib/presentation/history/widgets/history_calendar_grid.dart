@@ -9,6 +9,8 @@ class HistoryCalendarGrid extends StatelessWidget {
     required this.daysInMonth,
     required this.firstWeekday,
     required this.presenceByDayPerPlace,
+    this.syncedDays = const {},
+    this.places = const [],
     required this.hasPresence,
     required this.isToday,
     required this.selectedDay,
@@ -26,6 +28,9 @@ class HistoryCalendarGrid extends StatelessWidget {
 
   /// detailed presence data used to render colored segments
   final Map<DateTime, Map<String, bool>> presenceByDayPerPlace;
+  final Map<DateTime, Set<String>> syncedDays;
+  final List<dynamic>
+  places; // Use generic dynamic to avoid import issues if any
   final bool Function(int day) hasPresence;
   final bool Function(int day) isToday;
   final int? selectedDay;
@@ -96,6 +101,39 @@ class HistoryCalendarGrid extends StatelessWidget {
               final isSelected = selectedDay == day;
               final today = isToday(day);
               final highlight = today || isSelected;
+
+              final syncedForDay = syncedDays[dayDate] ?? {};
+              bool isSynced = false;
+              if (selectedPlaceId != null) {
+                isSynced = syncedForDay.contains(selectedPlaceId);
+              } else {
+                // For "All Places", we consider it synced if at least one presence is synced
+                // AND there are actual presences on that day.
+                final presentCountForDay = segments.values
+                    .where((v) => v)
+                    .length;
+                isSynced = presentCountForDay > 0 && syncedForDay.isNotEmpty;
+              }
+
+              final backgroundColor = isSynced
+                  ? Colors.green
+                  : (highlight
+                        ? AppColors.primary.withValues(
+                            alpha: isDark ? 0.2 : 0.1,
+                          )
+                        : (isDark
+                              ? const Color(0xFF334155).withValues(alpha: 0.4)
+                              : const Color(0xFFF1F5F9)));
+
+              final textColor = isSynced
+                  ? Colors.white
+                  : (highlight
+                        ? AppColors.primary
+                        : (isDark ? Colors.white : const Color(0xFF0F172A)));
+
+              final fontWeight = (isSelected || today || isSynced)
+                  ? FontWeight.bold
+                  : FontWeight.w500;
               return Material(
                 color: Colors.transparent,
                 child: InkWell(
@@ -109,17 +147,9 @@ class HistoryCalendarGrid extends StatelessWidget {
                     button: true,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: highlight
-                            ? AppColors.primary.withValues(
-                                alpha: isDark ? 0.2 : 0.1,
-                              )
-                            : (isDark
-                                  ? const Color(
-                                      0xFF334155,
-                                    ).withValues(alpha: 0.4)
-                                  : const Color(0xFFF1F5F9)),
+                        color: backgroundColor,
                         borderRadius: BorderRadius.circular(AppSize.radiusL),
-                        border: highlight
+                        border: highlight && !isSynced
                             ? Border.all(
                                 color: AppColors.primary,
                                 width: AppSize.spacingXs,
@@ -132,14 +162,8 @@ class HistoryCalendarGrid extends StatelessWidget {
                           Text(
                             '$day',
                             style: theme.textTheme.bodyMedium?.copyWith(
-                              fontWeight: highlight
-                                  ? FontWeight.bold
-                                  : FontWeight.w500,
-                              color: highlight
-                                  ? AppColors.primary
-                                  : (isDark
-                                        ? Colors.white
-                                        : const Color(0xFF0F172A)),
+                              fontWeight: fontWeight,
+                              color: textColor,
                             ),
                           ),
                           const SizedBox(height: AppSize.spacingS),

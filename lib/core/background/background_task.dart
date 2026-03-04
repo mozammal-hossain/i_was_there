@@ -13,14 +13,19 @@ import '../logging.dart';
 import '../../domain/presence/entities/presence.dart';
 import '../../domain/sync/repositories/sync_repository.dart';
 import '../../domain/sync/use_cases/sync_pending_to_google_use_case.dart';
+import '../sync/sync_lock.dart';
 import '../util/haversine.dart';
 import 'location_callback.dart';
 
 const String _taskName = 'i_was_there_location_check';
+const String _syncTaskName = 'i_was_there_background_sync';
 
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((taskName, inputData) async {
+    if (taskName == _syncTaskName) {
+      return runDedicatedBackgroundSync();
+    }
     return runBackgroundLocationCheck();
   });
 }
@@ -67,6 +72,19 @@ Future<bool> runBackgroundLocationCheck() async {
   }
 }
 
+/// Dedicated background sync task (runs every 4 hours).
+Future<bool> runDedicatedBackgroundSync() async {
+  try {
+    appLogger.i('Dedicated background sync starting');
+    final db = AppDatabase();
+    await _syncIfNeeded(db);
+    return true;
+  } catch (e) {
+    appLogger.e('Dedicated background sync failed', error: e);
+    return false;
+  }
+}
+
 /// Syncs pending presences in background isolate.
 Future<void> _syncIfNeeded(AppDatabase db) async {
   try {
@@ -84,7 +102,12 @@ Future<void> _syncIfNeeded(AppDatabase db) async {
     // isolate is started separately, so we replicate the configuration.
     final Dio dio = NetworkModuleImpl().provideDio(authService);
     final syncClient = SyncClient(dio);
-    final syncUseCase = SyncPendingToGoogleUseCase(syncRepo, syncClient);
+    final syncLock = SyncLock();
+    final syncUseCase = SyncPendingToGoogleUseCase(
+      syncRepo,
+      syncClient,
+      syncLock,
+    );
     await syncUseCase.call();
   } catch (e, st) {
     appLogger.w('Background sync failed', error: e, stackTrace: st);
@@ -100,6 +123,12 @@ Future<void> registerBackgroundTask() {
       _taskName,
       frequency: const Duration(minutes: 15),
       initialDelay: const Duration(minutes: 1),
+    );
+    Workmanager().registerPeriodicTask(
+      'periodic_background_sync',
+      _syncTaskName,
+      frequency: const Duration(hours: 4),
+      initialDelay: const Duration(minutes: 5),
     );
   });
 }

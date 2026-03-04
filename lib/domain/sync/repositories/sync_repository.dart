@@ -12,4 +12,7 @@ abstract class SyncRepository {
 
   /// Removes the sync record (after deleting the calendar event).
   Future<void> removeSyncRecord(String placeId, DateTime date);
+
+  /// Returns a map of date -> set of placeIds that are synced for a given month.
+  Future<Map<DateTime, Set<String>>> getSyncedDaysForMonth(int year, int month);
 }

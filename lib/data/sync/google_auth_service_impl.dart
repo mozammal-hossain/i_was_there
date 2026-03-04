@@ -14,25 +14,23 @@ class GoogleAuthServiceImpl implements GoogleAuthService {
   late final Future<void> _initFuture;
   GoogleSignInAccount? _currentAccount;
 
-  static const _reauthErrorSubtitle = 'reauth';
-
   GoogleAuthServiceImpl() {
     // Use the singleton instance; scopes are supplied when performing
     // authentication so that we can request calendar access lazily.
     _googleSignIn = GoogleSignIn.instance;
     _initFuture = _googleSignIn.initialize();
-  }
-
-  Future<void> _ensureInitialized() async {
-    await _initFuture;
     // Subscribe to auth events after initialize() completes (stream is set up there)
-    _googleSignIn.authenticationEvents.listen((event) {
-      _currentAccount = switch (event) {
-        GoogleSignInAuthenticationEventSignIn(:final user) => user,
-        GoogleSignInAuthenticationEventSignOut() => null,
-      };
+    _initFuture.then((_) {
+      _googleSignIn.authenticationEvents.listen((event) {
+        _currentAccount = switch (event) {
+          GoogleSignInAuthenticationEventSignIn(:final user) => user,
+          GoogleSignInAuthenticationEventSignOut() => null,
+        };
+      });
     });
   }
+
+  Future<void> _ensureInitialized() => _initFuture;
 
   @override
   Future<GoogleAccountInfo?> signIn() async {
@@ -48,41 +46,11 @@ class GoogleAuthServiceImpl implements GoogleAuthService {
         displayName: account.displayName,
         email: account.email,
       );
-    } on GoogleSignInException catch (e, st) {
-      appLogger.w('Google sign-in failed', error: e, stackTrace: st);
-      if (e.code == GoogleSignInExceptionCode.canceled) {
-        // Error code [16] "Account reauth failed" is surfaced as `canceled`
-        // by the plugin, but it is NOT a real user cancellation — it means
-        // the Credential Manager couldn't silently re-authenticate and the
-        // user must sign in again interactively.
-        final isReauthFailure =
-            e.description?.toLowerCase().contains(_reauthErrorSubtitle) ??
-            false;
-        if (isReauthFailure) {
-          appLogger.w('Reauth failed — clearing credentials and retrying');
-          // Clear stale credential so the next authenticate() shows the
-          // full account picker (sign-up / add-account flow).
-          await _googleSignIn.signOut();
-          try {
-            final retryAccount = await _googleSignIn.authenticate(
-              scopeHint: _scopes,
-            );
-            _currentAccount = retryAccount;
-            appLogger.i('Signed in (retry) as ${retryAccount.email}');
-            return GoogleAccountInfo(
-              displayName: retryAccount.displayName,
-              email: retryAccount.email,
-            );
-          } catch (retryError, retrySt) {
-            appLogger.e(
-              'Retry sign-in also failed',
-              error: retryError,
-              stackTrace: retrySt,
-            );
-            rethrow;
-          }
-        }
-        // Genuine user cancellation — treat as null result
+    } on GoogleSignInException catch (e) {
+      appLogger.w('Google sign-in failed', error: e);
+      // Handle specific error codes (e.g., canceled, reauth failed)
+      if (e.description == GoogleSignInExceptionCode.canceled.name) {
+        // User cancelled or reauth failed, treat as null result
         return null;
       }
       // For other errors, rethrow
@@ -101,13 +69,6 @@ class GoogleAuthServiceImpl implements GoogleAuthService {
   Future<void> signOut() async {
     await _ensureInitialized();
     await _googleSignIn.signOut();
-    _currentAccount = null;
-  }
-
-  @override
-  Future<void> disconnect() async {
-    await _ensureInitialized();
-    await _googleSignIn.disconnect();
     _currentAccount = null;
   }
 
@@ -161,5 +122,21 @@ class GoogleAuthServiceImpl implements GoogleAuthService {
       appLogger.e('Failed to get auth headers', error: e);
       throw Exception('Failed to get auth headers: $e');
     }
+  }
+
+  @override
+  Future<void> disconnect() async {
+    await _ensureInitialized();
+    // Revoke access for the current account if signed in
+    if (_currentAccount != null) {
+      try {
+        await _googleSignIn.disconnect();
+        appLogger.i('Disconnected from Google account');
+      } catch (e) {
+        appLogger.w('Error disconnecting Google account', error: e);
+        // Continue with cleanup even if disconnect fails
+      }
+    }
+    _currentAccount = null;
   }
 }

@@ -5,6 +5,7 @@ import '../../../../domain/presence/use_cases/get_presence_for_month_use_case.da
 import '../../../../domain/presence/use_cases/get_presences_for_day_use_case.dart';
 import '../../../../domain/presence/use_cases/set_presence_use_case.dart';
 import '../../../../domain/presence/entities/presence.dart';
+import '../../../../domain/sync/repositories/sync_repository.dart';
 import 'history_event.dart';
 import 'history_state.dart';
 
@@ -14,10 +15,12 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     required GetPresenceForMonthUseCase getPresenceForMonth,
     required GetPresencesForDayUseCase getPresencesForDay,
     required SetPresenceUseCase setPresence,
+    required SyncRepository syncRepository,
   }) : _getPlaces = getPlaces,
        _getPresenceForMonth = getPresenceForMonth,
        _getPresencesForDay = getPresencesForDay,
        _setPresence = setPresence,
+       _syncRepository = syncRepository,
        super(const HistoryState()) {
     on<HistoryLoadRequested>(_onLoad);
     on<HistoryMonthChanged>(_onMonthChanged);
@@ -30,6 +33,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   final GetPresenceForMonthUseCase _getPresenceForMonth;
   final GetPresencesForDayUseCase _getPresencesForDay;
   final SetPresenceUseCase _setPresence;
+  final SyncRepository _syncRepository;
 
   /// Returns a detailed per-place presence map for every day in [month].
   /// Outer key is the date at midnight; inner map maps placeId -> isPresent.
@@ -89,6 +93,10 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       final places = await _getPlaces.call();
       final month = state.effectiveViewMonth;
       final byPlace = await _loadPresenceByPlaceForMonth(month);
+      final synced = await _syncRepository.getSyncedDaysForMonth(
+        month.year,
+        month.month,
+      );
       final aggregated = _aggregatePresence(byPlace, state.selectedPlaceId);
       emit(
         state.copyWith(
@@ -97,6 +105,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
           viewMonth: month,
           presenceByDay: aggregated,
           presenceByDayPerPlace: byPlace,
+          syncedDays: synced,
           loadingPresence: false,
           errorMessage: null,
         ),
@@ -120,11 +129,16 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     );
     try {
       final byPlace = await _loadPresenceByPlaceForMonth(event.month);
+      final synced = await _syncRepository.getSyncedDaysForMonth(
+        event.month.year,
+        event.month.month,
+      );
       final aggregated = _aggregatePresence(byPlace, state.selectedPlaceId);
       emit(
         state.copyWith(
           presenceByDay: aggregated,
           presenceByDayPerPlace: byPlace,
+          syncedDays: synced,
           loadingPresence: false,
         ),
       );
@@ -201,6 +215,10 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       }
       final month = state.effectiveViewMonth;
       final byPlace = await _loadPresenceByPlaceForMonth(month);
+      final synced = await _syncRepository.getSyncedDaysForMonth(
+        month.year,
+        month.month,
+      );
       final aggregated = _aggregatePresence(byPlace, state.selectedPlaceId);
       final selectedDay = state.selectedDay;
       List<Presence> dayPresences = state.dayPresences;
@@ -212,6 +230,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
         state.copyWith(
           presenceByDay: aggregated,
           presenceByDayPerPlace: byPlace,
+          syncedDays: synced,
           dayPresences: dayPresences,
           errorMessage: null,
         ),

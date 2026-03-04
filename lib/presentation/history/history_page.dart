@@ -21,6 +21,7 @@ class HistoryPage extends StatefulWidget {
     this.dayPresences = const [],
     this.loadingDayDetails = false,
     this.selectedPlaceId,
+    this.syncedDays = const {},
     this.onBack,
     this.onMonthChanged,
     this.onDaySelected,
@@ -38,6 +39,7 @@ class HistoryPage extends StatefulWidget {
   final List<Presence> dayPresences;
   final bool loadingDayDetails;
   final String? selectedPlaceId;
+  final Map<DateTime, Set<String>> syncedDays;
   final VoidCallback? onBack;
   final void Function(DateTime month)? onMonthChanged;
   final void Function(int? day)? onDaySelected;
@@ -134,6 +136,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 dayPresences: widget.dayPresences,
                 loadingDayDetails: widget.loadingDayDetails,
                 places: widget.places,
+                syncedDays: widget.syncedDays,
                 theme: theme,
                 isDark: isDark,
                 selectedPlaceId: widget.selectedPlaceId,

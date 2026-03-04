@@ -11,11 +11,12 @@ class SyncRepositoryImpl implements SyncRepository {
 
   @override
   Future<List<PendingSyncItem>> getPendingSyncs() async {
-    // SELECT Presences.placeId, Places.name, Presences.date, Presences.firstDetectedAt
-    // FROM Presences
-    // INNER JOIN Places ON Presences.placeId = Places.placeId
-    // LEFT JOIN SyncRecords ON Presences.placeId = SyncRecords.placeId AND Presences.date = SyncRecords.date
-    // WHERE Presences.isPresent = true AND SyncRecords.eventId IS NULL
+    final now = DateTime.now();
+    final minDate = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).subtract(const Duration(days: 90));
 
     final query =
         _db.select(_db.presences).join([
@@ -30,7 +31,8 @@ class SyncRepositoryImpl implements SyncRepository {
             ),
           ])
           ..where(_db.presences.isPresent.equals(true))
-          ..where(_db.syncRecords.eventId.isNull());
+          ..where(_db.presences.date.isBiggerOrEqualValue(minDate))
+          ..where(_db.syncRecords.placeId.isNull());
 
     final results = await query.get();
 
@@ -76,5 +78,27 @@ class SyncRepositoryImpl implements SyncRepository {
     await (_db.delete(
       _db.syncRecords,
     )..where((s) => s.placeId.equals(placeId) & s.date.equals(date))).go();
+  }
+
+  @override
+  Future<Map<DateTime, Set<String>>> getSyncedDaysForMonth(
+    int year,
+    int month,
+  ) async {
+    final start = DateTime(year, month, 1);
+    final end = DateTime(year, month + 1, 0);
+
+    final query = _db.select(_db.syncRecords)
+      ..where((s) => s.date.isBetweenValues(start, end));
+
+    final results = await query.get();
+    final map = <DateTime, Set<String>>{};
+
+    for (final row in results) {
+      final date = DateTime(row.date.year, row.date.month, row.date.day);
+      map.putIfAbsent(date, () => {}).add(row.placeId);
+    }
+
+    return map;
   }
 }

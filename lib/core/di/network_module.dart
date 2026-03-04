@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
+import '../../core/logging.dart';
 import '../../domain/sync/google_auth_service.dart';
 
 /// Injectable module that provides a ready-to-use [Dio] instance for the
@@ -37,9 +38,18 @@ abstract class NetworkModule {
         onRequest:
             (RequestOptions options, RequestInterceptorHandler handler) async {
               try {
+                appLogger.d('NetworkInterceptor: Fetching auth headers...');
                 final headers = await authService.getAuthHeaders();
+                appLogger.d(
+                  'NetworkInterceptor: Adding ${headers.length} headers',
+                );
                 options.headers.addAll(headers);
-              } catch (_) {
+              } catch (e, st) {
+                appLogger.w(
+                  'NetworkInterceptor: Failed to add auth headers',
+                  error: e,
+                  stackTrace: st,
+                );
                 // Swallow; the request may still succeed if auth is not required.
               }
               handler.next(options);

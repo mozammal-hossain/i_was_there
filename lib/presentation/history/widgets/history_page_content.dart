@@ -22,6 +22,7 @@ class HistoryPageContent extends StatelessWidget {
     required this.dayPresences,
     required this.loadingDayDetails,
     required this.places,
+    this.syncedDays = const {},
     required this.theme,
     required this.isDark,
     required this.onMonthChanged,
@@ -39,6 +40,7 @@ class HistoryPageContent extends StatelessWidget {
   final List<Presence> dayPresences;
   final bool loadingDayDetails;
   final List<Place> places;
+  final Map<DateTime, Set<String>> syncedDays;
   final ThemeData theme;
   final bool isDark;
   final void Function(DateTime month) onMonthChanged;
@@ -168,6 +170,8 @@ class HistoryPageContent extends StatelessWidget {
               daysInMonth: _daysInMonth,
               firstWeekday: _firstWeekday(context),
               presenceByDayPerPlace: presenceByDayPerPlace,
+              syncedDays: syncedDays,
+              places: places,
               hasPresence: _hasPresence,
               isToday: (day) => historyIsToday(viewMonth, day),
               selectedDay: _effectiveSelectedDay,

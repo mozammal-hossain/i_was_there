@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_bloc: ^9.0.0
   google_fonts: ^8.0.2
+  synchronized: ^3.1.0
 
   # Data & persistence
   drift: ^2.22.0

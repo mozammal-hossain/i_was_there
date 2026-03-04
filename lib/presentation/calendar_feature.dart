@@ -7,6 +7,7 @@ import '../domain/places/use_cases/get_places_use_case.dart';
 import '../domain/presence/use_cases/get_presence_for_month_use_case.dart';
 import '../domain/presence/use_cases/get_presences_for_day_use_case.dart';
 import '../domain/presence/use_cases/set_presence_use_case.dart';
+import '../domain/sync/repositories/sync_repository.dart';
 import 'history/bloc/history_bloc.dart';
 import 'history/bloc/history_event.dart';
 import 'history/bloc/history_state.dart';
@@ -23,6 +24,7 @@ class CalendarFeature extends StatelessWidget {
       getPresenceForMonth: getIt<GetPresenceForMonthUseCase>(),
       getPresencesForDay: getIt<GetPresencesForDayUseCase>(),
       setPresence: getIt<SetPresenceUseCase>(),
+      syncRepository: getIt<SyncRepository>(),
     );
   }
 

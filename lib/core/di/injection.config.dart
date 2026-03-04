@@ -66,6 +66,7 @@ import '../../domain/sync/use_cases/sync_pending_to_google_use_case.dart'
     as _i910;
 import '../force_update/force_update_service.dart' as _i378;
 import '../locale/app_locale_service.dart' as _i700;
+import '../sync/sync_lock.dart' as _i494;
 import '../url_launcher/url_launcher_service.dart' as _i491;
 import 'app_module.dart' as _i460;
 import 'network_module.dart' as _i567;
@@ -83,6 +84,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i378.ForceUpdateService>(
       () => _i378.ForceUpdateService(),
     );
+    gh.lazySingleton<_i494.SyncLock>(() => _i494.SyncLock());
     gh.lazySingleton<_i491.UrlLauncherService>(
       () => _i491.UrlLauncherService(),
     );
@@ -127,12 +129,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i576.CalendarSyncService>(),
       ),
     );
-    gh.factory<_i910.SyncPendingToGoogleUseCase>(
-      () => _i910.SyncPendingToGoogleUseCase(
-        gh<_i669.SyncRepository>(),
-        gh<_i576.CalendarSyncService>(),
-      ),
-    );
     gh.lazySingleton<_i267.PlaceRepository>(
       () => _i587.PlaceRepositoryImpl(gh<_i160.AppDatabase>()),
     );
@@ -147,9 +143,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i374.GetPresencesForDayUseCase>(
       () => _i374.GetPresencesForDayUseCase(gh<_i313.PresenceRepository>()),
-    );
-    gh.factory<_i792.SetPresenceUseCase>(
-      () => _i792.SetPresenceUseCase(gh<_i313.PresenceRepository>()),
     );
     gh.lazySingleton<_i700.AppLocaleService>(
       () => _i700.AppLocaleService(gh<_i647.SettingsRepository>()),
@@ -172,11 +165,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i139.GeocodingService>(),
       ),
     );
-    gh.lazySingleton<_i583.SyncScheduler>(
-      () => _i583.SyncScheduler(
-        gh<_i647.SettingsRepository>(),
-        gh<_i110.GoogleAuthService>(),
-        gh<_i910.SyncPendingToGoogleUseCase>(),
+    gh.factory<_i792.SetPresenceUseCase>(
+      () => _i792.SetPresenceUseCase(
+        gh<_i313.PresenceRepository>(),
+        gh<_i846.DeleteCalendarEventUseCase>(),
+      ),
+    );
+    gh.factory<_i910.SyncPendingToGoogleUseCase>(
+      () => _i910.SyncPendingToGoogleUseCase(
+        gh<_i669.SyncRepository>(),
+        gh<_i576.CalendarSyncService>(),
+        gh<_i494.SyncLock>(),
       ),
     );
     gh.factory<_i662.AddPlaceUseCase>(
@@ -190,6 +189,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i283.UpdatePlaceUseCase>(
       () => _i283.UpdatePlaceUseCase(gh<_i267.PlaceRepository>()),
+    );
+    gh.lazySingleton<_i583.SyncScheduler>(
+      () => _i583.SyncScheduler(
+        gh<_i647.SettingsRepository>(),
+        gh<_i110.GoogleAuthService>(),
+        gh<_i910.SyncPendingToGoogleUseCase>(),
+      ),
     );
     return this;
   }

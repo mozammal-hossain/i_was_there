@@ -33,7 +33,15 @@ class SyncScheduler {
     }
 
     appLogger.i('Starting pending sync for account ${account.email}');
-    await _syncPendingToGoogle.call();
-    appLogger.i('Pending sync completed');
+    try {
+      await _syncPendingToGoogle.call();
+      appLogger.i('Pending sync completed');
+    } catch (e, st) {
+      appLogger.w(
+        'Manual/Scheduled sync failed silently',
+        error: e,
+        stackTrace: st,
+      );
+    }
   }
 }

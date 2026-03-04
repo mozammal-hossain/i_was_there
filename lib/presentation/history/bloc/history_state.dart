@@ -16,6 +16,7 @@ class HistoryState {
     this.dayPresences = const [],
     this.loadingDayDetails = false,
     this.selectedPlaceId,
+    this.syncedDays = const {},
     this.errorMessage,
   });
 
@@ -36,6 +37,7 @@ class HistoryState {
   final List<Presence> dayPresences;
   final bool loadingDayDetails;
   final String? selectedPlaceId;
+  final Map<DateTime, Set<String>> syncedDays;
   final String? errorMessage;
 
   DateTime get effectiveViewMonth =>
@@ -52,6 +54,7 @@ class HistoryState {
     List<Presence>? dayPresences,
     bool? loadingDayDetails,
     Object? selectedPlaceId = _keepSelectedPlaceId,
+    Map<DateTime, Set<String>>? syncedDays,
     String? errorMessage,
   }) {
     return HistoryState(
@@ -68,6 +71,7 @@ class HistoryState {
       selectedPlaceId: identical(selectedPlaceId, _keepSelectedPlaceId)
           ? this.selectedPlaceId
           : selectedPlaceId as String?,
+      syncedDays: syncedDays ?? this.syncedDays,
       errorMessage: errorMessage,
     );
   }
